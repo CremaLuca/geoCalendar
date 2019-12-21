@@ -6,6 +6,10 @@ package com.eis.geoCalendar.gps;
  */
 public class GPSPosition {
 
+    public GPSPosition(float latitude, float longitude) {
+        //TODO: There can be more constructors
+    }
+
     /**
      * @return The latitude position
      */

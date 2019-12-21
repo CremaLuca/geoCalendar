@@ -35,7 +35,7 @@ public interface EventManager<E extends Event> {
      * Searches for events in a given circle of gps positions.
      *
      * @param p     The center of the circle of search.
-     * @param range The radius of the circe of search.
+     * @param range The radius of the circe of search in meters.
      * @return {@link ArrayList} of events in the given area. It's empty if there is none.
      */
     ArrayList<E> getEventsInRange(@NonNull final GPSPosition p, final float range);

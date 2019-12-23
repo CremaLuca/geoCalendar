@@ -5,24 +5,55 @@ import com.eis.geoCalendar.timedEvents.TimedEvent;
 
 import java.time.LocalDateTime;
 
+/**
+ * Manager of timed events' implementation.
+ *
+ * @param <T> Type of event.
+ * @author Francesco Bau' helped by Luca Crema.
+ * @version 1.0
+ * @see com.eis.geoCalendar.events.EventManager
+ * @since 23/12/2019
+ */
 public class GenericTimedEvent<T> implements TimedEvent<T> {
 
-    public GenericTimedEvent(GPSPosition position, T content, LocalDateTime time) {
+    private GPSPosition position;
+    private T content;
+    private LocalDateTime time;
 
+    /**
+     * Main constructor, which acquires all details of the just created event.
+     *
+     * @param position The position of the event. (?)
+     * @param content  The content of the event (?)
+     * @param time     The deadline (?)
+     */
+    public GenericTimedEvent(GPSPosition position, T content, LocalDateTime time) {
+        this.position = position;
+        this.content = content;
+        this.time = time;
     }
 
+    /**
+     * @return the deadline (?)
+     */
     @Override
     public LocalDateTime getTime() {
-        return null;
+        return time;
     }
 
+    /**
+     * @return the content of the event (?).
+     */
     @Override
     public T getContent() {
-        return null;
+        return content;
     }
 
+    /**
+     * @return the position of the event.
+     */
     @Override
     public GPSPosition getPosition() {
-        return null;
+        return position;
     }
 }

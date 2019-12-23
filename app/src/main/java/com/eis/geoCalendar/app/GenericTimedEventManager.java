@@ -2,10 +2,10 @@ package com.eis.geoCalendar.app;
 
 import com.eis.geoCalendar.events.EventDatabase;
 import com.eis.geoCalendar.gps.GPSPosition;
+import com.eis.geoCalendar.timedEvents.DateTime;
 import com.eis.geoCalendar.timedEvents.TimedEvent;
 import com.eis.geoCalendar.timedEvents.TimedEventManager;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
@@ -35,7 +35,7 @@ public class GenericTimedEventManager<E extends TimedEvent> implements TimedEven
      * @return all events scheduled before a certain time.
      */
     @Override
-    public ArrayList<E> getEventsBeforeTime(LocalDateTime time) {
+    public ArrayList<E> getEventsBeforeTime(DateTime time) {
         ArrayList<E> eventsList = new ArrayList<>();
         for (E event : database.getSavedEvents()) {
             if (event.getTime().compareTo(time) < 0)
@@ -49,7 +49,7 @@ public class GenericTimedEventManager<E extends TimedEvent> implements TimedEven
      * @return all events scheduled after a certain time.
      */
     @Override
-    public ArrayList<E> getEventsAfterTime(LocalDateTime time) {
+    public ArrayList<E> getEventsAfterTime(DateTime time) {
         ArrayList<E> eventsList = new ArrayList<>();
         for (E event : database.getSavedEvents()) {
             if (event.getTime().compareTo(time) < 0)
@@ -64,7 +64,7 @@ public class GenericTimedEventManager<E extends TimedEvent> implements TimedEven
      * @return all the events in a defined time interval.
      */
     @Override
-    public ArrayList<E> getEventsBetweenTime(LocalDateTime beginTime, LocalDateTime endTime) {
+    public ArrayList<E> getEventsBetweenTime(DateTime beginTime, DateTime endTime) {
         ArrayList<E> eventsList = new ArrayList<>();
         for (E event : database.getSavedEvents()) {
             if (event.getTime().compareTo(beginTime) > 0 && event.getTime().compareTo(endTime) < 0)
@@ -103,7 +103,12 @@ public class GenericTimedEventManager<E extends TimedEvent> implements TimedEven
      */
     @Override
     public ArrayList<E> getEventsInRange(@NonNull GPSPosition p, float range) {
-        return null;
+        ArrayList<E> eventsList = new ArrayList<>();
+        for(E event:database.getSavedEvents()){
+            if(event.getPosition().getDistance(p)<range)
+                eventsList.add(event);
+        }
+        return eventsList;
     }
 
     /**
@@ -112,7 +117,12 @@ public class GenericTimedEventManager<E extends TimedEvent> implements TimedEven
      */
     @Override
     public E getClosestEvent(@NonNull GPSPosition p) {
-        return null;
+        E relativeClosestEvent = database.getSavedEvents().get(0);
+        for(E event:database.getSavedEvents()){
+            if(event.getPosition().getDistance(p)<relativeClosestEvent.getPosition().getDistance(p))
+                relativeClosestEvent = event;
+        }
+        return relativeClosestEvent;
     }
 
     /**

@@ -32,20 +32,30 @@ public class GenericTimedEventManager<E extends TimedEvent> implements TimedEven
 
     /**
      * @param time The time upper bound.
-     * @return all these events which expire before a certain time (?)
+     * @return all events scheduled before a certain time.
      */
     @Override
     public ArrayList<E> getEventsBeforeTime(LocalDateTime time) {
-        return null;
+        ArrayList<E> eventsList = new ArrayList<>();
+        for (E event : database.getSavedEvents()) {
+            if (event.getTime().compareTo(time) < 0)
+                eventsList.add(event);
+        }
+        return eventsList;
     }
 
     /**
      * @param time The time lower bound.
-     * @return all these events which expire after a certain time (?)
+     * @return all events scheduled after a certain time.
      */
     @Override
     public ArrayList<E> getEventsAfterTime(LocalDateTime time) {
-        return null;
+        ArrayList<E> eventsList = new ArrayList<>();
+        for (E event : database.getSavedEvents()) {
+            if (event.getTime().compareTo(time) < 0)
+                eventsList.add(event);
+        }
+        return eventsList;
     }
 
     /**
@@ -55,7 +65,12 @@ public class GenericTimedEventManager<E extends TimedEvent> implements TimedEven
      */
     @Override
     public ArrayList<E> getEventsBetweenTime(LocalDateTime beginTime, LocalDateTime endTime) {
-        return null;
+        ArrayList<E> eventsList = new ArrayList<>();
+        for (E event : database.getSavedEvents()) {
+            if (event.getTime().compareTo(beginTime) > 0 && event.getTime().compareTo(endTime) < 0)
+                eventsList.add(event);
+        }
+        return eventsList;
     }
 
     /**

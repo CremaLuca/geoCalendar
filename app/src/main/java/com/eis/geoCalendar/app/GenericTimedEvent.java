@@ -23,9 +23,9 @@ public class GenericTimedEvent<T> implements TimedEvent<T> {
     /**
      * Main constructor, which acquires all details of the just created event.
      *
-     * @param position The position of the event. (?)
-     * @param content  The content of the event (?)
-     * @param time     The deadline (?)
+     * @param position The position of the event.
+     * @param content  The content of the event.
+     * @param time     The time/deadline of the event.
      */
     public GenericTimedEvent(GPSPosition position, T content, LocalDateTime time) {
         this.position = position;
@@ -34,7 +34,7 @@ public class GenericTimedEvent<T> implements TimedEvent<T> {
     }
 
     /**
-     * @return the deadline (?)
+     * @return the time/deadline of the event.
      */
     @Override
     public LocalDateTime getTime() {
@@ -42,7 +42,7 @@ public class GenericTimedEvent<T> implements TimedEvent<T> {
     }
 
     /**
-     * @return the content of the event (?).
+     * @return the content of the event.
      */
     @Override
     public T getContent() {

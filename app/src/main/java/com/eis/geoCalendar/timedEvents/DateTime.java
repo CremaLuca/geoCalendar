@@ -14,7 +14,6 @@ public class DateTime extends Date {
     /**
      * Constructor of a date given a time in {@code long} format
      *
-     * @param date
      * @see System#currentTimeMillis()
      */
     public DateTime(long date) {
@@ -23,13 +22,14 @@ public class DateTime extends Date {
 
     /**
      * Returns a {@code long} representation of the given date
-     * @param year must be greater than 1990
+     *
+     * @param year  must be greater than 1990
      * @param month must be between 1-12
-     * @param day must be between 1-31 depending on the month
-     * @param hrs must be between 1-24
-     * @param min must be between 0-60
+     * @param day   must be between 1-31 depending on the month
+     * @param hrs   must be between 1-24
+     * @param min   must be between 0-60
      */
-    public static long getTimeInMillis(int year, int month, int day, int hrs, int min){
+    public static long getTimeInMillis(int year, int month, int day, int hrs, int min) {
         Calendar c = Calendar.getInstance();
         c.clear();
         c.set(year, month, day, hrs, min);
@@ -39,7 +39,7 @@ public class DateTime extends Date {
     /**
      * @return current date and time
      */
-    public static DateTime now(){
+    public static DateTime now() {
         return new DateTime(System.currentTimeMillis());
     }
 

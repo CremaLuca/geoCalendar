@@ -1,9 +1,8 @@
 package com.eis.geoCalendar.app;
 
 import com.eis.geoCalendar.gps.GPSPosition;
+import com.eis.geoCalendar.timedEvents.DateTime;
 import com.eis.geoCalendar.timedEvents.TimedEvent;
-
-import java.time.LocalDateTime;
 
 /**
  * Manager of timed events' implementation.
@@ -18,7 +17,7 @@ public class GenericTimedEvent<T> implements TimedEvent<T> {
 
     private GPSPosition position;
     private T content;
-    private LocalDateTime time;
+    private DateTime time;
 
     /**
      * Main constructor, which acquires all details of the just created event.
@@ -27,7 +26,7 @@ public class GenericTimedEvent<T> implements TimedEvent<T> {
      * @param content  The content of the event.
      * @param time     The time/deadline of the event.
      */
-    public GenericTimedEvent(GPSPosition position, T content, LocalDateTime time) {
+    public GenericTimedEvent(GPSPosition position, T content, DateTime time) {
         this.position = position;
         this.content = content;
         this.time = time;
@@ -37,7 +36,7 @@ public class GenericTimedEvent<T> implements TimedEvent<T> {
      * @return the time/deadline of the event.
      */
     @Override
-    public LocalDateTime getTime() {
+    public DateTime getTime() {
         return time;
     }
 

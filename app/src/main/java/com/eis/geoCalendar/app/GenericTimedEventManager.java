@@ -40,7 +40,9 @@ public class GenericTimedEventManager<E extends TimedEvent> implements TimedEven
     public ArrayList<E> getEventsBeforeTime(DateTime time) {
         ArrayList<E> eventsList = new ArrayList<>();
         for (E event : database.getSavedEvents()) {
+            // if the event's time is before the time in the parameter...
             if (event.getTime().compareTo(time) < 0)
+                // ...it gets added in the ArrayList.
                 eventsList.add(event);
         }
         return eventsList;
@@ -54,7 +56,9 @@ public class GenericTimedEventManager<E extends TimedEvent> implements TimedEven
     public ArrayList<E> getEventsAfterTime(DateTime time) {
         ArrayList<E> eventsList = new ArrayList<>();
         for (E event : database.getSavedEvents()) {
-            if (event.getTime().compareTo(time) < 0)
+            // if the event's time is after the time in the parameter...
+            if (event.getTime().compareTo(time) > 0)
+                // ...it gets added in the ArrayList.
                 eventsList.add(event);
         }
         return eventsList;
@@ -69,7 +73,9 @@ public class GenericTimedEventManager<E extends TimedEvent> implements TimedEven
     public ArrayList<E> getEventsBetweenTime(DateTime beginTime, DateTime endTime) {
         ArrayList<E> eventsList = new ArrayList<>();
         for (E event : database.getSavedEvents()) {
+            // if the event's time is after beginTime and before endTime...
             if (event.getTime().compareTo(beginTime) > 0 && event.getTime().compareTo(endTime) < 0)
+                // ...it gets added in the ArrayList.
                 eventsList.add(event);
         }
         return eventsList;
@@ -116,16 +122,20 @@ public class GenericTimedEventManager<E extends TimedEvent> implements TimedEven
     }
 
     /**
-     * @param p The position used to calculate the closest .
+     * @param p The position used to calculate the closest event.
      * @return the closest event.
      */
     @Override
     public E getClosestEvent(@NonNull GPSPosition p) {
         E relativeClosestEvent = database.getSavedEvents().get(0);
         for(E event:database.getSavedEvents()){
+            // if the distance between the event in database and p is lower than the distance
+            // between relativeClosestEvent and p ...
             if(event.getPosition().getDistance(p)<relativeClosestEvent.getPosition().getDistance(p))
+                // ...that event becomes the new relativeClosestEvent.
                 relativeClosestEvent = event;
         }
+        // After the foreach block is done, the relativeClosestEvent becomes absolute.
         return relativeClosestEvent;
     }
 

@@ -13,7 +13,9 @@ import java.util.ArrayList;
  * @param <E> The generic timed event.
  * @author Francesco Bau' helped by Luca Crema.
  * @version 1.0
- * @see com.eis.geoCalendar.events.EventManager
+ * @see com.eis.geoCalendar.app.GenericEventManager
+ * @see com.eis.geoCalendar.timedEvents.TimedEvent
+ * @see com.eis.geoCalendar.timedEvents.TimedEventManager
  * @since 23/12/2019
  */
 public class GenericTimedEventManager<E extends TimedEvent> extends GenericEventManager<E> implements TimedEventManager<E> {

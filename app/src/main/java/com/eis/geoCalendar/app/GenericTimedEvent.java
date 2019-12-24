@@ -10,7 +10,8 @@ import com.eis.geoCalendar.timedEvents.TimedEvent;
  * @param <T> Type of event.
  * @author Francesco Bau' helped by Luca Crema.
  * @version 1.0
- * @see com.eis.geoCalendar.events.EventManager
+ * @see com.eis.geoCalendar.app.GenericEvent
+ * @see com.eis.geoCalendar.timedEvents.TimedEvent
  * @since 23/12/2019
  */
 public class GenericTimedEvent<T> extends GenericEvent<T> implements TimedEvent<T> {

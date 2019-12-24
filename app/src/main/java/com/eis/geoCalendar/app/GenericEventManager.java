@@ -15,6 +15,7 @@ import java.util.ArrayList;
  * @param <E> The generic timed event.
  * @author Francesco Bau'
  * @version 1.0
+ * @see com.eis.geoCalendar.events.Event
  * @see com.eis.geoCalendar.events.EventManager
  * @since 24/12/2019
  */

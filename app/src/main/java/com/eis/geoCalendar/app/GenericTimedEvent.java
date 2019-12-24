@@ -18,7 +18,7 @@ public class GenericTimedEvent<T> extends GenericEvent<T> implements TimedEvent<
     protected DateTime time;
 
     /**
-     * Main constructor, which acquires all details of the just created event.
+     * Main constructor, which acquires all details of the just created timed event.
      *
      * @param position The position of the event.
      * @param content  The content of the event.

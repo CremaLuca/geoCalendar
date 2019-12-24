@@ -31,8 +31,10 @@ public class GenericTimedEventManager<E extends TimedEvent> extends GenericEvent
     }
 
     /**
+     * Searches for all events that have a time earlier than the parameter time
+     *
      * @param time The time upper bound.
-     * @return all events scheduled before a certain time.
+     * @return An {@link ArrayList} of events with time smaller than {@code time} if there is any, an empty array otherwise.
      */
     @Override
     public ArrayList<E> getEventsBeforeTime(DateTime time) {
@@ -45,8 +47,10 @@ public class GenericTimedEventManager<E extends TimedEvent> extends GenericEvent
     }
 
     /**
+     * Searches for all events that have a time earlier than the parameter time
+     *
      * @param time The time lower bound.
-     * @return all events scheduled after a certain time.
+     * @return An {@link ArrayList} of events with time greater than {@code time} if there is any, an empty array otherwise.
      */
     @Override
     public ArrayList<E> getEventsAfterTime(DateTime time) {
@@ -59,9 +63,11 @@ public class GenericTimedEventManager<E extends TimedEvent> extends GenericEvent
     }
 
     /**
+     * Searches for all events that have a time in between given times.
+     *
      * @param beginTime The time lower bound.
      * @param endTime   The time upper bound.
-     * @return all the events in a defined time interval.
+     * @return An {@link ArrayList} of events with time between {@code beginTime} and {@code endTime} if there is any, an empty array otherwise.
      */
     @Override
     public ArrayList<E> getEventsBetweenTime(DateTime beginTime, DateTime endTime) {

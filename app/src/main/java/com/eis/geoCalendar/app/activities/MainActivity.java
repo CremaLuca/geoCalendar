@@ -1,10 +1,10 @@
-package com.eis.geoCalendar.activities;
-
-import androidx.appcompat.app.AppCompatActivity;
+package com.eis.geoCalendar.app.activities;
 
 import android.os.Bundle;
 
 import com.eis.geoCalendar.R;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 

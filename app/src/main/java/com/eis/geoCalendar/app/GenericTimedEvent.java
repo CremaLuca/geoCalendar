@@ -15,7 +15,7 @@ import com.eis.geoCalendar.timedEvents.TimedEvent;
  */
 public class GenericTimedEvent<T> extends GenericEvent<T> implements TimedEvent<T> {
 
-    private DateTime time;
+    protected DateTime time;
 
     /**
      * Main constructor, which acquires all details of the just created event.

@@ -29,6 +29,7 @@ public class GenericTimedEventManagerTest {
     private static final DateTime A_LONG_TIME_AGO = new DateTime(DateTime.getTimeInMillis(2000, 1, 1, 1, 1));
     private static final DateTime LONG_TIME_FROM_NOW = new DateTime(DateTime.getTimeInMillis(2100, 1, 1, 1, 1));
     private static final GPSPosition DEFAULT_GPS_POSITION = new GPSPosition(33.12345675f, 15.22323232f);
+    private static final GPSPosition DISTANT_GPS_POSITION = new GPSPosition(15.32132312f, 33.23232323f);
     @Mock
     private TimedEvent<String> mockTimedEvent;
 
@@ -41,7 +42,6 @@ public class GenericTimedEventManagerTest {
         setupMockTimedEvent();
         mockTimedEventDatabase = new MockTimedEventDatabase<>();
         testTimedEventManager = new GenericTimedEventManager<>(mockTimedEventDatabase);
-        testTimedEventManager.addEvent(mockTimedEvent);
     }
 
     private void setupMockTimedEvent() {
@@ -52,36 +52,92 @@ public class GenericTimedEventManagerTest {
 
     @Test
     public void getEventsBeforeTime_mockedTimeEvent_isContained() {
+        testTimedEventManager.addEvent(mockTimedEvent);
         Assert.assertTrue(testTimedEventManager.getEventsBeforeTime(LONG_TIME_FROM_NOW).contains(mockTimedEvent));
     }
 
     @Test
+    public void getEventsBeforeTime_mockedTimeEvent_isNotContained() {
+        testTimedEventManager.addEvent(mockTimedEvent);
+        Assert.assertEquals(new ArrayList<TimedEvent<String>>(), testTimedEventManager.getEventsBeforeTime(A_LONG_TIME_AGO));
+    }
+
+    @Test
+    public void getEventsBeforeTime_emptyEvents_isEmptyArray() {
+        Assert.assertEquals(new ArrayList<TimedEvent<String>>(), testTimedEventManager.getEventsBeforeTime(LONG_TIME_FROM_NOW));
+    }
+
+    @Test
     public void getEventsAfterTime_mockedTimeEvent_isContained() {
+        testTimedEventManager.addEvent(mockTimedEvent);
         Assert.assertTrue(testTimedEventManager.getEventsAfterTime(A_LONG_TIME_AGO).contains(mockTimedEvent));
     }
 
     @Test
-    public void getEventsBetweenTime() {
+    public void getEventsAfterTime_mockedTimeEvent_isNotContained() {
+        testTimedEventManager.addEvent(mockTimedEvent);
+        Assert.assertEquals(new ArrayList<TimedEvent<String>>(), testTimedEventManager.getEventsAfterTime(LONG_TIME_FROM_NOW));
+    }
+
+    @Test
+    public void getEventsAfterTime_emptyEvents_isEmptyArray() {
+        Assert.assertEquals(new ArrayList<TimedEvent<String>>(), testTimedEventManager.getEventsAfterTime(A_LONG_TIME_AGO));
+    }
+
+    @Test
+    public void getEventsBetweenTime_mockedTimeEvent_isContained() {
+        testTimedEventManager.addEvent(mockTimedEvent);
         Assert.assertTrue(testTimedEventManager.getEventsBetweenTime(A_LONG_TIME_AGO, LONG_TIME_FROM_NOW).contains(mockTimedEvent));
     }
 
     @Test
-    public void removeEvent_presentEvent_isTrue() {
+    public void getEventsBetweenTime_emptyEvents_isEmptyArray() {
+        Assert.assertEquals(new ArrayList<TimedEvent<String>>(), testTimedEventManager.getEventsBetweenTime(A_LONG_TIME_AGO, LONG_TIME_FROM_NOW));
+    }
+
+    @Test
+    public void removeEvent_mockedTimeEvent_isTrue() {
+        testTimedEventManager.addEvent(mockTimedEvent);
         Assert.assertTrue(testTimedEventManager.removeEvent(mockTimedEvent));
     }
 
     @Test
+    public void removeEvent_emptyEvents_isFalse() {
+        Assert.assertFalse(testTimedEventManager.removeEvent(mockTimedEvent));
+    }
+
+    @Test
     public void getEventsInRange_mockedTimeEvent_isContained() {
+        testTimedEventManager.addEvent(mockTimedEvent);
         Assert.assertTrue(testTimedEventManager.getEventsInRange(DEFAULT_GPS_POSITION, 5f).contains(mockTimedEvent));
     }
 
     @Test
+    public void getEventsInRange_mockedTimeEvent_isNotContained() {
+        testTimedEventManager.addEvent(mockTimedEvent);
+        //Assert.assertFalse(testTimedEventManager.getEventsInRange(DISTANT_GPS_POSITION, 5f).contains(mockTimedEvent));
+        //TODO: Un-comment this when GPSPosition will be implemented
+    }
+
+    @Test
+    public void getEventsInRange_emptyEvents_isEmptyArray() {
+        Assert.assertEquals(new ArrayList<TimedEvent<String>>(), testTimedEventManager.getEventsInRange(DEFAULT_GPS_POSITION, 5f));
+    }
+
+    @Test
     public void getClosestEvent_mockedTimeEvent_isContained() {
+        testTimedEventManager.addEvent(mockTimedEvent);
         Assert.assertEquals(mockTimedEvent, testTimedEventManager.getClosestEvent(DEFAULT_GPS_POSITION));
     }
 
     @Test
+    public void getClosestEvent_emptyEvents_isNull() {
+        Assert.assertNull(testTimedEventManager.getClosestEvent(DEFAULT_GPS_POSITION));
+    }
+
+    @Test
     public void getAllEvents() {
+        testTimedEventManager.addEvent(mockTimedEvent);
         Assert.assertTrue(testTimedEventManager.getAllEvents().contains(mockTimedEvent));
     }
 

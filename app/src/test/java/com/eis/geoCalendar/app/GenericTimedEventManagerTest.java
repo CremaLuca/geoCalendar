@@ -1,7 +1,9 @@
 package com.eis.geoCalendar.app;
 
 import com.eis.geoCalendar.gps.GPSPosition;
+import com.eis.geoCalendar.timedEvents.DateTime;
 import com.eis.geoCalendar.timedEvents.TimedEvent;
+import com.eis.geoCalendar.timedEvents.TimedEventDatabase;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -10,7 +12,12 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import androidx.annotation.NonNull;
 
 import static org.mockito.Mockito.when;
 
@@ -18,17 +25,22 @@ import static org.mockito.Mockito.when;
 public class GenericTimedEventManagerTest {
 
     private static final String DEFAULT_CONTENT = "Test content";
-    private static final LocalDateTime DEFAULT_DATETIME = LocalDateTime.now();
+    private static final DateTime DEFAULT_DATETIME = DateTime.now();
+    private static final DateTime A_LONG_TIME_AGO = new DateTime(DateTime.getTimeInMillis(2000, 1, 1, 1, 1));
+    private static final DateTime LONG_TIME_FROM_NOW = new DateTime(DateTime.getTimeInMillis(2100, 1, 1, 1, 1));
     private static final GPSPosition DEFAULT_GPS_POSITION = new GPSPosition(33.12345675f, 15.22323232f);
     @Mock
     private TimedEvent<String> mockTimedEvent;
+    @Mock
+    private TimedEventDatabase<TimedEvent<String>> mockTimedEventDatabase = new MockTimedEventDatabase<TimedEvent<String>>();
+
     private GenericTimedEventManager<TimedEvent<String>> testTimedEventManager;
 
     @Before
     public void setUp() throws Exception {
         setupMockTimedEvent();
 
-        testTimedEventManager = new GenericTimedEventManager<>();
+        testTimedEventManager = new GenericTimedEventManager<>(mockTimedEventDatabase);
         testTimedEventManager.addEvent(mockTimedEvent);
     }
 
@@ -38,22 +50,19 @@ public class GenericTimedEventManagerTest {
         when(mockTimedEvent.getTime()).thenReturn(DEFAULT_DATETIME);
     }
 
-
     @Test
     public void getEventsBeforeTime_mockedTimeEvent_isContained() {
-        Assert.assertTrue(testTimedEventManager.getEventsBeforeTime(LocalDateTime.of(2100, 1, 1, 1, 1)).contains(mockTimedEvent));
+        Assert.assertTrue(testTimedEventManager.getEventsBeforeTime(LONG_TIME_FROM_NOW).contains(mockTimedEvent));
     }
 
     @Test
     public void getEventsAfterTime_mockedTimeEvent_isContained() {
-        Assert.assertTrue(testTimedEventManager.getEventsAfterTime(LocalDateTime.of(2000, 1, 1, 1, 1)).contains(mockTimedEvent));
+        Assert.assertTrue(testTimedEventManager.getEventsAfterTime(A_LONG_TIME_AGO).contains(mockTimedEvent));
     }
 
     @Test
     public void getEventsBetweenTime() {
-        LocalDateTime beforeTime = LocalDateTime.of(2000, 1, 1, 1, 1);
-        LocalDateTime afterTime = LocalDateTime.of(2100, 1, 1, 1, 1);
-        Assert.assertTrue(testTimedEventManager.getEventsBetweenTime(beforeTime, afterTime).contains(mockTimedEvent));
+        Assert.assertTrue(testTimedEventManager.getEventsBetweenTime(A_LONG_TIME_AGO, LONG_TIME_FROM_NOW).contains(mockTimedEvent));
     }
 
     @Test
@@ -74,5 +83,44 @@ public class GenericTimedEventManagerTest {
     @Test
     public void getAllEvents() {
         Assert.assertTrue(testTimedEventManager.getAllEvents().contains(mockTimedEvent));
+    }
+
+    class MockTimedEventDatabase<E extends TimedEvent> implements TimedEventDatabase<E> {
+
+        ArrayList<E> events;
+
+        public MockTimedEventDatabase() {
+            events = new ArrayList<>();
+        }
+
+        @Override
+        public void saveEvent(@NonNull E event) {
+            this.events.add(event);
+        }
+
+        @Override
+        public void saveEvents(@NonNull Collection<E> events) {
+            this.events.addAll(events);
+        }
+
+        @Override
+        public boolean removeEvent(@NonNull E event) {
+            return this.events.remove(event);
+        }
+
+        @Override
+        public Map<E, Boolean> removeEvents(@NonNull Collection<E> events) {
+            Map<E, Boolean> returnMap = new HashMap<>();
+            Object[] eventsArray = events.toArray();
+            for (int i = 0; i < events.size(); i++) {
+                returnMap.put((E) eventsArray[i], events.remove(eventsArray[i]));
+            }
+            return returnMap;
+        }
+
+        @Override
+        public ArrayList<E> getSavedEvents() {
+            return events;
+        }
     }
 }

@@ -1,9 +1,8 @@
 package com.eis.geoCalendar.app;
 
+
 import com.eis.geoCalendar.events.Event;
 import com.eis.geoCalendar.gps.GPSPosition;
-import com.eis.geoCalendar.timedEvents.DateTime;
-import com.eis.geoCalendar.timedEvents.TimedEvent;
 
 /**
  * Manager of timed events' implementation.

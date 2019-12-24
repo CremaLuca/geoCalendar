@@ -10,7 +10,7 @@ import com.eis.geoCalendar.gps.GPSPosition;
 import java.util.ArrayList;
 
 /**
- * This class manages all scheduled events.
+ * This class manages all generic events.
  *
  * @param <E> The generic timed event.
  * @author Francesco Bau'

@@ -2,8 +2,6 @@ package com.eis.geoCalendar.timedEvents;
 
 import com.eis.geoCalendar.events.Event;
 
-import java.time.LocalDateTime;
-
 /**
  * Represents an event with a timeout or a precise time.
  *
@@ -18,5 +16,5 @@ public interface TimedEvent<T> extends Event<T> {
     /**
      * @return The time of the event.
      */
-    LocalDateTime getTime();
+    DateTime getTime();
 }

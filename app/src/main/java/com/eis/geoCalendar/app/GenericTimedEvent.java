@@ -15,7 +15,8 @@ import com.eis.geoCalendar.timedEvents.TimedEvent;
  */
 public class GenericTimedEvent<T> extends GenericEvent<T> implements TimedEvent<T> {
 
-    protected DateTime time;
+    private DateTime time;
+
     /**
      * Main constructor, which acquires all details of the just created event.
      *
@@ -24,31 +25,17 @@ public class GenericTimedEvent<T> extends GenericEvent<T> implements TimedEvent<
      * @param time     The time/deadline of the event.
      */
     public GenericTimedEvent(GPSPosition position, T content, DateTime time) {
-        super(position,content);
+        super(position, content);
         this.time = time;
     }
 
     /**
      * @return the time/deadline of the event.
      */
+
     @Override
     public DateTime getTime() {
         return time;
     }
 
-    /**
-     * @return the content of the event.
-     */
-    @Override
-    public T getContent() {
-        return content;
-    }
-
-    /**
-     * @return the position of the event.
-     */
-    @Override
-    public GPSPosition getPosition() {
-        return position;
-    }
 }

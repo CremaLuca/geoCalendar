@@ -31,22 +31,22 @@ public class GenericTimedEventManagerTest {
     private static final GPSPosition DEFAULT_GPS_POSITION = new GPSPosition(33.12345675f, 15.22323232f);
     @Mock
     private TimedEvent<String> mockTimedEvent;
-    @Mock
-    private TimedEventDatabase<TimedEvent<String>> mockTimedEventDatabase = new MockTimedEventDatabase<TimedEvent<String>>();
+
+    private TimedEventDatabase<TimedEvent<String>> mockTimedEventDatabase;
 
     private GenericTimedEventManager<TimedEvent<String>> testTimedEventManager;
 
     @Before
     public void setUp() throws Exception {
         setupMockTimedEvent();
-
+        mockTimedEventDatabase = new MockTimedEventDatabase<>();
         testTimedEventManager = new GenericTimedEventManager<>(mockTimedEventDatabase);
         testTimedEventManager.addEvent(mockTimedEvent);
     }
 
     private void setupMockTimedEvent() {
         when(mockTimedEvent.getPosition()).thenReturn(DEFAULT_GPS_POSITION);
-        when(mockTimedEvent.getContent()).thenReturn(DEFAULT_CONTENT);
+        //when(mockTimedEvent.getContent()).thenReturn(DEFAULT_CONTENT);
         when(mockTimedEvent.getTime()).thenReturn(DEFAULT_DATETIME);
     }
 
@@ -89,7 +89,7 @@ public class GenericTimedEventManagerTest {
 
         ArrayList<E> events;
 
-        public MockTimedEventDatabase() {
+        MockTimedEventDatabase() {
             events = new ArrayList<>();
         }
 

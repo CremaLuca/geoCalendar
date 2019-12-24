@@ -109,7 +109,7 @@ public class GenericTimedEventManager<E extends TimedEvent> extends GenericEvent
 
     /**
      * @param p The position used to calculate the closest event.
-     * @return the closest event.
+     * @return the closest event if there is one, null otherwise.
      */
     @Override
     public E getClosestEvent(@NonNull GPSPosition p) {

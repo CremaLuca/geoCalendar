@@ -5,10 +5,11 @@ import com.eis.geoCalendar.timedEvents.DateTime;
 import com.eis.geoCalendar.timedEvents.TimedEvent;
 
 /**
- * Manager of timed events' implementation.
+ * Timed events' implementation.
  *
  * @param <T> Type of event.
- * @author Francesco Bau' helped by Luca Crema.
+ * @author Francesco Bau'
+ * @author Luca Crema
  * @version 1.0
  * @see com.eis.geoCalendar.events.EventManager
  * @since 23/12/2019

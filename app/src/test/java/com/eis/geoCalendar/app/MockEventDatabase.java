@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
 /**
  * Implementation of EventDatabase to use in tests
  */

@@ -5,10 +5,11 @@ import com.eis.geoCalendar.events.Event;
 import com.eis.geoCalendar.gps.GPSPosition;
 
 /**
- * Manager of timed events' implementation.
+ * Events' implementation.
  *
  * @param <T> Type of event.
  * @author Francesco Bau'
+ * @author Luca Crema
  * @version 1.0
  * @see com.eis.geoCalendar.events.EventManager
  * @since 24/12/2019

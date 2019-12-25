@@ -12,8 +12,9 @@ import java.util.ArrayList;
 /**
  * This class manages all scheduled events.
  *
- * @param <E> The generic timed event.
+ * @param <E> The generic event.
  * @author Francesco Bau'
+ * @author Luca Crema
  * @version 1.0
  * @see com.eis.geoCalendar.events.EventManager
  * @since 24/12/2019

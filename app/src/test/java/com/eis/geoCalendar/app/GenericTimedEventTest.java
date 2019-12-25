@@ -25,13 +25,4 @@ public class GenericTimedEventTest {
         Assert.assertEquals(testTimedEvent.getTime(), DEFAULT_DATETIME);
     }
 
-    @Test
-    public void getContent_constructorContent_isEquals() {
-        Assert.assertEquals(testTimedEvent.getContent(), DEFAULT_CONTENT);
-    }
-
-    @Test
-    public void getPosition_constructorGPSPosition_isEquals() {
-        Assert.assertEquals(testTimedEvent.getPosition(), DEFAULT_GPS_POSITION);
-    }
 }

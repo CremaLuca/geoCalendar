@@ -12,7 +12,7 @@ import java.util.Map;
  * @param <E> Event type.
  * @author Luca Crema
  * @version 1.0
- * @since 21/21/2019
+ * @since 21/12/2019
  */
 public interface EventDatabase<E extends Event> {
 

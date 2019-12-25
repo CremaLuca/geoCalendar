@@ -49,7 +49,7 @@ public interface EventManager<E extends Event> {
     E getClosestEvent(@NonNull final GPSPosition p);
 
     /**
-     * @return All the events the user has added and that hasn't been removed.
+     * @return All the events the user has added and that hasn't been removed yet.
      */
     ArrayList<E> getAllEvents();
 }

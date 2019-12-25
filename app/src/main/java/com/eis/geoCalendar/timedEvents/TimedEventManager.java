@@ -19,7 +19,7 @@ public interface TimedEventManager<E extends TimedEvent> extends EventManager<E>
      * Searches for all events that have a time earlier than the parameter time
      *
      * @param time The time upper bound.
-     * @return An {@link ArrayList} of events with time smaller than {@code time}.
+     * @return An {@link ArrayList} of events with time smaller than {@code time} if there is any, an empty array otherwise.
      */
     ArrayList<E> getEventsBeforeTime(DateTime time);
 
@@ -27,7 +27,7 @@ public interface TimedEventManager<E extends TimedEvent> extends EventManager<E>
      * Searches for all events that have a time earlier than the parameter time
      *
      * @param time The time lower bound.
-     * @return An {@link ArrayList} of events with time greater than {@code time}.
+     * @return An {@link ArrayList} of events with time greater than {@code time} if there is any, an empty array otherwise.
      */
     ArrayList<E> getEventsAfterTime(DateTime time);
 
@@ -36,7 +36,7 @@ public interface TimedEventManager<E extends TimedEvent> extends EventManager<E>
      *
      * @param beginTime The time lower bound.
      * @param endTime   The time upper bound.
-     * @return An {@link ArrayList} of events with time between {@code beginTime} and {@code endTime}.
+     * @return An {@link ArrayList} of events with time between {@code beginTime} and {@code endTime} if there is any, an empty array otherwise.
      */
     ArrayList<E> getEventsBetweenTime(DateTime beginTime, DateTime endTime);
 }

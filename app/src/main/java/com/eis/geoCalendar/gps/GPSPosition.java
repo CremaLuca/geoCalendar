@@ -1,29 +1,42 @@
 package com.eis.geoCalendar.gps;
 
+import android.location.Location;
+
 import androidx.annotation.NonNull;
 
 /**
  * Represents a position calculated with GPS latitude and longitude coordinates.
  * Adapter for {@link android.location.Location} class.
+ *
+ * @author someone from group 4
+ * @author Giorgia Bortoletti
  */
 public class GPSPosition {
 
-    public GPSPosition(float latitude, float longitude) {
-        //TODO: There can be more constructors
+    private Location position;
+
+    public GPSPosition(double latitude, double longitude) {
+        position = new Location("GPSPosition");
+        position.setLatitude(latitude);
+        position.setLongitude(longitude);
+    }
+
+    public GPSPosition(Location position){
+        this.position = position;
     }
 
     /**
      * @return The latitude position
      */
-    public float getLatitude() {
-        return 0;
+    public double getLatitude() {
+        return position.getLatitude();
     }
 
     /**
      * @return The longitude position
      */
-    public float getLongitude() {
-        return 0;
+    public double getLongitude() {
+        return position.getLongitude();
     }
 
     /**
@@ -31,6 +44,9 @@ public class GPSPosition {
      * @return The distance in meters from the given position.
      */
     public float getDistance(@NonNull final GPSPosition otherPosition) {
-        return 0;
+        float[] results = new float[1];
+
+        Location.distanceBetween(getLatitude(), getLongitude(), otherPosition.getLatitude(), otherPosition.getLongitude(), results);
+        return results[0];
     }
 }

@@ -1,7 +1,5 @@
 package com.eis.geoCalendar.network;
 
-import com.eis.geoCalendar.events.Event;
-
 /**
  * Listener for a store request in the network.
  *
@@ -9,7 +7,7 @@ import com.eis.geoCalendar.events.Event;
  * @author Luca Crema
  * @since 25/12/2019
  */
-public interface StoreEventListener<E extends Event> {
+public interface StoreEventListener<E extends NetworkEvent> {
 
     /**
      * Callback for event correctly stored in the network.

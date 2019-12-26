@@ -15,6 +15,6 @@ public interface NetworkEvent<T, U extends NetworkUser> extends Event<T> {
     /**
      * @return The user that stored this event in the network.
      */
-    U getUser();
+    U getOwner();
 
 }

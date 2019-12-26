@@ -2,21 +2,18 @@ package com.eis.geoCalendar.app.network;
 
 import androidx.annotation.NonNull;
 
-import com.eis.geoCalendar.app.GenericTimedEvent;
+import com.eis.geoCalendar.app.GenericEvent;
 import com.eis.geoCalendar.gps.GPSPosition;
+import com.eis.geoCalendar.network.NetworkEvent;
 import com.eis.geoCalendar.network.NetworkUser;
-import com.eis.geoCalendar.timedEvents.DateTime;
-import com.eis.geoCalendar.timedEvents.network.NetworkTimedEvent;
 
 /**
- * I tested the implementation to see which methods were given to implement and seems correct
- *
- * @param <T> The type of the content of the timedEvent.
+ * @param <T> The type of the content of the event.
  * @param <U> The type of user handled by the network.
  * @author Luca Crema
  * @since 25/12/2019
  */
-public class GenericNetworkTimedEvent<T, U extends NetworkUser> extends GenericTimedEvent<T> implements NetworkTimedEvent<T, U> {
+public class GenericNetworkEvent<T, U extends NetworkUser> extends GenericEvent<T> implements NetworkEvent<T, U> {
 
     protected U owner;
 
@@ -27,10 +24,11 @@ public class GenericNetworkTimedEvent<T, U extends NetworkUser> extends GenericT
      * @param content  The content of the event.
      * @param owner    The owner of the event.
      */
-    public GenericNetworkTimedEvent(@NonNull GPSPosition position, @NonNull T content, DateTime time, @NonNull U owner) {
-        super(position, content, time);
+    public GenericNetworkEvent(@NonNull GPSPosition position, @NonNull T content, @NonNull U owner) {
+        super(position, content);
         this.owner = owner;
     }
+
 
     /**
      * @return The user that stored this event in the network.

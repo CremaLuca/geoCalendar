@@ -2,7 +2,6 @@ package com.eis.geoCalendar.network;
 
 import androidx.annotation.NonNull;
 
-import com.eis.geoCalendar.events.Event;
 import com.eis.geoCalendar.gps.GPSPosition;
 
 import java.util.ArrayList;
@@ -14,14 +13,14 @@ import java.util.ArrayList;
  * @author Luca Crema
  * @since 25/12/2019
  */
-public interface EventNetwork<E extends Event> {
+public interface EventNetwork<E extends NetworkEvent> {
 
     /**
      * Store an event in the network
      *
      * @param event         The event to store.
-     * @param storeListener {@link StoreEventListener#onEventStored(Event)} will be called if the event is correctly stored,
-     *                      {@link StoreEventListener#onEventStoreFail(Event)} otherwise
+     * @param storeListener {@link StoreEventListener#onEventStored(NetworkEvent)} will be called if the event is correctly stored,
+     *                      {@link StoreEventListener#onEventStoreFail(NetworkEvent)} otherwise
      */
     void storeEvent(final @NonNull E event, final @NonNull StoreEventListener<E> storeListener);
 

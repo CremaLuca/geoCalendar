@@ -71,10 +71,10 @@ public class GenericEventManager<E extends Event> implements EventManager<E> {
     }
 
     /**
-     * Searches for the closest event to a given {@link GPSPosition}
+     * Searches for the closest event to a given {@link GPSPosition}.
      *
-     * @param centerPosition The position used to calculate the closest event
-     * @return The closest event to the given Position if there is one, {@code null} otherwise
+     * @param centerPosition The position used to calculate the closest event.
+     * @return The closest event to the given Position if there is one, {@code null} otherwise.
      */
     @Override
     public E getClosestEvent(@NonNull GPSPosition centerPosition) {

@@ -37,7 +37,8 @@ public class GenericTimedEventManager<E extends TimedEvent> extends GenericEvent
      */
     @Override
     public ArrayList<E> getEventsBeforeTime(DateTime time) {
-        return getEventsBetweenTime(new DateTime(0),time);
+        // Minimum date is 01/01/1970
+        return getEventsBetweenTime(DateTime.MIN_DATE,time);
     }
 
     /**
@@ -48,12 +49,7 @@ public class GenericTimedEventManager<E extends TimedEvent> extends GenericEvent
      */
     @Override
     public ArrayList<E> getEventsAfterTime(DateTime time) {
-        ArrayList<E> eventsList = new ArrayList<>();
-        for (E event : database.getSavedEvents()) {
-            if (event.getTime().after(time))
-                eventsList.add(event);
-        }
-        return eventsList;
+        return getEventsBetweenTime(time,DateTime.MAX_DATE);
     }
 
     /**

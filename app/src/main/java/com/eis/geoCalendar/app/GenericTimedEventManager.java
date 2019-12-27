@@ -37,7 +37,7 @@ public class GenericTimedEventManager<E extends TimedEvent> extends GenericEvent
      */
     @Override
     public ArrayList<E> getEventsBeforeTime(DateTime time) {
-        return getEventsBetweenTime(DateTime.MIN_DATE,time);
+        return getEventsBetweenTime(DateTime.MIN_DATE, time);
     }
 
     /**
@@ -48,7 +48,7 @@ public class GenericTimedEventManager<E extends TimedEvent> extends GenericEvent
      */
     @Override
     public ArrayList<E> getEventsAfterTime(DateTime time) {
-        return getEventsBetweenTime(time,DateTime.MAX_DATE);
+        return getEventsBetweenTime(time, DateTime.MAX_DATE);
     }
 
     /**
@@ -60,8 +60,9 @@ public class GenericTimedEventManager<E extends TimedEvent> extends GenericEvent
      * @throws IllegalArgumentException if beginTime is NOT before endTime
      */
     @Override
-    public ArrayList<E> getEventsBetweenTime(DateTime beginTime, DateTime endTime) throws IllegalArgumentException{
-        if(beginTime.after(endTime)) throw new IllegalArgumentException("beginTime must be before endTime.");
+    public ArrayList<E> getEventsBetweenTime(DateTime beginTime, DateTime endTime) throws IllegalArgumentException {
+        if (beginTime.after(endTime))
+            throw new IllegalArgumentException("beginTime must be before endTime.");
         ArrayList<E> eventsList = new ArrayList<>();
         for (E event : database.getSavedEvents()) {
             if (event.getTime().after(beginTime) && event.getTime().before(endTime))

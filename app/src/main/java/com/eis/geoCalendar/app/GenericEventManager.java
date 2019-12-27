@@ -56,8 +56,8 @@ public class GenericEventManager<E extends Event> implements EventManager<E> {
     /**
      * Searches for events in a given circle of gps positions.
      *
-     * @param centerPosition     The center of the circle of search.
-     * @param range The radius of the circe of search in meters.
+     * @param centerPosition The center of the circle of search.
+     * @param range          The radius of the circe of search in meters.
      * @return {@link ArrayList} of events in the given area. It's empty if there is none.
      */
     @Override

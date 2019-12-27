@@ -37,7 +37,6 @@ public class GenericTimedEventManager<E extends TimedEvent> extends GenericEvent
      */
     @Override
     public ArrayList<E> getEventsBeforeTime(DateTime time) {
-        // Minimum date is 01/01/1970
         return getEventsBetweenTime(DateTime.MIN_DATE,time);
     }
 

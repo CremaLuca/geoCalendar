@@ -46,6 +46,12 @@ public class GenericEventNetwork<E extends NetworkEvent, U extends NetworkEventU
         //Known problem of this method: If the event list gets updated between our get and our set the update in the middle will be discarded.
 
         networkManager.getResource(approximateGPSPosition(event.getPosition()), new GetResourceListener<GPSPosition, ArrayList<E>, FailReason>() {
+            /**
+             * Callback for received list of events
+             *
+             * @param requestedPosition    The position where the events were searched.
+             * @param alreadyPresentEvents The events located in that area.
+             */
             @Override
             public void onGetResource(GPSPosition requestedPosition, ArrayList<E> alreadyPresentEvents) {
                 alreadyPresentEvents.add(event);
@@ -64,6 +70,12 @@ public class GenericEventNetwork<E extends NetworkEvent, U extends NetworkEventU
                 });
             }
 
+            /**
+             * Callback for failed resource query.
+             *
+             * @param requestedPosition The position where the events were searched.
+             * @param reason The reason of the failed query.
+             */
             @Override
             public void onGetResourceFailed(GPSPosition requestedPosition, FailReason reason) {
                 storeListener.onEventStoreFail(event, FailReason.GENERIC_FAIL);

@@ -11,6 +11,8 @@ import java.util.Date;
  */
 public class DateTime extends Date {
 
+    protected static DateTime MIN_DATE = new DateTime(0);
+    protected static DateTime MAX_DATE = new DateTime(Long.MAX_VALUE);
     /**
      * Constructor of a date given a time in {@code long} format
      *

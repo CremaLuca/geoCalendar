@@ -57,9 +57,11 @@ public class GenericTimedEventManager<E extends TimedEvent> extends GenericEvent
      * @param beginTime The time lower bound.
      * @param endTime   The time upper bound.
      * @return An {@link ArrayList} of events with time between {@code beginTime} and {@code endTime} if there is any, an empty array otherwise.
+     * @throws IllegalArgumentException if beginTime is NOT before endTime
      */
     @Override
-    public ArrayList<E> getEventsBetweenTime(DateTime beginTime, DateTime endTime) {
+    public ArrayList<E> getEventsBetweenTime(DateTime beginTime, DateTime endTime) throws IllegalArgumentException{
+        if(beginTime.after(endTime)) throw new IllegalArgumentException("beginTime must be before endTime.");
         ArrayList<E> eventsList = new ArrayList<>();
         for (E event : database.getSavedEvents()) {
             if (event.getTime().after(beginTime) && event.getTime().before(endTime))

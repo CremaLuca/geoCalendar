@@ -32,5 +32,5 @@ public interface EventNetwork<E extends NetworkEvent> {
      *                          {@link GetEventListener#onGetEventFailed(GPSPosition)} otherwise
      * @param radius            The radius of the research in meters. Must be reasonably small.
      */
-    void getEvents(final @NonNull GPSPosition requestedPosition, final @NonNull GetEventListener<E> getListener, float radius);
+    void getEvents(final @NonNull GPSPosition requestedPosition, final @NonNull GetEventListener<E> getListener, double radius);
 }

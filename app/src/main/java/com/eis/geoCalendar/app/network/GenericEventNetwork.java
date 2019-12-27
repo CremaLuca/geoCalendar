@@ -52,7 +52,7 @@ public class GenericEventNetwork<E extends NetworkEvent> implements EventNetwork
      * @param radius            The radius of the research in meters. Must be reasonably small.
      */
     @Override
-    public void getEvents(@NonNull GPSPosition requestedPosition, @NonNull GetEventListener<E> getListener, float radius) {
+    public void getEvents(@NonNull GPSPosition requestedPosition, @NonNull GetEventListener<E> getListener, double radius) {
         //networkHandler.getFromKey(requestedPosition
     }
 
@@ -63,7 +63,7 @@ public class GenericEventNetwork<E extends NetworkEvent> implements EventNetwork
      * @param radius            The radius of the research.
      * @return An array of positions around the requestedPosition. Must contain at least one position.
      */
-    protected ArrayList<GPSPosition> getPositionsInRadius(GPSPosition requestedPosition, float radius) {
+    protected ArrayList<GPSPosition> getPositionsInRadius(GPSPosition requestedPosition, double radius) {
         return null;
     }
 
@@ -74,8 +74,8 @@ public class GenericEventNetwork<E extends NetworkEvent> implements EventNetwork
      * @return The approximated GPSPosition
      */
     protected GPSPosition approximateGPSPosition(GPSPosition position) {
-        float latitude = approximate(position.getLatitude());
-        float longitude = approximate(position.getLongitude());
+        double latitude = approximate(position.getLatitude());
+        double longitude = approximate(position.getLongitude());
         return new GPSPosition(latitude, longitude);
     }
 
@@ -85,9 +85,9 @@ public class GenericEventNetwork<E extends NetworkEvent> implements EventNetwork
      * @param value The value to approximate
      * @return The approximated value
      */
-    private float approximate(float value) {
+    private double approximate(double value) {
         int multiplier = 10 ^ NUMBER_OF_DECIMALS;
-        float halfValue = 1 / (2 * (10 ^ NUMBER_OF_DECIMALS - 1)); //Used to approximate 0.6 to 1 and not floor it to 0
+        double halfValue = 1 / (2 * (10 ^ NUMBER_OF_DECIMALS - 1)); //Used to approximate 0.6 to 1 and not floor it to 0
 
         //return ((int) ((value + 0.005f) * 1000)) / 1000;
         return ((int) ((value + halfValue) * multiplier)) / multiplier;

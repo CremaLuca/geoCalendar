@@ -45,7 +45,7 @@ public class GenericEventNetwork<E extends NetworkEvent, U extends NetworkEventU
         //This method has to get the current list of events for the position, adds the event and then sets the old list with the new event.
         //Known problem of this method: If the event list gets updated between our get and our set the update in the middle will be discarded.
 
-        networkManager.getResource(approximateGPSPosition(event.getPosition()), new GetEventListener<E>() {
+        networkManager.getResource(approximateGPSPosition(event.getPosition()), new GetResourceListener<GPSPosition, ArrayList<E>, FailReason>() {
             @Override
             public void onGetResource(GPSPosition requestedPosition, ArrayList<E> alreadyPresentEvents) {
                 alreadyPresentEvents.add(event);
@@ -76,8 +76,8 @@ public class GenericEventNetwork<E extends NetworkEvent, U extends NetworkEventU
      * Gets an ArrayList of events of a given position.
      *
      * @param requestedPosition The position to look for events.
-     * @param getListener       {@link GetEventListener#onGetResource(GPSPosition, ArrayList)} will be called if the search has been completed,
-     *                          {@link GetEventListener#onGetResourceFailed(GPSPosition, FailReason)} otherwise
+     * @param getListener       {@link GetEventListener#onGetEvents(GPSPosition, ArrayList)}  will be called if the search has been completed,
+     *                          {@link GetEventListener#onGetEventsFailed(GPSPosition, FailReason)} otherwise
      * @param radius            The radius of the research in meters. Must be reasonably small.
      */
     @Override
@@ -166,7 +166,7 @@ public class GenericEventNetwork<E extends NetworkEvent, U extends NetworkEventU
             eventsFound.addAll(value);
 
             if (positionsQueried.isEmpty())
-                listenerToCall.onGetResource(initialPosition, eventsFound);
+                listenerToCall.onGetEvents(initialPosition, eventsFound);
         }
 
         /**
@@ -178,7 +178,7 @@ public class GenericEventNetwork<E extends NetworkEvent, U extends NetworkEventU
         @Override
         public void onGetResourceFailed(GPSPosition key, FailReason reason) {
             if (listenerToCall != null) {
-                listenerToCall.onGetResourceFailed(initialPosition, reason);
+                listenerToCall.onGetEventsFailed(initialPosition, reason);
             }
             listenerToCall = null;  // So that it won't be called anymore if any other of the requests fails.
         }

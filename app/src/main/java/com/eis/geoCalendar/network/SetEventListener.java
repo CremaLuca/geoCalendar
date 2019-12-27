@@ -9,7 +9,7 @@ import com.eis.geoCalendar.gps.GPSPosition;
  *
  * @param <E> Type of events handled in the network.
  * @author Luca Crema
- * @since 25/12/2019
+ * @since 28/12/2019
  */
 public abstract class SetEventListener<E extends NetworkEvent> implements SetResourceListener<GPSPosition, E, FailReason> {
 
@@ -27,26 +27,4 @@ public abstract class SetEventListener<E extends NetworkEvent> implements SetRes
      * @param reason The reason why the store has failed.
      */
     public abstract void onEventStoreFail(E event, FailReason reason);
-
-    /**
-     * Trims callback parameters to have GPSPosition as key transparent to the user.
-     * @param key The position of the event.
-     * @param value The event.
-     */
-    @Override
-    public void onResourceSet(GPSPosition key, E value) {
-        onEventStored(value);
-    }
-
-    /**
-     * Trims callback parameters to have GPSPosition as key transparent to the user.
-     *
-     * @param key    The position of the event.
-     * @param value  The event.
-     * @param reason The reason why the set has failed.
-     */
-    @Override
-    public void onResourceSetFail(GPSPosition key, E value, FailReason reason) {
-        onEventStoreFail(value, reason);
-    }
 }

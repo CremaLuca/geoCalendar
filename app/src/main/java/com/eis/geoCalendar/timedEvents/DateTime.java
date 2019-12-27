@@ -6,10 +6,16 @@ import java.util.Date;
 /**
  * Class that represents a date. Adapter for {@link Date}
  *
- * @author Luca Crema
+ * @author Luca Crema feat. Francesco Bau'
  * @since 23/12/2019
  */
 public class DateTime extends Date {
+
+    // Minimum date is 01/01/1970. In this class it's impossible
+    // to go before that date.
+    // See class Date for further information.
+    public static DateTime MIN_DATE = new DateTime(0);
+    public static DateTime MAX_DATE = new DateTime(Long.MAX_VALUE);
 
     /**
      * Constructor of a date given a time in {@code long} format

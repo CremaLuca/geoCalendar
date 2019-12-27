@@ -11,7 +11,7 @@ import com.eis.geoCalendar.gps.GPSPosition;
  * @author Francesco Bau'
  * @author Luca Crema
  * @version 1.0
- * @see com.eis.geoCalendar.events.EventManager
+ * @see com.eis.geoCalendar.events.Event
  * @since 24/12/2019
  */
 public class GenericEvent<T> implements Event<T> {

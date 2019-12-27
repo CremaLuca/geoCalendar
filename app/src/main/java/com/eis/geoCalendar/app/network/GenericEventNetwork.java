@@ -1,6 +1,7 @@
 package com.eis.geoCalendar.app.network;
 
 import com.eis.communication.network.FailReason;
+import com.eis.communication.network.GetResourceListener;
 import com.eis.communication.network.SetResourceListener;
 import com.eis.geoCalendar.gps.GPSPosition;
 import com.eis.geoCalendar.network.EventNetwork;
@@ -82,8 +83,10 @@ public class GenericEventNetwork<E extends NetworkEvent, U extends NetworkEventU
     @Override
     public void getEvents(@NonNull GPSPosition requestedPosition, @NonNull GetEventListener<E> getListener, double radius) {
         ArrayList<GPSPosition> gpsPositions = getPositionsInRadius(requestedPosition, radius);
-
-        networkManager.getResource(approximateGPSPosition(requestedPosition), getListener);
+        GetEventsInternalListener eventsInternalListener = new GetEventsInternalListener(requestedPosition, gpsPositions, getListener);
+        for (GPSPosition position : gpsPositions) {
+            networkManager.getResource(approximateGPSPosition(position), eventsInternalListener);
+        }
     }
 
     /**
@@ -122,5 +125,62 @@ public class GenericEventNetwork<E extends NetworkEvent, U extends NetworkEventU
 
         //return ((int) ((value + 0.005f) * 1000)) / 1000;
         return ((int) ((value + halfValue) * multiplier)) / multiplier;
+    }
+
+    /**
+     * Waits for the response for every position queried and joins the results, then calls the listener when every query is completed.
+     *
+     * @author Luca Crema
+     * @since 28/12/2019
+     */
+    class GetEventsInternalListener implements GetResourceListener<GPSPosition, ArrayList<E>, FailReason> {
+
+        private GPSPosition initialPosition;
+        private ArrayList<GPSPosition> positionsQueried;
+        private GetEventListener<E> listenerToCall;
+        private ArrayList<E> eventsFound;
+
+        /**
+         * Default constructor.
+         *
+         * @param initialPosition  Where the research started, it's usually the center more or less.
+         * @param positionsQueried Position where the research was made.
+         * @param listenerToCall   The listener to be called once every position has been queried.
+         */
+        public GetEventsInternalListener(final @NonNull GPSPosition initialPosition, final @NonNull ArrayList<GPSPosition> positionsQueried, final @NonNull GetEventListener<E> listenerToCall) {
+            this.initialPosition = initialPosition;
+            this.positionsQueried = positionsQueried;
+            this.listenerToCall = listenerToCall;
+            this.eventsFound = new ArrayList<>();
+        }
+
+        /**
+         * Callback for correct resource retrieval. Must be called once for every position.
+         *
+         * @param key   The resource key.
+         * @param value The event list found.
+         */
+        @Override
+        public void onGetResource(@NonNull GPSPosition key, @NonNull ArrayList<E> value) {
+            positionsQueried.remove(key);
+            eventsFound.addAll(value);
+
+            if (positionsQueried.isEmpty())
+                listenerToCall.onGetResource(initialPosition, eventsFound);
+        }
+
+        /**
+         * Callback for failed resource retrieval.
+         *
+         * @param key    The resource key.
+         * @param reason The reason of the failed retrieval.
+         */
+        @Override
+        public void onGetResourceFailed(GPSPosition key, FailReason reason) {
+            if (listenerToCall != null) {
+                listenerToCall.onGetResourceFailed(initialPosition, reason);
+            }
+            listenerToCall = null;  // So that it won't be called anymore if any other of the requests fails.
+        }
     }
 }

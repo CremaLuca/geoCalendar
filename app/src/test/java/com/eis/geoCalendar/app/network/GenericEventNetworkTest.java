@@ -4,8 +4,9 @@ import android.location.Location;
 
 import com.eis.communication.Peer;
 import com.eis.geoCalendar.gps.GPSPosition;
+import com.eis.geoCalendar.network.EventNetworkManager;
 import com.eis.geoCalendar.network.NetworkEvent;
-import com.eis.geoCalendar.network.NetworkUser;
+import com.eis.geoCalendar.network.NetworkEventUser;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -21,18 +22,21 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class GenericEventNetworkTest {
 
-    private GenericEventNetwork<NetworkEvent<String, NetworkUser<Peer<String>>>> testNetwork;
+    private GenericEventNetwork<NetworkEvent<String, NetworkEventUser<Peer<String>>>, NetworkEventUser<Peer<String>>> testNetwork;
     @Mock
     private Location mockedLocation1;
+    @Mock
+    private EventNetworkManager<NetworkEvent<String, NetworkEventUser<Peer<String>>>, NetworkEventUser<Peer<String>>> eventNetworkManager;
 
 
     @Before
     public void setup() {
         setupMocks();
-        testNetwork = new GenericEventNetwork<>();
+        testNetwork = new GenericEventNetwork<>(eventNetworkManager);
     }
 
     private void setupMocks() {
+        //when(eventNetworkManager.getResurce(any(GPSPosition)));
     }
 
     @Test

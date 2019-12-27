@@ -1,11 +1,11 @@
 package com.eis.geoCalendar.app.network;
 
-import androidx.annotation.NonNull;
-
 import com.eis.geoCalendar.app.GenericEvent;
 import com.eis.geoCalendar.gps.GPSPosition;
 import com.eis.geoCalendar.network.NetworkEvent;
-import com.eis.geoCalendar.network.NetworkUser;
+import com.eis.geoCalendar.network.NetworkEventUser;
+
+import androidx.annotation.NonNull;
 
 /**
  * @param <T> The type of the content of the event.
@@ -13,7 +13,7 @@ import com.eis.geoCalendar.network.NetworkUser;
  * @author Luca Crema
  * @since 25/12/2019
  */
-public class GenericNetworkEvent<T, U extends NetworkUser> extends GenericEvent<T> implements NetworkEvent<T, U> {
+public class GenericNetworkEvent<T, U extends NetworkEventUser> extends GenericEvent<T> implements NetworkEvent<T, U> {
 
     protected U owner;
 

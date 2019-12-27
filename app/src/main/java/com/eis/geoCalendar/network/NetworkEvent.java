@@ -10,7 +10,7 @@ import com.eis.geoCalendar.events.Event;
  * @author Luca Crema
  * @since 25/12/2019
  */
-public interface NetworkEvent<T, U extends NetworkUser> extends Event<T> {
+public interface NetworkEvent<T, U extends NetworkEventUser> extends Event<T> {
 
     /**
      * @return The user that stored this event in the network.

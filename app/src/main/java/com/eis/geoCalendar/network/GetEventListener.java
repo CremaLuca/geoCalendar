@@ -1,7 +1,7 @@
 package com.eis.geoCalendar.network;
 
-import androidx.annotation.NonNull;
-
+import com.eis.communication.network.FailReason;
+import com.eis.communication.network.GetResourceListener;
 import com.eis.geoCalendar.gps.GPSPosition;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * @author Luca Crema
  * @since 25/12/2019
  */
-public interface GetEventListener<E extends NetworkEvent> {
+public abstract class GetEventListener<E extends NetworkEvent> implements GetResourceListener<GPSPosition, ArrayList<E>, FailReason> {
 
     /**
      * Callback for successful event research.
@@ -21,13 +21,15 @@ public interface GetEventListener<E extends NetworkEvent> {
      * @param requestedPosition The position where the research was made.
      * @param events            An {@link ArrayList} of events, it's empty if there are none.
      */
-    void onGetEvents(@NonNull GPSPosition requestedPosition, @NonNull ArrayList<E> events);
+    @Override
+    public abstract void onGetResource(GPSPosition requestedPosition, ArrayList<E> events);
 
     /**
      * Callback for failed event research
      *
      * @param requestedPosition The position where the research was made
+     * @param reason The reason for the failed resource retrieval.
      */
-    void onGetEventFailed(@NonNull GPSPosition requestedPosition /*, Reason failReason ?*/);
-
+    @Override
+    public abstract void onGetResourceFailed(GPSPosition requestedPosition, FailReason reason);
 }

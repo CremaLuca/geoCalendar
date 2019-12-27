@@ -1,12 +1,12 @@
 package com.eis.geoCalendar.app.network;
 
-import androidx.annotation.NonNull;
-
 import com.eis.geoCalendar.app.GenericTimedEvent;
 import com.eis.geoCalendar.gps.GPSPosition;
-import com.eis.geoCalendar.network.NetworkUser;
+import com.eis.geoCalendar.network.NetworkEventUser;
 import com.eis.geoCalendar.timedEvents.DateTime;
 import com.eis.geoCalendar.timedEvents.network.NetworkTimedEvent;
+
+import androidx.annotation.NonNull;
 
 /**
  * I tested the implementation to see which methods were given to implement and seems correct
@@ -16,7 +16,7 @@ import com.eis.geoCalendar.timedEvents.network.NetworkTimedEvent;
  * @author Luca Crema
  * @since 25/12/2019
  */
-public class GenericNetworkTimedEvent<T, U extends NetworkUser> extends GenericTimedEvent<T> implements NetworkTimedEvent<T, U> {
+public class GenericNetworkTimedEvent<T, U extends NetworkEventUser> extends GenericTimedEvent<T> implements NetworkTimedEvent<T, U> {
 
     protected U owner;
 

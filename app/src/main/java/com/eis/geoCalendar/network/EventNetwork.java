@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 /**
  * Used to store and get events in/from the network.
  *
- * @param <E> Events handled by this network.
+ * @param <E> Type of events handled by this network.
  * @author Luca Crema
  * @since 25/12/2019
  */

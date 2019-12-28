@@ -15,13 +15,24 @@ public class GPSPosition {
 
     protected Location mLocation;
 
+    /**
+     * Constructor that require {@code latitude} and {@code longitude} as params
+     *
+     * @param latitude  A double value which represent the latitude
+     * @param longitude A double value which represent the longitude
+     */
     public GPSPosition(double latitude, double longitude) {
         mLocation = new Location("GPSPosition");
         mLocation.setLatitude(latitude);
         mLocation.setLongitude(longitude);
     }
 
-    public GPSPosition(Location mLocation){
+    /**
+     * Constructor that required {@link Location} as param
+     *
+     * @param mLocation The {@link Location} obj
+     */
+    public GPSPosition(Location mLocation) {
         this.mLocation = mLocation;
     }
 
@@ -48,17 +59,18 @@ public class GPSPosition {
     }
 
     /**
-     * @param obj the reference object with which to compare.
+     * @param obj       the reference object with which to compare.
      * @param precision the precision in meters within which the positions remain equal.
      * @return true if this object is equal to obj argument in the precision argument range, false otherwise.
      */
-    public boolean equals(@NonNull Object obj, double precision){
-        if(obj == null || !(obj instanceof GPSPosition))
+    public boolean equals(@NonNull Object obj, double precision) {
+        if (obj == null || !(obj instanceof GPSPosition))
             return false;
-        if(obj == this)
+        if (obj == this)
             return true;
-        if(this.getDistance((GPSPosition) obj) <= precision)
+        if (this.getDistance((GPSPosition) obj) <= precision)
             return true;
+        //Should not reach this return
         return false;
     }
 
@@ -67,7 +79,7 @@ public class GPSPosition {
      * @return true if this object is the same as the obj argument, false otherwise.
      */
     @Override
-    public boolean equals(@NonNull Object obj){
+    public boolean equals(@NonNull Object obj) {
         return equals(obj, 0);
     }
 }

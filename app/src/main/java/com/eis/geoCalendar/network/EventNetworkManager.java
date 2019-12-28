@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 /**
  * Defines which types must be used to implement a {@link NetworkManager} in order to use it in a {@link EventNetwork}.
+ * The main use of this interface is to reduce the amount of variable types.
  *
  * @param <E> Type of events handled by the network.
  * @param <U> Type of users of the network.

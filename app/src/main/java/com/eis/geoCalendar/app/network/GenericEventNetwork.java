@@ -44,10 +44,11 @@ public class GenericEventNetwork<E extends NetworkEvent, U extends NetworkEventU
     public void storeEvent(@NonNull final E event, @NonNull final SetEventListener<E> storeListener) {
         //This method has to get the current list of events for the position, adds the event and then sets the old list with the new event.
         //Known problem of this method: If the event list gets updated between our get and our set the update in the middle will be discarded.
+        //Also specifications for inline listeners might not be the very best thing in the world, but they make the code clearer.
 
         networkManager.getResource(approximateGPSPosition(event.getPosition()), new GetResourceListener<GPSPosition, ArrayList<E>, FailReason>() {
             /**
-             * Callback for received list of events
+             * Callback for received list of events.
              *
              * @param requestedPosition    The position where the events were searched.
              * @param alreadyPresentEvents The events located in that area.
@@ -85,7 +86,7 @@ public class GenericEventNetwork<E extends NetworkEvent, U extends NetworkEventU
     }
 
     /**
-     * Gets an ArrayList of events of a given position.
+     * Gets an ArrayList of events of a given position and radius.
      *
      * @param requestedPosition The position to look for events.
      * @param getListener       {@link GetEventListener#onGetEvents(GPSPosition, ArrayList)}  will be called if the search has been completed,
@@ -94,6 +95,8 @@ public class GenericEventNetwork<E extends NetworkEvent, U extends NetworkEventU
      */
     @Override
     public void getEvents(@NonNull GPSPosition requestedPosition, @NonNull GetEventListener<E> getListener, double radius) {
+        //This method gets every "discrete" position in the given radius and queries the network for everyone of it,
+        //then the EventsInternalListener will join the results and call the listener once every position is queried.
         ArrayList<GPSPosition> gpsPositions = getPositionsInRadius(requestedPosition, radius);
         GetEventsInternalListener eventsInternalListener = new GetEventsInternalListener(requestedPosition, gpsPositions, getListener);
         for (GPSPosition position : gpsPositions) {
@@ -110,7 +113,9 @@ public class GenericEventNetwork<E extends NetworkEvent, U extends NetworkEventU
      */
     protected ArrayList<GPSPosition> getPositionsInRadius(GPSPosition requestedPosition, double radius) {
         //TODO : This is way more complex than it looks, I need a lot of time to think about a good algorithm for this method.
-        return null;
+        ArrayList<GPSPosition> positionsInRadius = new ArrayList<>();
+        positionsInRadius.add(requestedPosition);
+        return positionsInRadius;
     }
 
     /**
@@ -135,12 +140,13 @@ public class GenericEventNetwork<E extends NetworkEvent, U extends NetworkEventU
         int multiplier = 10 ^ GPS_DECIMAL_APPROX_POSITIONS;
         double halfValue = 1 / (2 * (10 ^ GPS_DECIMAL_APPROX_POSITIONS - 1)); //Used to approximate 0.6 to 1 and not floor it to 0
 
-        //return ((int) ((value + 0.005f) * 1000)) / 1000;
+        //eg. return ((int) ((value + 0.005f) * 1000)) / 1000;
         return ((int) ((value + halfValue) * multiplier)) / multiplier;
     }
 
     /**
-     * Waits for the response for every position queried and joins the results, then calls the listener when every query is completed.
+     * Waits for the response for every position queried in {@link #getEvents(GPSPosition, GetEventListener, double)} and joins the results,
+     * then calls the {@link GetEventListener} when every query is completed or if it has failed.
      *
      * @author Luca Crema
      * @since 28/12/2019

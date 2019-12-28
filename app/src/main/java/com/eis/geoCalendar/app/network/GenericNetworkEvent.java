@@ -15,6 +15,9 @@ import androidx.annotation.NonNull;
  */
 public class GenericNetworkEvent<T, U extends NetworkEventUser> extends GenericEvent<T> implements NetworkEvent<T, U> {
 
+    /**
+     * Who inserted the event in the network.
+     */
     protected U owner;
 
     /**

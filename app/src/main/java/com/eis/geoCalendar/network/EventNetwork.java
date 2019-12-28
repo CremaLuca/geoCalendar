@@ -29,8 +29,8 @@ public interface EventNetwork<E extends NetworkEvent> {
      * Gets an ArrayList of events of a given position.
      *
      * @param requestedPosition The position to look for events.
-     * @param getListener       {@link GetEventListener#onGetResource(GPSPosition, ArrayList)} will be called if the search has been completed,
-     *                          {@link GetEventListener#onGetResourceFailed(GPSPosition, FailReason)} otherwise
+     * @param getListener       {@link GetEventListener#onGetEvents(GPSPosition, ArrayList)} will be called if the search has been completed,
+     *                          {@link GetEventListener#onGetEventsFailed(GPSPosition, FailReason)} otherwise
      * @param radius            The radius of the research in meters. Must be reasonably small.
      */
     void getEvents(final @NonNull GPSPosition requestedPosition, final @NonNull GetEventListener<E> getListener, double radius);

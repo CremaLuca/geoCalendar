@@ -13,40 +13,61 @@ import androidx.annotation.NonNull;
  */
 public class GPSPosition {
 
-    private Location position;
+    protected Location mLocation;
 
     public GPSPosition(double latitude, double longitude) {
-        position = new Location("GPSPosition");
-        position.setLatitude(latitude);
-        position.setLongitude(longitude);
+        mLocation = new Location("GPSPosition");
+        mLocation.setLatitude(latitude);
+        mLocation.setLongitude(longitude);
     }
 
-    public GPSPosition(Location position){
-        this.position = position;
+    public GPSPosition(Location mLocation){
+        this.mLocation = mLocation;
     }
 
     /**
      * @return The latitude position
      */
     public double getLatitude() {
-        return position.getLatitude();
+        return mLocation.getLatitude();
     }
 
     /**
      * @return The longitude position
      */
     public double getLongitude() {
-        return position.getLongitude();
+        return mLocation.getLongitude();
     }
 
     /**
      * @param otherPosition A position to calculate the distance from
      * @return The distance in meters from the given position.
      */
-    public float getDistance(@NonNull final GPSPosition otherPosition) {
-        float[] results = new float[1];
+    public double getDistance(@NonNull final GPSPosition otherPosition) {
+        return mLocation.distanceTo(otherPosition.mLocation);
+    }
 
-        Location.distanceBetween(getLatitude(), getLongitude(), otherPosition.getLatitude(), otherPosition.getLongitude(), results);
-        return results[0];
+    /**
+     * @param obj the reference object with which to compare.
+     * @param precision the precision in meters within which the positions remain equal.
+     * @return true if this object is equal to obj argument in the precision argument range, false otherwise.
+     */
+    public boolean equals(@NonNull Object obj, double precision){
+        if(obj == null || !(obj instanceof GPSPosition))
+            return false;
+        if(obj == this)
+            return true;
+        if(this.getDistance((GPSPosition) obj) <= precision)
+            return true;
+        return false;
+    }
+
+    /**
+     * @param obj the reference object with which to compare.
+     * @return true if this object is the same as the obj argument, false otherwise.
+     */
+    @Override
+    public boolean equals(@NonNull Object obj){
+        return equals(obj, 0);
     }
 }

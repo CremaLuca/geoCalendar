@@ -61,12 +61,12 @@ public class GenericEventNetwork<E extends NetworkEvent, U extends NetworkEventU
                     // to make sure the event he added is now stored correctly or it's not.
                     @Override
                     public void onResourceSet(GPSPosition key, ArrayList<E> value) {
-                        storeListener.onResourceSet(key, event);
+                        storeListener.onEventStored(event);
                     }
 
                     @Override
                     public void onResourceSetFail(GPSPosition key, ArrayList<E> value, FailReason reason) {
-                        storeListener.onResourceSetFail(key, event, reason);
+                        storeListener.onEventStoreFail(event, reason);
                     }
                 });
             }

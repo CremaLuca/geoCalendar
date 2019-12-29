@@ -79,7 +79,7 @@ public class GenericEventNetwork<E extends NetworkEvent, U extends NetworkEventU
              */
             @Override
             public void onGetResourceFailed(GPSPosition requestedPosition, FailReason reason) {
-                storeListener.onEventStoreFail(event, FailReason.GENERIC_FAIL);
+                storeListener.onEventStoreFail(event, reason);
             }
         });
 
@@ -91,7 +91,8 @@ public class GenericEventNetwork<E extends NetworkEvent, U extends NetworkEventU
      * @param requestedPosition The position to look for events.
      * @param getListener       {@link GetEventListener#onGetEvents(GPSPosition, ArrayList)}  will be called if the search has been completed,
      *                          {@link GetEventListener#onGetEventsFailed(GPSPosition, FailReason)} otherwise
-     * @param radius            The radius of the research in meters. Must be reasonably small.
+     * @param radius            The radius of the research in meters. Must be reasonably small: the number of queries made by this method is proportionally inverse to the
+     *                          size of the area that groups events in the network.
      */
     @Override
     public void getEvents(@NonNull GPSPosition requestedPosition, @NonNull GetEventListener<E> getListener, double radius) {

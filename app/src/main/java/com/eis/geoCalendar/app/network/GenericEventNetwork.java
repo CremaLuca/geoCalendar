@@ -99,7 +99,7 @@ public class GenericEventNetwork<E extends NetworkEvent, U extends NetworkEventU
         //This method gets every "discrete" position in the given radius and queries the network for everyone of it,
         //then the EventsInternalListener will join the results and call the listener once every position is queried.
         ArrayList<GPSPosition> gpsPositions = getPositionsInRadius(requestedPosition, radius);
-        GetEventsInternalListener eventsInternalListener = new GetEventsInternalListener(requestedPosition, gpsPositions, getListener);
+        GetEventsInternalListener eventsInternalListener = new GetEventsInternalListener(requestedPosition, gpsPositions, radius, getListener);
         for (GPSPosition position : gpsPositions) {
             networkManager.getResource(approximateGPSPosition(position), eventsInternalListener);
         }
@@ -158,35 +158,51 @@ public class GenericEventNetwork<E extends NetworkEvent, U extends NetworkEventU
         private ArrayList<GPSPosition> positionsQueried;
         private GetEventListener<E> listenerToCall;
         private ArrayList<E> eventsFound;
+        private double requestedRadius;
 
         /**
          * Default constructor.
          *
          * @param initialPosition  Where the research started, it's usually the center more or less.
          * @param positionsQueried Position where the research was made.
+         * @param radius Radius of the research, used to filter events that might be outside of it because of the shape of the network area.
          * @param listenerToCall   The listener to be called once every position has been queried.
          */
-        public GetEventsInternalListener(final @NonNull GPSPosition initialPosition, final @NonNull ArrayList<GPSPosition> positionsQueried, final @NonNull GetEventListener<E> listenerToCall) {
+        public GetEventsInternalListener(final @NonNull GPSPosition initialPosition, final @NonNull ArrayList<GPSPosition> positionsQueried, double radius, final @NonNull GetEventListener<E> listenerToCall) {
             this.initialPosition = initialPosition;
             this.positionsQueried = positionsQueried;
             this.listenerToCall = listenerToCall;
             this.eventsFound = new ArrayList<>();
+            this.requestedRadius = radius;
         }
 
         /**
          * Callback for correct resource retrieval. Must be called once for every position.
          *
          * @param key   The resource key.
-         * @param value The event list found.
+         * @param eventsInArea The event list found.
          */
         @Override
-        public void onGetResource(@NonNull GPSPosition key, @NonNull ArrayList<E> value) {
+        public void onGetResource(@NonNull GPSPosition key, @NonNull ArrayList<E> eventsInArea) {
             positionsQueried.remove(key);
-            eventsFound.addAll(value);
+            eventsFound.addAll(eventsInArea);
 
             if (positionsQueried.isEmpty())
-                listenerToCall.onGetEvents(initialPosition, eventsFound);
+                onEveryPositionQueried();
         }
+
+        /**
+         * Method called when every position has been queried so we can call the listener that requested the events.
+         */
+        private void onEveryPositionQueried() {
+            //Remove the events outside of the radius: if our area is 1 km and we look for events in 500mt we query one single area and then remove the events outside of 500mt.
+            for (E event : eventsFound) {
+                if (event.getPosition().getDistance(initialPosition) > requestedRadius)
+                    eventsFound.remove(event);
+            }
+            listenerToCall.onGetEvents(initialPosition, eventsFound);
+        }
+
 
         /**
          * Callback for failed resource retrieval.

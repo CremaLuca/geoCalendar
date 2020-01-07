@@ -1,5 +1,8 @@
 package com.eis.geoCalendar.app.network;
 
+import androidx.annotation.NonNull;
+
+import com.eis.communication.Peer;
 import com.eis.communication.network.FailReason;
 import com.eis.communication.network.GetResourceListener;
 import com.eis.communication.network.SetResourceListener;
@@ -13,23 +16,23 @@ import com.eis.geoCalendar.network.SetEventListener;
 
 import java.util.ArrayList;
 
-import androidx.annotation.NonNull;
-
 /**
  * @param <E> The type of network events handled.
+ * @param <P> The type of addresses used by the network.
+ * @param <U> The type of users used by the event network.
  * @author Luca Crema
  * @since 25/12/2019
  */
-public class GenericEventNetwork<E extends NetworkEvent, U extends NetworkEventUser> implements EventNetwork<E> {
+public class GenericEventNetwork<E extends NetworkEvent, P extends Peer, U extends NetworkEventUser<P>> implements EventNetwork<E> {
 
     /**
      * Decimals to use when approximating a position when calculating its "network position"
      */
     protected static final int GPS_DECIMAL_APPROX_POSITIONS = 3;
 
-    private EventNetworkManager<E, U> networkManager;
+    private EventNetworkManager<E, P> networkManager;
 
-    public GenericEventNetwork(EventNetworkManager<E, U> networkManager) {
+    public GenericEventNetwork(EventNetworkManager<E, P> networkManager) {
         this.networkManager = networkManager;
     }
 

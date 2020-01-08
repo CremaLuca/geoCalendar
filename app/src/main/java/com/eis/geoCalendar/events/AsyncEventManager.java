@@ -1,12 +1,9 @@
-package com.eis.geoCalendar.network;
+package com.eis.geoCalendar.events;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.eis.geoCalendar.gps.GPSPosition;
-import com.eis.geoCalendar.network.eventlistener.AddEventListener;
-import com.eis.geoCalendar.network.eventlistener.GetEventListener;
-import com.eis.geoCalendar.network.eventlistener.RemoveEventListener;
 
 import java.util.ArrayList;
 
@@ -16,7 +13,7 @@ import java.util.ArrayList;
  * @author Luca Crema
  * @since 08/01/2020
  */
-public interface NetworkEventManager<E extends NetworkEvent, EFR extends EventFailReason> {
+public interface AsyncEventManager<E extends Event, EFR extends EventFailReason> {
 
     /**
      * Searches for events in a given circle of gps positions.

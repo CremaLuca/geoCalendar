@@ -1,9 +1,9 @@
-package com.eis.geoCalendar.network;
+package com.eis.geoCalendar.events;
 
 import androidx.annotation.NonNull;
 
 /**
- * TypeSafe enumeration of possible reasons why a request in {@link NetworkEventManager} has failed.
+ * TypeSafe enumeration of possible reasons why a request in {@link AsyncEventManager} has failed.
  *
  * @author Luca Crema
  * @since 08/01/2020

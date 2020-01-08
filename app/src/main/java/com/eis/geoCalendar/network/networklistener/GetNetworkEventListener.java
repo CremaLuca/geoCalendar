@@ -1,9 +1,10 @@
-package com.eis.geoCalendar.network;
+package com.eis.geoCalendar.network.networklistener;
 
 import androidx.annotation.NonNull;
 
 import com.eis.communication.network.FailReason;
 import com.eis.geoCalendar.gps.GPSPosition;
+import com.eis.geoCalendar.network.NetworkEvent;
 
 import java.util.ArrayList;
 
@@ -14,7 +15,7 @@ import java.util.ArrayList;
  * @author Luca Crema
  * @since 28/12/2019
  */
-public interface GetEventListener<E extends NetworkEvent> {
+public interface GetNetworkEventListener<E extends NetworkEvent> {
 
     /**
      * Callback for successful event research.

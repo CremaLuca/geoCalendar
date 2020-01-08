@@ -11,10 +11,10 @@ import com.eis.communication.network.SetResourceListener;
 import com.eis.geoCalendar.gps.GPSPosition;
 import com.eis.geoCalendar.network.EventNetwork;
 import com.eis.geoCalendar.network.EventNetworkManager;
-import com.eis.geoCalendar.network.GetEventListener;
 import com.eis.geoCalendar.network.NetworkEvent;
-import com.eis.geoCalendar.network.RemoveEventListener;
-import com.eis.geoCalendar.network.SetEventListener;
+import com.eis.geoCalendar.network.networklistener.GetNetworkEventListener;
+import com.eis.geoCalendar.network.networklistener.RemoveNetworkEventListener;
+import com.eis.geoCalendar.network.networklistener.SetNetworkEventListener;
 
 import java.util.ArrayList;
 
@@ -35,6 +35,9 @@ public class GenericEventNetwork<E extends NetworkEvent, P extends Peer> impleme
 
     private EventNetworkManager<E, P> networkManager;
 
+    /**
+     * @param networkManager A NetworkManager for events. The user must belong to an existing network already.
+     */
     public GenericEventNetwork(EventNetworkManager<E, P> networkManager) {
         this.networkManager = networkManager;
     }
@@ -43,11 +46,11 @@ public class GenericEventNetwork<E extends NetworkEvent, P extends Peer> impleme
      * Store an event in the network
      *
      * @param event         The event to store.
-     * @param storeListener {@link SetEventListener#onEventStored(E)} will be called if the event is correctly stored,
-     *                      {@link SetEventListener#onEventStoreFail(E, FailReason)} otherwise
+     * @param storeListener {@link SetNetworkEventListener#onEventStored(E)} will be called if the event is correctly stored,
+     *                      {@link SetNetworkEventListener#onEventStoreFail(E, FailReason)} otherwise
      */
     @Override
-    public void storeEvent(@NonNull final E event, @Nullable final SetEventListener<E> storeListener) {
+    public void storeEvent(@NonNull final E event, @Nullable final SetNetworkEventListener<E> storeListener) {
         //This method has to get the current list of events for the position, adds the event and then sets the old list with the new event.
         //Known problem of this method: If the event list gets updated between our get and our set the update in the middle will be discarded.
         //Also specifications for inline listeners might not be the very best thing in the world, but they make the code clearer.
@@ -98,13 +101,13 @@ public class GenericEventNetwork<E extends NetworkEvent, P extends Peer> impleme
      * Gets an ArrayList of events of a given position and radius.
      *
      * @param requestedPosition The position to look for events.
-     * @param getListener       {@link GetEventListener#onGetEvents(GPSPosition, ArrayList)}  will be called if the search has been completed,
-     *                          {@link GetEventListener#onGetEventsFailed(GPSPosition, FailReason)} otherwise
+     * @param getListener       {@link GetNetworkEventListener#onGetEvents(GPSPosition, ArrayList)}  will be called if the search has been completed,
+     *                          {@link GetNetworkEventListener#onGetEventsFailed(GPSPosition, FailReason)} otherwise
      * @param radius            The radius of the research in meters. Must be reasonably small: the number of queries made by this method is proportionally inverse to the
      *                          size of the area that groups events in the network.
      */
     @Override
-    public void getEvents(final @NonNull GPSPosition requestedPosition, final @NonNull GetEventListener<E> getListener, final double radius) {
+    public void getEvents(final @NonNull GPSPosition requestedPosition, final @NonNull GetNetworkEventListener<E> getListener, final double radius) {
         //This method gets every "discrete" position in the given radius and queries the network for everyone of it,
         //then the EventsInternalListener will join the results and call the listener once every position is queried.
         ArrayList<GPSPosition> gpsPositions = getPositionsInRadius(requestedPosition, radius);
@@ -118,10 +121,10 @@ public class GenericEventNetwork<E extends NetworkEvent, P extends Peer> impleme
      * Removes an event from the network.
      *
      * @param event          The event to remove.
-     * @param removeListener {@link RemoveEventListener#onEventRemoved(NetworkEvent)} is be called if the event is correctly removed,
+     * @param removeListener {@link RemoveNetworkEventListener#onEventRemoved(NetworkEvent)} is be called if the event is correctly removed,
      */
     @Override
-    public void removeEvent(final @NonNull E event, final @Nullable RemoveEventListener<E> removeListener) {
+    public void removeEvent(final @NonNull E event, final @Nullable RemoveNetworkEventListener<E> removeListener) {
         //This method has to get the current list of events for the position, removes one and then updates the key value.
         //If the array is empty it removes the key-value pair
         networkManager.getResource(approximateGPSPosition(event.getPosition()), new GetResourceListener<GPSPosition, ArrayList<E>, FailReason>() {
@@ -216,8 +219,8 @@ public class GenericEventNetwork<E extends NetworkEvent, P extends Peer> impleme
     }
 
     /**
-     * Waits for the response for every position queried in {@link #getEvents(GPSPosition, GetEventListener, double)} and joins the results,
-     * then calls the {@link GetEventListener} when every query is completed or if it has failed.
+     * Waits for the response for every position queried in {@link #getEvents(GPSPosition, GetNetworkEventListener, double)} and joins the results,
+     * then calls the {@link GetNetworkEventListener} when every query is completed or if it has failed.
      *
      * @author Luca Crema
      * @since 28/12/2019
@@ -226,7 +229,7 @@ public class GenericEventNetwork<E extends NetworkEvent, P extends Peer> impleme
 
         private GPSPosition initialPosition;
         private ArrayList<GPSPosition> positionsQueried;
-        private GetEventListener<E> listenerToCall;
+        private GetNetworkEventListener<E> listenerToCall;
         private ArrayList<E> eventsFound;
         private double requestedRadius;
 
@@ -238,7 +241,7 @@ public class GenericEventNetwork<E extends NetworkEvent, P extends Peer> impleme
          * @param radius           Radius of the research, used to filter events that might be outside of it because of the shape of the network area.
          * @param listenerToCall   The listener to be called once every position has been queried.
          */
-        public GetEventsInternalListener(final @NonNull GPSPosition initialPosition, final @NonNull ArrayList<GPSPosition> positionsQueried, double radius, final @NonNull GetEventListener<E> listenerToCall) {
+        public GetEventsInternalListener(final @NonNull GPSPosition initialPosition, final @NonNull ArrayList<GPSPosition> positionsQueried, double radius, final @NonNull GetNetworkEventListener<E> listenerToCall) {
             this.initialPosition = initialPosition;
             this.positionsQueried = positionsQueried;
             this.listenerToCall = listenerToCall;

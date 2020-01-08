@@ -1,8 +1,9 @@
-package com.eis.geoCalendar.network;
+package com.eis.geoCalendar.network.networklistener;
 
 import androidx.annotation.NonNull;
 
 import com.eis.communication.network.FailReason;
+import com.eis.geoCalendar.network.NetworkEvent;
 
 /**
  * Callback for a store request.
@@ -11,7 +12,7 @@ import com.eis.communication.network.FailReason;
  * @author Luca Crema
  * @since 28/12/2019
  */
-public interface SetEventListener<E extends NetworkEvent> {
+public interface SetNetworkEventListener<E extends NetworkEvent> {
 
     /**
      * Callback for event correctly stored in the network.

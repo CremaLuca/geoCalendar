@@ -11,19 +11,19 @@ import com.eis.geoCalendar.network.EventNetwork;
 import com.eis.geoCalendar.network.EventNetworkManager;
 import com.eis.geoCalendar.network.GetEventListener;
 import com.eis.geoCalendar.network.NetworkEvent;
-import com.eis.geoCalendar.network.NetworkEventUser;
 import com.eis.geoCalendar.network.SetEventListener;
 
 import java.util.ArrayList;
 
 /**
+ * Restrictions: this class only uses {@link FailReason} to operate with the network.
+ *
  * @param <E> The type of network events handled.
  * @param <P> The type of addresses used by the network.
- * @param <U> The type of users used by the event network.
  * @author Luca Crema
  * @since 25/12/2019
  */
-public class GenericEventNetwork<E extends NetworkEvent, P extends Peer, U extends NetworkEventUser<P>> implements EventNetwork<E> {
+public class GenericEventNetwork<E extends NetworkEvent, P extends Peer> implements EventNetwork<E> {
 
     /**
      * Decimals to use when approximating a position when calculating its "network position"
@@ -41,7 +41,7 @@ public class GenericEventNetwork<E extends NetworkEvent, P extends Peer, U exten
      *
      * @param event         The event to store.
      * @param storeListener {@link SetEventListener#onEventStored(E)} will be called if the event is correctly stored,
-     *                      {@link SetEventListener#onEventStoreFail(E, com.eis.communication.network.FailReason)} otherwise
+     *                      {@link SetEventListener#onEventStoreFail(E, FailReason)} otherwise
      */
     @Override
     public void storeEvent(@NonNull final E event, @NonNull final SetEventListener<E> storeListener) {
@@ -168,7 +168,7 @@ public class GenericEventNetwork<E extends NetworkEvent, P extends Peer, U exten
          *
          * @param initialPosition  Where the research started, it's usually the center more or less.
          * @param positionsQueried Position where the research was made.
-         * @param radius Radius of the research, used to filter events that might be outside of it because of the shape of the network area.
+         * @param radius           Radius of the research, used to filter events that might be outside of it because of the shape of the network area.
          * @param listenerToCall   The listener to be called once every position has been queried.
          */
         public GetEventsInternalListener(final @NonNull GPSPosition initialPosition, final @NonNull ArrayList<GPSPosition> positionsQueried, double radius, final @NonNull GetEventListener<E> listenerToCall) {
@@ -182,7 +182,7 @@ public class GenericEventNetwork<E extends NetworkEvent, P extends Peer, U exten
         /**
          * Callback for correct resource retrieval. Must be called once for every position.
          *
-         * @param key   The resource key.
+         * @param key          The resource key.
          * @param eventsInArea The event list found.
          */
         @Override

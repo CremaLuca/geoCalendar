@@ -22,11 +22,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class GenericEventNetworkTest {
 
-    private GenericEventNetwork<NetworkEvent<String, NetworkEventUser<Peer<String>>>, NetworkEventUser<Peer<String>>> testNetwork;
+    private GenericEventNetwork<NetworkEvent<String, NetworkEventUser<Peer<String>>>, Peer<String>> testNetwork;
     @Mock
     private Location mockedLocation1;
     @Mock
-    private EventNetworkManager<NetworkEvent<String, NetworkEventUser<Peer<String>>>, NetworkEventUser<Peer<String>>> eventNetworkManager;
+    private EventNetworkManager<NetworkEvent<String, NetworkEventUser<Peer<String>>>, Peer<String>> eventNetworkManager;
 
 
     @Before

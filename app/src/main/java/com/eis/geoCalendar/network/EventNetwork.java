@@ -5,9 +5,6 @@ import androidx.annotation.Nullable;
 
 import com.eis.communication.network.FailReason;
 import com.eis.geoCalendar.gps.GPSPosition;
-import com.eis.geoCalendar.network.networklistener.GetNetworkEventListener;
-import com.eis.geoCalendar.network.networklistener.RemoveNetworkEventListener;
-import com.eis.geoCalendar.network.networklistener.SetNetworkEventListener;
 
 import java.util.ArrayList;
 

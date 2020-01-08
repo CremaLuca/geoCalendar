@@ -11,10 +11,10 @@ import com.eis.communication.network.SetResourceListener;
 import com.eis.geoCalendar.gps.GPSPosition;
 import com.eis.geoCalendar.network.EventNetwork;
 import com.eis.geoCalendar.network.EventNetworkManager;
+import com.eis.geoCalendar.network.GetNetworkEventListener;
 import com.eis.geoCalendar.network.NetworkEvent;
-import com.eis.geoCalendar.network.networklistener.GetNetworkEventListener;
-import com.eis.geoCalendar.network.networklistener.RemoveNetworkEventListener;
-import com.eis.geoCalendar.network.networklistener.SetNetworkEventListener;
+import com.eis.geoCalendar.network.RemoveNetworkEventListener;
+import com.eis.geoCalendar.network.SetNetworkEventListener;
 
 import java.util.ArrayList;
 

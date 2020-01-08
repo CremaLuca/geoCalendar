@@ -1,9 +1,8 @@
-package com.eis.geoCalendar.network.networklistener;
+package com.eis.geoCalendar.network;
 
 import androidx.annotation.NonNull;
 
 import com.eis.communication.network.FailReason;
-import com.eis.geoCalendar.network.NetworkEvent;
 
 /**
  * Callback for a remove event request.

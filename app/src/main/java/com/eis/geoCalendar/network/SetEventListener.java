@@ -1,9 +1,11 @@
 package com.eis.geoCalendar.network;
 
+import androidx.annotation.NonNull;
+
 import com.eis.communication.network.FailReason;
 
 /**
- * Listener for a store request in the network.
+ * Callback for a store request.
  *
  * @param <E> Type of events handled in the network.
  * @author Luca Crema
@@ -16,7 +18,7 @@ public interface SetEventListener<E extends NetworkEvent> {
      *
      * @param event The stored event.
      */
-    void onEventStored(E event);
+    void onEventStored(@NonNull E event);
 
     /**
      * Callback for event store failed.
@@ -24,5 +26,5 @@ public interface SetEventListener<E extends NetworkEvent> {
      * @param event  The event that failed the store.
      * @param reason The reason why the store has failed.
      */
-    void onEventStoreFail(E event, FailReason reason);
+    void onEventStoreFail(@NonNull E event, @NonNull FailReason reason);
 }

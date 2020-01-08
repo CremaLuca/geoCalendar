@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * @author Luca Crema
  * @since 08/01/2020
  */
-public interface GetEventListener<E extends Event, EFR extends EventFailReason> {
+public interface GetEventListener<E extends Event> {
 
     void onGetEvents(GPSPosition position, ArrayList<E> events);
 

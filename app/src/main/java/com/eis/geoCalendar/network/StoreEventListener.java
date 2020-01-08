@@ -11,7 +11,7 @@ import com.eis.communication.network.FailReason;
  * @author Luca Crema
  * @since 28/12/2019
  */
-public interface SetNetworkEventListener<E extends NetworkEvent> {
+public interface StoreEventListener<E extends NetworkEvent> {
 
     /**
      * Callback for event correctly stored in the network.

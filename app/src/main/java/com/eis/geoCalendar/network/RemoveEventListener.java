@@ -10,7 +10,7 @@ import com.eis.communication.network.FailReason;
  * @author Luca Crema
  * @since 08/01/2020
  */
-public interface RemoveNetworkEventListener<E extends NetworkEvent> {
+public interface RemoveEventListener<E extends NetworkEvent> {
 
     /**
      * Callback for event correctly removed from the network.

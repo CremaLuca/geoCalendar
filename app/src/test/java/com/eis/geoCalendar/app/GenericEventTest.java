@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 public class GenericEventTest {
 
     private static String DEFAULT_CONTENT = "Content";
-    private static GPSPosition DEFAULT_POSITION = new GPSPosition(22.333332f, 13.323333f);
+    private static GPSPosition DEFAULT_POSITION = new GPSPosition().updateLocation(22.333332f, 13.323333f);
     private GenericEvent<String> testTimedEvent;
 
     @Before

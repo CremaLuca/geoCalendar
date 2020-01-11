@@ -13,18 +13,12 @@ import androidx.annotation.NonNull;
  */
 public class GPSPosition {
 
-    protected Location mLocation;
+    Location mLocation = new Location("GPSPosition");
 
     /**
-     * Constructor that require {@code latitude} and {@code longitude} as params
-     *
-     * @param latitude  A double value which represent the latitude
-     * @param longitude A double value which represent the longitude
+     * Default constructor
      */
-    public GPSPosition(double latitude, double longitude) {
-        mLocation = new Location("GPSPosition");
-        mLocation.setLatitude(latitude);
-        mLocation.setLongitude(longitude);
+    public GPSPosition() {
     }
 
     /**
@@ -34,6 +28,19 @@ public class GPSPosition {
      */
     public GPSPosition(Location mLocation) {
         this.mLocation = mLocation;
+    }
+
+    /**
+     * Method used to update or set the location coordinates for this {@link GPSPosition} object
+     *
+     * @param latitude
+     * @param longitude
+     * @return the {@link GPSPosition} object updates
+     */
+    public GPSPosition updateLocation(double latitude, double longitude) {
+        this.mLocation.setLatitude(latitude);
+        this.mLocation.setLongitude(longitude);
+        return this;
     }
 
     /**

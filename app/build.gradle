@@ -30,4 +30,8 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:2.7.22'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    testImplementation group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
+    testImplementation group: 'org.powermock', name: 'powermock-module-junit4', version: '2.0.4'
+    testImplementation group: 'org.powermock', name: 'powermock-api-easymock', version: '2.0.4'
+    testImplementation group: 'org.powermock', name: 'powermock-api-mockito2', version: '2.0.4'
 }

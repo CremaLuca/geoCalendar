@@ -1,0 +1,23 @@
+<resources>
+    <!--
+
+    To get one, follow this link, follow the directions and press "Create" at the end:
+
+    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=81:73:69:89:D0:4A:75:3D:53:F7:F4:D9:B5:D0:0A:CF:1B:D6:69:3E%3Bcom.eis.geoCalendar.demo
+
+    You can also add your credentials to an existing key, using these values:
+
+    Package name:
+    81:73:69:89:D0:4A:75:3D:53:F7:F4:D9:B5:D0:0A:CF:1B:D6:69:3E
+
+    SHA-1 certificate fingerprint:
+    81:73:69:89:D0:4A:75:3D:53:F7:F4:D9:B5:D0:0A:CF:1B:D6:69:3E
+
+    Alternatively, follow the directions here:
+    https://developers.google.com/maps/documentation/android/start#get-key
+
+    Once you have your key (it starts with "AIza"), replace the "google_maps_key"
+    string in this file.
+    -->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyB1pFPV49_xnQ8djN_9F31fiDnt4FqZaL0</string>
+</resources>

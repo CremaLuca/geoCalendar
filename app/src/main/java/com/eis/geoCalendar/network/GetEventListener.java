@@ -5,6 +5,8 @@ import com.eis.geoCalendar.gps.GPSPosition;
 
 import java.util.ArrayList;
 
+import androidx.annotation.NonNull;
+
 /**
  * Listener for get requests from the network.
  *
@@ -20,7 +22,7 @@ public interface GetEventListener<E extends NetworkEvent> {
      * @param requestedPosition The position where the research was made.
      * @param events            An {@link ArrayList} of events, it's empty if there are none.
      */
-    void onGetEvents(GPSPosition requestedPosition, ArrayList<E> events);
+    void onGetEvents(@NonNull GPSPosition requestedPosition, @NonNull ArrayList<E> events);
 
     /**
      * Callback for failed event research
@@ -28,5 +30,5 @@ public interface GetEventListener<E extends NetworkEvent> {
      * @param requestedPosition The position where the research was made
      * @param reason            The reason for the failed resource retrieval.
      */
-    void onGetEventsFailed(GPSPosition requestedPosition, FailReason reason);
+    void onGetEventsFailed(@NonNull GPSPosition requestedPosition, @NonNull FailReason reason);
 }

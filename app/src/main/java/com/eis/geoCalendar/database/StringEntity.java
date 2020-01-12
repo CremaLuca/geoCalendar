@@ -16,7 +16,7 @@ import androidx.room.PrimaryKey;
 class StringEntity {
 
     @Ignore
-    public static final String DEFAULT_NAME = "table";
+    public static final String DEFAULT_NAME = "main_table";
     @Ignore
     public static final String KEY_COLUMN_NAME = "key";
     @Ignore

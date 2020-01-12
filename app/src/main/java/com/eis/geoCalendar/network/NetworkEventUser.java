@@ -1,7 +1,6 @@
 package com.eis.geoCalendar.network;
 
 import com.eis.communication.Peer;
-import com.eis.communication.network.NetworkUser;
 
 /**
  * Represents a user that has joined the network and is able to read and add events.
@@ -10,7 +9,12 @@ import com.eis.communication.network.NetworkUser;
  * @author Luca Crema
  * @since 25/12/2019
  */
-public interface NetworkEventUser<P extends Peer> extends NetworkUser<P> {
+public interface NetworkEventUser<P extends Peer> {
+
+    /**
+     * @return The user's peer address.
+     */
+    P getPeer();
 
     /**
      * @return The user's username.

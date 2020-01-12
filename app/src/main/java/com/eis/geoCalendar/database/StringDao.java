@@ -7,7 +7,6 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * {@code Dao} providing the operations required by
@@ -23,6 +22,7 @@ public abstract class StringDao {
 
     /**
      * Inserts a single {@link StringEntity}.
+     *
      * @param entity A StringEntity.
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -30,6 +30,7 @@ public abstract class StringDao {
 
     /**
      * Inserts multiple {@link StringEntity}.
+     *
      * @param entities Some {@code StringEntities}.
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -37,6 +38,7 @@ public abstract class StringDao {
 
     /**
      * Deletes a single {@link StringEntity}.
+     *
      * @param entity A StringEntity.
      */
     @Delete
@@ -44,6 +46,7 @@ public abstract class StringDao {
 
     /**
      * Deletes multiple {@link StringEntity}.
+     *
      * @param entities Some {@code StringEntities}.
      */
     @Delete
@@ -51,6 +54,7 @@ public abstract class StringDao {
 
     /**
      * Returns all rows in the table.
+     *
      * @return An array containing all Entities in the table.
      */
     @Query(SELECT_ALL_QUERY)

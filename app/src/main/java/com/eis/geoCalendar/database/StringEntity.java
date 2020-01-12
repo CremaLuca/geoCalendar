@@ -62,6 +62,7 @@ class StringEntity {
 
     /**
      * Sets a new value for the key.
+     *
      * @param newKey The new key for this Entity.
      */
     public void setKey(long newKey) {
@@ -77,6 +78,7 @@ class StringEntity {
 
     /**
      * Sets a new value for the key.
+     *
      * @param newValue The new key for this Entity.
      */
     public void setValue(String newValue) {

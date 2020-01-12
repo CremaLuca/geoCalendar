@@ -44,7 +44,7 @@ public interface EventDatabase<E extends Event> {
      * @param events The list of events.
      * @return A map that associates to every event if it was present and has been removed or not.
      */
-    Map<E,Boolean> removeEvents(@NonNull final Collection<E> events);
+    Map<E, Boolean> removeEvents(@NonNull final Collection<E> events);
 
     /**
      * Retrieves all saved events from memory.

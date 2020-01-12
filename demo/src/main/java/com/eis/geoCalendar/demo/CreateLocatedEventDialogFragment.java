@@ -17,7 +17,7 @@ import com.google.android.gms.maps.model.LatLng;
  * <p>
  * This class defines a DialogFragment to Create a Located Event with Description defined by user
  */
-class CreateLocatedEventDialogFragment extends DialogFragment {
+public class CreateLocatedEventDialogFragment extends DialogFragment {
     private ResultEventListener resultListener;
     private LatLng latLng;
 
@@ -28,7 +28,8 @@ class CreateLocatedEventDialogFragment extends DialogFragment {
      * @param savedInstanceState System parameter
      * @return An AlertDialog object defined for creating a located event
      */
-    public Dialog onCreateDialog(@NonNull Bundle savedInstanceState) {
+    @NonNull
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
         Builder builder = new Builder(getActivity());
         builder.setTitle(R.string.LocatedEventDialogTitle); //defined in strings.xml
 
@@ -42,7 +43,7 @@ class CreateLocatedEventDialogFragment extends DialogFragment {
         builder.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked OK button
-                if (input.getText() != null) {
+                if (input.getText() != null && input.getText().length() > 0) {
                     resultListener.onEventReturn(latLng, input.getText().toString());
                 }
                 //Does nothing

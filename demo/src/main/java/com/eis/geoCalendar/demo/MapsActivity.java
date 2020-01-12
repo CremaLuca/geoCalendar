@@ -26,7 +26,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private EventManager<Event<String>> eventManager;
     private static final String CREATE_EVENT_DIALOG_TAG = "createEventDialog";
-    private static final int MAX_CHAR_LABEL = 15;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +89,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //eventManager.addEvent(new GenericEvent<String>(eventPos, description));
 
-        mMap.addMarker(new MarkerOptions().position(pos).title(description.substring(0, MAX_CHAR_LABEL) + ".."));
+        mMap.addMarker(new MarkerOptions().position(pos).title(description)); //automatically cuts if too long
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
     }
 }

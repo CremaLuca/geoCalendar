@@ -14,30 +14,33 @@ import androidx.annotation.Nullable;
  */
 public class GPSPosition {
 
-    private Location position;
+    private static final String LOCATION_PROVIDER = "com.eis.geoCalendar.gps.GPSPosition";
+
+    private double latitude;
+    private double longitude;
 
     public GPSPosition(double latitude, double longitude) {
-        position = new Location("GPSPosition");
-        position.setLatitude(latitude);
-        position.setLongitude(longitude);
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public GPSPosition(Location position){
-        this.position = position;
+        this.latitude = position.getLatitude();
+        this.longitude = position.getLongitude();
     }
 
     /**
      * @return The latitude position
      */
     public double getLatitude() {
-        return position.getLatitude();
+        return latitude;
     }
 
     /**
      * @return The longitude position
      */
     public double getLongitude() {
-        return position.getLongitude();
+        return longitude;
     }
 
     /**
@@ -46,7 +49,6 @@ public class GPSPosition {
      */
     public float getDistance(@NonNull final GPSPosition otherPosition) {
         float[] results = new float[1];
-
         Location.distanceBetween(getLatitude(), getLongitude(), otherPosition.getLatitude(), otherPosition.getLongitude(), results);
         return results[0];
     }
@@ -56,6 +58,7 @@ public class GPSPosition {
         if(!(obj instanceof GPSPosition))
             return false;
         GPSPosition other = (GPSPosition) obj;
-        return this.position.equals(other.position);
+        return getLatitude() == other.getLatitude()
+                && getLongitude() == other.getLongitude();
     }
 }

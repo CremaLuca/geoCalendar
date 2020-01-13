@@ -39,7 +39,7 @@ public class JsonEventParserTest<E extends Event> {
      */
     private static class ExamplePOJO {
         public String publicField = "I'm public";
-        private String privateField = "I'm protected";
+        private String privateField = "I'm private";
         protected String protectedField = "I'm protected";
 
         @Override
@@ -95,8 +95,6 @@ public class JsonEventParserTest<E extends Event> {
         this.eventParser = new JsonEventParser<>(eventType);
         this.eventType = eventType;
         this.simpleEvent = simpleEvent;
-        System.out.println(simpleEvent.getContent());
-        System.out.println(simpleEvent.getPosition().getLatitude() + " " + simpleEvent.getPosition().getLongitude());
         this.complexEvent = complexEvent;
     }
 
@@ -119,15 +117,15 @@ public class JsonEventParserTest<E extends Event> {
     public void aSimpleEventIsCorrectlyParsed() {
         String data = eventParser.eventToData(simpleEvent);
         E event = eventParser.dataToEvent(data);
-        System.out.println(simpleEvent.getContent());
-        System.out.println(event.getPosition().getLatitude() + " " + event.getPosition().getLongitude());
         assertEquals(event, simpleEvent);
     }
 
     @Test
     public void aComplexEventIsCorrectlyParsed() {
         String data = eventParser.eventToData(complexEvent);
+        System.out.println(data);
         E event = eventParser.dataToEvent(data);
+        System.out.println(event.getContent());
         assertEquals(event, complexEvent);
     }
 }

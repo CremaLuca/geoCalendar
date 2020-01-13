@@ -19,8 +19,8 @@ import static org.junit.Assert.assertTrue;
 /**
  * Parameterized tests for JsonEventParser.
  *
- * @param <E>
- * @// FIXME: 13/01/2020 Due to trouble with Location mocking, these tests cannot currently work.
+ * @param <E> Event type, needed for parser and TypeToken in order to parameterize the Test on
+ *           the Event class.
  */
 @RunWith(Parameterized.class)
 public class JsonEventParserTest<T, E extends Event<T>> {
@@ -79,13 +79,13 @@ public class JsonEventParserTest<T, E extends Event<T>> {
         };
         TypeToken<GenericEvent<ExamplePOJO>> complexToken =
                 new TypeToken<GenericEvent<ExamplePOJO>>() {
-        };
+                };
         TypeToken<GenericTimedEvent<String>> simpleTimedToken =
                 new TypeToken<GenericTimedEvent<String>>() {
-        };
+                };
         TypeToken<GenericTimedEvent<ExamplePOJO>> complexTimedToken =
                 new TypeToken<GenericTimedEvent<ExamplePOJO>>() {
-        };
+                };
         Object[][] params = {
                 {GenericEvent.class.getSimpleName(), simpleToken, simpleGenericEvent},
                 {GenericEvent.class.getSimpleName(), complexToken, complexGenericEvent},

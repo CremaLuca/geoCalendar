@@ -17,7 +17,6 @@ public class CurrentPositionEventsRetriever<E extends NetworkEvent> {
     CurrentPositionEventsRetriever(GenericNetworkedEventManager eventManager, GetEventListener<E> listener, float precision) {
     }
 
-    ;
 
     /**
      * //TODO
@@ -25,7 +24,6 @@ public class CurrentPositionEventsRetriever<E extends NetworkEvent> {
     void startEventRetrieval() {
     }
 
-    ;
 
     /**
      * //TODO
@@ -33,7 +31,5 @@ public class CurrentPositionEventsRetriever<E extends NetworkEvent> {
     void stopEventRetrieval() {
     }
 
-    ;
-
-
+    
 }

@@ -6,7 +6,7 @@ import com.eis.geoCalendar.gps.GPSPosition;
  * Callback for a position retrieving
  *
  * @author Alessandra Tonin
- * @since 13/01/19
+ * @since 13/01/2020
  */
 public interface PositionSourceListener {
     /**

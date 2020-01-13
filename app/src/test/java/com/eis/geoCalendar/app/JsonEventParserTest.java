@@ -17,7 +17,6 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * Parameterized tests for JsonEventParser.
- * @// FIXME: 13/01/2020 Due to trouble with Location mocking, these tests cannot currently work.
  *
  * @param <E>
  */

@@ -1,5 +1,6 @@
 package com.eis.geoCalendar.app;
 
+import android.location.Location;
 import android.util.ArrayMap;
 
 import androidx.annotation.Nullable;
@@ -24,13 +25,49 @@ import static org.junit.Assert.assertTrue;
  * Parameterized tests for JsonEventParser.
  * @param <E>
  */
-@RunWith(ParameterizedRobolectricTestRunner.class)
+@RunWith(Parameterized.class)
 public class JsonEventParserTest<E extends Event> {
+
+    private static final String exampleContent = "Hello World!";
+    private static final ExamplePOJO exampleComplexContent = new ExamplePOJO();
+    private static final GPSPosition examplePosition = new GPSPosition(new MockLocation(100.0, 50.0));
+    private static final DateTime exampleDateTime = DateTime.now();
 
     private JsonEventParser<E> eventParser;
     private Class<E> eventType;
     private E simpleEvent;
     private E complexEvent;
+
+    /**
+     * A small class to mock methods for {@link android.location.Location}
+     */
+    private static class MockLocation extends Location {
+        private double latitude;
+        private double longitude;
+        public MockLocation(double latitude, double longitude){
+            super("MockLocation.class");
+            this.latitude = latitude;
+            this.longitude = longitude;
+        }
+
+        @Override
+        public double getLatitude() {
+            return latitude;
+        }
+
+        @Override
+        public double getLongitude() {
+            return longitude;
+        }
+
+        @Override
+        public boolean equals(@Nullable Object obj) {
+            if(!(obj instanceof MockLocation))
+                return false;
+            MockLocation other = (MockLocation) obj;
+            return this.latitude == other.latitude && this.longitude == other.longitude;
+        }
+    }
 
     /**
      * Just a class to mimic a complex Pojo to be stored as nested data in the parsed Json.
@@ -53,12 +90,8 @@ public class JsonEventParserTest<E extends Event> {
         }
     }
 
-    @ParameterizedRobolectricTestRunner.Parameters(name = "{index}: {1}")
+    @Parameterized.Parameters(name = "{index}: {1}")
     public static Object[][] params() {
-        String exampleContent = "Hello World!";
-        ExamplePOJO exampleComplexContent = new ExamplePOJO();
-        GPSPosition examplePosition = new GPSPosition(100.0, 100.0);
-        DateTime exampleDateTime = DateTime.now();
         GenericEvent<?> simpleGenericEvent = new GenericEvent<>(
                 examplePosition,
                 exampleContent
@@ -96,6 +129,8 @@ public class JsonEventParserTest<E extends Event> {
         this.eventParser = new JsonEventParser<>(eventType);
         this.eventType = eventType;
         this.simpleEvent = simpleEvent;
+        System.out.println(simpleEvent.getContent());
+        System.out.println(simpleEvent.getPosition().getLatitude() + " " + simpleEvent.getPosition().getLongitude());
         this.complexEvent = complexEvent;
     }
 
@@ -118,6 +153,8 @@ public class JsonEventParserTest<E extends Event> {
     public void aSimpleEventIsCorrectlyParsed() {
         String data = eventParser.eventToData(simpleEvent);
         E event = eventParser.dataToEvent(data);
+        System.out.println(simpleEvent.getContent());
+        System.out.println(event.getPosition().getLatitude() + " " + event.getPosition().getLongitude());
         assertEquals(event, simpleEvent);
     }
 

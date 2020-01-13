@@ -3,6 +3,7 @@ package com.eis.geoCalendar.gps;
 import android.location.Location;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Represents a position calculated with GPS latitude and longitude coordinates.
@@ -48,5 +49,13 @@ public class GPSPosition {
 
         Location.distanceBetween(getLatitude(), getLongitude(), otherPosition.getLatitude(), otherPosition.getLongitude(), results);
         return results[0];
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if(!(obj instanceof GPSPosition))
+            return false;
+        GPSPosition other = (GPSPosition) obj;
+        return this.position.equals(other.position);
     }
 }

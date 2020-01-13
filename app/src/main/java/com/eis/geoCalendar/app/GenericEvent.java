@@ -1,6 +1,8 @@
 package com.eis.geoCalendar.app;
 
 
+import androidx.annotation.Nullable;
+
 import com.eis.geoCalendar.events.Event;
 import com.eis.geoCalendar.gps.GPSPosition;
 
@@ -44,5 +46,18 @@ public class GenericEvent<T> implements Event<T> {
     @Override
     public GPSPosition getPosition() {
         return position;
+    }
+
+    /**
+     * Method to check whether two instances of {@link GenericEvent} are equal or not.
+     * @param obj The other Object to compare.
+     * @return {@code true} if the two objects are equal, {@code false} otherwise.
+     */
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if(!(obj instanceof GenericEvent))
+            return false;
+        GenericEvent other = (GenericEvent) obj;
+        return this.position.equals(other.position) && this.content.equals(other.content);
     }
 }

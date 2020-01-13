@@ -23,7 +23,7 @@ import static org.junit.Assert.assertTrue;
  * @// FIXME: 13/01/2020 Due to trouble with Location mocking, these tests cannot currently work.
  */
 @RunWith(Parameterized.class)
-public class JsonEventParserTest<E extends Event> {
+public class JsonEventParserTest<T, E extends Event<T>> {
 
     private static final String exampleContent = "Hello World!";
     private static final ExamplePOJO exampleComplexContent = new ExamplePOJO();
@@ -57,20 +57,20 @@ public class JsonEventParserTest<E extends Event> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Object[][] params() {
-        GenericEvent<?> simpleGenericEvent = new GenericEvent<>(
+        GenericEvent<String> simpleGenericEvent = new GenericEvent<>(
                 examplePosition,
                 exampleContent
         );
-        GenericEvent<?> complexGenericEvent = new GenericEvent<>(
+        GenericEvent<ExamplePOJO> complexGenericEvent = new GenericEvent<>(
                 examplePosition,
                 exampleComplexContent
         );
-        GenericTimedEvent<?> simpleGenericTimedEvent = new GenericTimedEvent<>(
+        GenericTimedEvent<String> simpleGenericTimedEvent = new GenericTimedEvent<>(
                 examplePosition,
                 exampleContent,
                 exampleDateTime
         );
-        GenericTimedEvent<?> complexGenericTimedEvent = new GenericTimedEvent<>(
+        GenericTimedEvent<ExamplePOJO> complexGenericTimedEvent = new GenericTimedEvent<>(
                 examplePosition,
                 exampleComplexContent,
                 exampleDateTime

@@ -63,8 +63,7 @@ public class JsonEventParser<E extends Event> implements EventParser<E, String> 
     @Override
     public boolean isEventParsable(E event) {
         //Any Object can be parsed into a Json with Gson.
-        //If this object was correctly instantiated, the following check will always be true.
-        return (TypeToken.get(event.getClass()).equals(eventType));
+        return true;
     }
 
     /**

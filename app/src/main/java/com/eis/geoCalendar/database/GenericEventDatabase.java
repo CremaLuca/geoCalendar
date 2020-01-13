@@ -92,18 +92,28 @@ public class GenericEventDatabase<E extends Event> implements EventDatabase<E> {
      * Saves an event in memory.
      *
      * @param event The event.
+     * @return {@code true} if the event was parsable and has been saved, {@code false} otherwise.
      */
-    public void saveEvent(@NonNull final E event) {
-
+    public boolean saveEvent(@NonNull final E event) {
+        if(!parser.isEventParsable(event))
+            return false;
+        String dataFromEvent = parser.eventToData(event);
+        physicalDatabase.access().insertEntity(new StringEntity(dataFromEvent));
+        return contains(event);
     }
 
     /**
      * Saves a list of events in memory.
      *
      * @param events The list of events.
+     * @return {@code true} if events were parsable and have been saved, {@code false} otherwise.
      */
-    public void saveEvents(@NonNull final Collection<E> events) {
-
+    public boolean saveEvents(@NonNull final Collection<E> events) {
+        for(E event : events){
+            if(!saveEvent(event))
+                return false;
+        }
+        return true;
     }
 
     /**
@@ -115,7 +125,9 @@ public class GenericEventDatabase<E extends Event> implements EventDatabase<E> {
      * @return {@code true} if the event was present and has been removed, {@code false} otherwise.
      */
     public boolean removeEvent(@NonNull final E event) {
-        return false;
+        String dataFromEvent = parser.eventToData(event);
+        physicalDatabase.access().deleteEntity(new StringEntity(dataFromEvent));
+        return !contains(event);
     }
 
     /**
@@ -127,7 +139,11 @@ public class GenericEventDatabase<E extends Event> implements EventDatabase<E> {
      * @return A map that associates to every event if it was present and has been removed or not.
      */
     public Map<E, Boolean> removeEvents(@NonNull final Collection<E> events) {
-        return null;
+        Map<E, Boolean> removedEvents = new ArrayMap<>();
+        for(E event : events){
+            removedEvents.put(event, removeEvent(event));
+        }
+        return removedEvents;
     }
 
     /**
@@ -138,6 +154,25 @@ public class GenericEventDatabase<E extends Event> implements EventDatabase<E> {
      * @return An {@link ArrayList} of saved events.
      */
     public ArrayList<E> getSavedEvents() {
-        return null;
+        StringEntity[] allStringEntities = physicalDatabase.access().getAllEntities();
+        ArrayList<E> listEvents = new ArrayList<>();
+        for(StringEntity stringEntity : allStringEntities)
+            listEvents.add(parser.dataToEvent(stringEntity.getValue()));
+        return listEvents;
+    }
+
+    /**
+     * Retrieves presence of event.
+     *
+     * @param event The event to find.
+     * @return {@code true} if the event is parsable and present, {@code false} otherwise.
+     */
+    public boolean contains(@NonNull final E event){
+        if(!parser.isEventParsable(event))
+            return false;
+        String dataFromEvent = parser.eventToData(event);
+        if(physicalDatabase.access().getCountWhere(dataFromEvent) >= 1)
+            return true;
+        return false;
     }
 }

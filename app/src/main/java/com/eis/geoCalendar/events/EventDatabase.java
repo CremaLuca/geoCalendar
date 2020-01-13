@@ -20,15 +20,17 @@ public interface EventDatabase<E extends Event> {
      * Saves an event in memory.
      *
      * @param event The event.
+     * @return {@code true} if the event was parsable and has been saved, {@code false} otherwise.
      */
-    void saveEvent(@NonNull final E event);
+    boolean saveEvent(@NonNull final E event);
 
     /**
      * Saves a list of events in memory.
      *
      * @param events The list of events.
+     * @return {@code true} if events were parsable and have been saved, {@code false} otherwise.
      */
-    void saveEvents(@NonNull final Collection<E> events);
+    boolean saveEvents(@NonNull final Collection<E> events);
 
     /**
      * Removes an event from memory.
@@ -52,4 +54,12 @@ public interface EventDatabase<E extends Event> {
      * @return An {@link ArrayList} of saved events.
      */
     ArrayList<E> getSavedEvents();
+
+    /**
+     * Retrieves presence of event.
+     *
+     * @param event The event to find.
+     * @return {@code true} if the event is parsable and present, {@code false} otherwise.
+     */
+    boolean contains(@NonNull final E event);
 }

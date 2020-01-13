@@ -19,6 +19,7 @@ public abstract class StringDao {
 
     private static final String TABLE_NAME = StringEntity.DEFAULT_NAME;
     private static final String SELECT_ALL_QUERY = "SELECT * FROM " + TABLE_NAME;
+    private static final String SELECT_COUNT_ALL_QUERY = "SELECT COUNT(*) FROM " + TABLE_NAME;
 
     /**
      * Inserts a single {@link StringEntity}.
@@ -42,7 +43,7 @@ public abstract class StringDao {
      * @param entity A StringEntity.
      */
     @Delete
-    public abstract int deleteEntity(StringEntity entity);
+    public abstract void deleteEntity(StringEntity entity);
 
     /**
      * Deletes multiple {@link StringEntity}.
@@ -50,7 +51,7 @@ public abstract class StringDao {
      * @param entities Some {@code StringEntities}.
      */
     @Delete
-    public abstract int deleteEntities(Collection<StringEntity> entities);
+    public abstract void deleteEntities(Collection<StringEntity> entities);
 
     /**
      * Returns all rows in the table.
@@ -59,5 +60,14 @@ public abstract class StringDao {
      */
     @Query(SELECT_ALL_QUERY)
     public abstract StringEntity[] getAllEntities();
+
+    /**
+     * Returns how many {@code StringEntities} with that entityValue are presents.
+     *
+     * @param entityValue String value for the where clause.
+     * @return A counter of how many {@code StringEntities} with entityValue have presents.
+     */
+    @Query(SELECT_COUNT_ALL_QUERY+" WHERE "+StringEntity.VALUE_COLUMN_NAME+" = :entityValue")
+    public abstract int getCountWhere(String entityValue);
 
 }

@@ -48,6 +48,7 @@ class StringEntity {
      *
      * @param value The value for this Entity.
      */
+    @Ignore
     public StringEntity(@NonNull String value) {
         key = 0;
         this.value = value;

@@ -8,6 +8,8 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
+import com.eis.geoCalendar.app.GenericEvent;
+import com.eis.geoCalendar.app.GenericTimedEvent;
 import com.eis.geoCalendar.events.Event;
 import com.eis.geoCalendar.events.EventDatabase;
 
@@ -35,6 +37,7 @@ import java.util.Map;
  *
  * @param <E> The type of event this Database stores.
  * @author Riccardo De Zen
+ * @author Giorgia Bortoletti
  */
 
 public class GenericEventDatabase<E extends Event> implements EventDatabase<E> {
@@ -46,7 +49,7 @@ public class GenericEventDatabase<E extends Event> implements EventDatabase<E> {
 
     private RoomEventDatabase physicalDatabase;
     private Class<E> eventClass;
-    private JSONEventParser<E> parser;
+    private JsonEventParser<E> parser;
     private String name;
 
     @Database(entities = StringEntity.class, version = 1)
@@ -65,7 +68,7 @@ public class GenericEventDatabase<E extends Event> implements EventDatabase<E> {
         this.physicalDatabase = getDatabase(context, DB_NAME_PREFIX + name);
         this.eventClass = eventClass;
         this.name = name;
-        this.parser = new JSONEventParser<>(eventClass);
+        this.parser = new JsonEventParser<>(eventClass);
     }
 
     /**
@@ -106,14 +109,14 @@ public class GenericEventDatabase<E extends Event> implements EventDatabase<E> {
      * Saves a list of events in memory.
      *
      * @param events The list of events.
-     * @return {@code true} if events were parsable and have been saved, {@code false} otherwise.
+     * @return A map that associates to every event the result of the insertion.
      */
-    public boolean saveEvents(@NonNull final Collection<E> events) {
+    public Map<E, Boolean> saveEvents(@NonNull final Collection<E> events) {
+        Map<E, Boolean> insertionResults = new ArrayMap<>();
         for(E event : events){
-            if(!saveEvent(event))
-                return false;
+            insertionResults.put(event, saveEvent(event));
         }
-        return true;
+        return insertionResults;
     }
 
     /**
@@ -171,8 +174,6 @@ public class GenericEventDatabase<E extends Event> implements EventDatabase<E> {
         if(!parser.isEventParsable(event))
             return false;
         String dataFromEvent = parser.eventToData(event);
-        if(physicalDatabase.access().getCountWhere(dataFromEvent) >= 1)
-            return true;
-        return false;
+        return (physicalDatabase.access().getCountWhere(dataFromEvent) >= 1);
     }
 }

@@ -21,13 +21,15 @@ class MockEventDatabase<E extends Event> implements EventDatabase<E> {
     }
 
     @Override
-    public void saveEvent(@NonNull E event) {
+    public boolean saveEvent(@NonNull E event) {
         this.events.add(event);
+        return true;
     }
 
     @Override
-    public void saveEvents(@NonNull Collection<E> events) {
+    public Map<E, Boolean> saveEvents(@NonNull Collection<E> events) {
         this.events.addAll(events);
+        return null;
     }
 
     @Override
@@ -48,5 +50,16 @@ class MockEventDatabase<E extends Event> implements EventDatabase<E> {
     @Override
     public ArrayList<E> getSavedEvents() {
         return events;
+    }
+
+    /**
+     * Retrieves presence of event.
+     *
+     * @param event The event to find.
+     * @return {@code true} if the event is parsable and present, {@code false} otherwise.
+     */
+    @Override
+    public boolean contains(@NonNull E event) {
+        return events.contains(event);
     }
 }

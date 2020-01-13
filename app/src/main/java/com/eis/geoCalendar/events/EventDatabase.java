@@ -30,7 +30,7 @@ public interface EventDatabase<E extends Event> {
      * @param events The list of events.
      * @return {@code true} if events were parsable and have been saved, {@code false} otherwise.
      */
-    boolean saveEvents(@NonNull final Collection<E> events);
+    Map<E, Boolean> saveEvents(@NonNull final Collection<E> events);
 
     /**
      * Removes an event from memory.

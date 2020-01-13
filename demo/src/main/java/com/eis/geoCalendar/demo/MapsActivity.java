@@ -24,11 +24,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 /**
  * @author Turcato
  */
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, OnMapLongClickListener, OnInfoWindowLongClickListener, ResultEventListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
+        OnMapLongClickListener, OnInfoWindowLongClickListener, ResultEventListener, RemoveEventListener {
 
     private GoogleMap mMap;
     private EventManager<Event<String>> eventManager;
     private static final String CREATE_EVENT_DIALOG_TAG = "createEventDialog";
+    private static final String REMOVE_EVENT_DIALOG_TAG = "removeEventDialog";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,12 +99,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //eventManager.addEvent(event);
         Marker created = mMap.addMarker(new MarkerOptions().position(pos).title(description)); //automatically cuts title if too long
         created.setTag(event);
-
-
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
 
     }
-
 
     /**
      * Called when user long presses an InfoWindow of Marker
@@ -111,9 +111,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onInfoWindowLongClick(Marker marker) {
-        //TODO: Call dialog
+        RemoveLocatedEventDialog removeLocatedEventDialog = new RemoveLocatedEventDialog();
+        removeLocatedEventDialog.setMarker(marker);
+        removeLocatedEventDialog.setRemoveEventListener(this);
+        removeLocatedEventDialog.show(getSupportFragmentManager(), REMOVE_EVENT_DIALOG_TAG);
+    }
 
-
+    /**
+     * Removes the Located Event mark from the map
+     *
+     * @param marker The marker to be removed
+     */
+    @Override
+    public void removeMark(Marker marker) {
         marker.remove();
     }
 }

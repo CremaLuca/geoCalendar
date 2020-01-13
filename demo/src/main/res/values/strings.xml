@@ -2,6 +2,8 @@
     <string name="app_name">Demo</string>
     <string name="title_activity_maps">Map</string>
     <string name="LocatedEventDialogTitle">Create new Located Event</string>
+    <string name="RemoveEventDialogTitle">Remove the Located Event</string>
     <string name="OK">OK</string>
     <string name="CANCEL">Cancel</string>
+    <string name="DELETE">DELETE</string>
 </resources>

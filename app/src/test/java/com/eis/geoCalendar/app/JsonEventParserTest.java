@@ -6,20 +6,21 @@ import com.eis.geoCalendar.database.JsonEventParser;
 import com.eis.geoCalendar.events.Event;
 import com.eis.geoCalendar.gps.GPSPosition;
 import com.eis.geoCalendar.timedEvents.DateTime;
+import com.google.gson.reflect.TypeToken;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.junit.Assert.assertEquals;
+import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
  * Parameterized tests for JsonEventParser.
- * @// FIXME: 13/01/2020 Due to trouble with Location mocking, these tests cannot currently work.
  *
  * @param <E>
+ * @// FIXME: 13/01/2020 Due to trouble with Location mocking, these tests cannot currently work.
  */
 @RunWith(Parameterized.class)
 public class JsonEventParserTest<E extends Event> {
@@ -30,9 +31,8 @@ public class JsonEventParserTest<E extends Event> {
     private static final DateTime exampleDateTime = DateTime.now();
 
     private JsonEventParser<E> eventParser;
-    private Class<E> eventType;
-    private E simpleEvent;
-    private E complexEvent;
+    private TypeToken<E> typeToken;
+    private E currentEvent;
 
     /**
      * Just a class to mimic a complex Pojo to be stored as nested data in the parsed Json.
@@ -55,7 +55,7 @@ public class JsonEventParserTest<E extends Event> {
         }
     }
 
-    @Parameterized.Parameters(name = "{index}: {1}")
+    @Parameterized.Parameters(name = "{index}: {0}")
     public static Object[][] params() {
         GenericEvent<?> simpleGenericEvent = new GenericEvent<>(
                 examplePosition,
@@ -75,11 +75,24 @@ public class JsonEventParserTest<E extends Event> {
                 exampleComplexContent,
                 exampleDateTime
         );
+        TypeToken<GenericEvent<String>> simpleToken = new TypeToken<GenericEvent<String>>() {
+        };
+        TypeToken<GenericEvent<ExamplePOJO>> complexToken =
+                new TypeToken<GenericEvent<ExamplePOJO>>() {
+        };
+        TypeToken<GenericTimedEvent<String>> simpleTimedToken =
+                new TypeToken<GenericTimedEvent<String>>() {
+        };
+        TypeToken<GenericTimedEvent<ExamplePOJO>> complexTimedToken =
+                new TypeToken<GenericTimedEvent<ExamplePOJO>>() {
+        };
         Object[][] params = {
-                {GenericEvent.class, GenericEvent.class.getSimpleName(), simpleGenericEvent,
-                        complexGenericEvent},
-                {GenericTimedEvent.class, GenericTimedEvent.class.getSimpleName(),
-                        simpleGenericTimedEvent, complexGenericTimedEvent}
+                {GenericEvent.class.getSimpleName(), simpleToken, simpleGenericEvent},
+                {GenericEvent.class.getSimpleName(), complexToken, complexGenericEvent},
+                {GenericTimedEvent.class.getSimpleName(), simpleTimedToken,
+                        simpleGenericTimedEvent},
+                {GenericTimedEvent.class.getSimpleName(), complexTimedToken,
+                        complexGenericTimedEvent}
         };
         return params;
     }
@@ -87,45 +100,29 @@ public class JsonEventParserTest<E extends Event> {
     /**
      * Default constructor for the Test.
      *
-     * @param eventType The type of Event being tested.
+     * @param typeToken The type of Event being tested.
      * @param className Used only by {@link JsonEventParserTest#params()} to set the Test name.
      */
-    public JsonEventParserTest(Class<E> eventType, String className, E simpleEvent,
-                               E complexEvent) {
-        this.eventParser = new JsonEventParser<>(eventType);
-        this.eventType = eventType;
-        this.simpleEvent = simpleEvent;
-        this.complexEvent = complexEvent;
+    public JsonEventParserTest(String className, TypeToken<E> typeToken, E currentEvent) {
+        this.eventParser = new JsonEventParser<>(typeToken);
+        this.typeToken = typeToken;
+        this.currentEvent = currentEvent;
     }
 
     @Before
     public void setEventParser() {
-        eventParser = new JsonEventParser<>(eventType);
+        eventParser = new JsonEventParser<>(typeToken);
     }
 
     @Test
-    public void aSimpleEventCanBeParsed() {
-        assertTrue(eventParser.isEventParsable(simpleEvent));
+    public void isEventParsableValidEvent() {
+        assertTrue(eventParser.isEventParsable(currentEvent));
     }
 
     @Test
-    public void aComplexEventCanBeParsed() {
-        assertTrue(eventParser.isEventParsable(complexEvent));
-    }
-
-    @Test
-    public void aSimpleEventIsCorrectlyParsed() {
-        String data = eventParser.eventToData(simpleEvent);
+    public void eventParsing() {
+        String data = eventParser.eventToData(currentEvent);
         E event = eventParser.dataToEvent(data);
-        assertEquals(event, simpleEvent);
-    }
-
-    @Test
-    public void aComplexEventIsCorrectlyParsed() {
-        String data = eventParser.eventToData(complexEvent);
-        System.out.println(data);
-        E event = eventParser.dataToEvent(data);
-        System.out.println(event.getContent());
-        assertEquals(event, complexEvent);
+        assertEquals(event, currentEvent);
     }
 }

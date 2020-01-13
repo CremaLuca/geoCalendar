@@ -8,10 +8,9 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-import com.eis.geoCalendar.app.GenericEvent;
-import com.eis.geoCalendar.app.GenericTimedEvent;
 import com.eis.geoCalendar.events.Event;
 import com.eis.geoCalendar.events.EventDatabase;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,7 +47,7 @@ public class GenericEventDatabase<E extends Event> implements EventDatabase<E> {
     private static final Map<String, RoomEventDatabase> instances = new ArrayMap<>();
 
     private RoomEventDatabase physicalDatabase;
-    private Class<E> eventClass;
+    private TypeToken<E> eventType;
     private JsonEventParser<E> parser;
     private String name;
 
@@ -61,14 +60,14 @@ public class GenericEventDatabase<E extends Event> implements EventDatabase<E> {
      * Only available constructor.
      *
      * @param context    The calling Context, needed to instantiate the Database.
-     * @param eventClass A reference to the Class this Database stores.
+     * @param eventType A reference to the Class this Database stores.
      * @param name       The name for this Database.
      */
-    public GenericEventDatabase(Context context, Class<E> eventClass, String name) {
+    public GenericEventDatabase(Context context, TypeToken<E> eventType, String name) {
         this.physicalDatabase = getDatabase(context, DB_NAME_PREFIX + name);
-        this.eventClass = eventClass;
+        this.eventType = eventType;
         this.name = name;
-        this.parser = new JsonEventParser<>(eventClass);
+        this.parser = new JsonEventParser<>(eventType);
     }
 
     /**

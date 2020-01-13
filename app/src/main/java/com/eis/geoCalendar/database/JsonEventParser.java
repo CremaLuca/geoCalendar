@@ -4,6 +4,7 @@ import com.eis.geoCalendar.events.Event;
 import com.eis.geoCalendar.events.EventParser;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * Class meant to convert {@code Events} to and from a Json String.
@@ -15,10 +16,10 @@ public class JsonEventParser<E extends Event> implements EventParser<E, String> 
     private static final String EVENT_PARSE_ERR = "The given Event could not be parsed.";
     private static final String DATA_PARSE_ERR = "The given data could not be parsed.";
 
-    private Class<E> eventType;
+    private TypeToken<E> eventType;
     private Gson gson = new Gson();
 
-    public JsonEventParser(Class<E> eventType) {
+    public JsonEventParser(TypeToken<E> eventType) {
         this.eventType = eventType;
     }
 
@@ -47,7 +48,7 @@ public class JsonEventParser<E extends Event> implements EventParser<E, String> 
     public E dataToEvent(String stringToParse) throws IllegalArgumentException {
         if(!isDataParsable(stringToParse))
             throw new IllegalArgumentException(DATA_PARSE_ERR);
-        return gson.fromJson(stringToParse, eventType);
+        return gson.fromJson(stringToParse, eventType.getType());
     }
 
     /**
@@ -63,7 +64,7 @@ public class JsonEventParser<E extends Event> implements EventParser<E, String> 
     public boolean isEventParsable(E event) {
         //Any Object can be parsed into a Json with Gson.
         //If this object was correctly instantiated, the following check will always be true.
-        return (event.getClass().equals(eventType));
+        return (TypeToken.get(event.getClass()).equals(eventType));
     }
 
     /**
@@ -76,7 +77,7 @@ public class JsonEventParser<E extends Event> implements EventParser<E, String> 
     @Override
     public boolean isDataParsable(String stringData) {
         try{
-            gson.fromJson(stringData, eventType);
+            gson.fromJson(stringData, eventType.getType());
         }catch (JsonSyntaxException e){
             e.printStackTrace();
             return false;

@@ -27,7 +27,7 @@ public class RemoveLocatedEventDialog extends DialogFragment {
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Builder builder = new Builder(getActivity());
-        builder.setTitle(R.string.LocatedEventDialogTitle); //defined in strings.xml
+        builder.setTitle(R.string.RemoveEventDialogTitle); //defined in strings.xml
         // Add the buttons
         builder.setPositiveButton(R.string.DELETE, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {

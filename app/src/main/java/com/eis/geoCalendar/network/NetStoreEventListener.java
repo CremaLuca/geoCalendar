@@ -5,13 +5,13 @@ import androidx.annotation.NonNull;
 import com.eis.communication.network.FailReason;
 
 /**
- * Callback for a store request.
+ * Callback for a store request in the network.
  *
  * @param <E> Type of events handled in the network.
  * @author Luca Crema
  * @since 28/12/2019
  */
-public interface StoreEventListener<E extends NetworkEvent> {
+public interface NetStoreEventListener<E extends NetworkEvent> {
 
     /**
      * Callback for event correctly stored in the network.

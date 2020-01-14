@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * @author Luca Crema
  * @since 28/12/2019
  */
-public interface GetEventListener<E extends NetworkEvent> {
+public interface NetGetEventListener<E extends NetworkEvent> {
 
     /**
      * Callback for successful event research.

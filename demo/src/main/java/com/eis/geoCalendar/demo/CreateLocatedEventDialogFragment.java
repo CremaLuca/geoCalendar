@@ -31,7 +31,7 @@ public class CreateLocatedEventDialogFragment extends DialogFragment {
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Builder builder = new Builder(getActivity());
-        builder.setTitle(R.string.LocatedEventDialogTitle); //defined in strings.xml
+        builder.setTitle(R.string.CreateEventDialogTitle); //defined in strings.xml
 
         // Set up the input
         final EditText input = new EditText(getContext());

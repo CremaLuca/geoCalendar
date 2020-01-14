@@ -19,7 +19,7 @@ public class CurrentPositionEventsRetriever<E extends NetworkEvent> {
     private AsyncEventManager networkEventManager;
     private GetEventListener getEventListener;
     private float precision;
-    private int updateTime = 5000; //update time in millis
+    static int updateTime = 5000; //update time in millis
 
     /**
      * Constructor

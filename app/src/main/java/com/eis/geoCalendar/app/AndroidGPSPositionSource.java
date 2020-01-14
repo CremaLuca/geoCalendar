@@ -1,19 +1,33 @@
 package com.eis.geoCalendar.app;
 
-import android.location.Location;
+import android.os.Looper;
 
 import com.eis.geoCalendar.gps.GPSPositionSource;
 import com.eis.geoCalendar.gps.PositionSourceListener;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+
 
 /**
- *
+ * This class get
+ * @author Alessandra Tonin
+ * @since 14/01/2020
  */
+
+//TODO: remember this class need android.permission.ACCESS_FINE_LOCATION (or ACCESS_COARSE_LOCATION, or both)
+
+
 public class AndroidGPSPositionSource implements GPSPositionSource {
-    //setto come variabile privata, poi chiedo ad android di darmi la posizione ogni t secondi
     private PositionSourceListener positionSourceListener;
-    private Location currentLocation;
+    private LocationRequest locationRequest;
+    private FusedLocationProviderClient fusedLocationClient;
+    private LocationCallback locationCallback;
+
+
     @Override
     public void setPositionSourceListener(PositionSourceListener listener, int updateTimeInMillis) {
+        positionSourceListener = listener;
 
     }
 
@@ -23,12 +37,23 @@ public class AndroidGPSPositionSource implements GPSPositionSource {
     }
 
     /**
-     * Gets the last known position. Must be called before starting the periodic location updates.
+     * Method to connect to location services and make a location request.
      */
-    public void getLastKnownLocation(){
-        currentLocation = null;
-
+    public void createLocationRequest() {
+        //creates location request and sets its parameters
+        locationRequest = LocationRequest.create();
+        locationRequest.setInterval(CurrentPositionEventsRetriever.updateTime);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
+    /**
+     * Requests a location update. Before this, you should call createLocationRequest()
+     */
+    public void requestLocationUpdate() {
+        fusedLocationClient.requestLocationUpdates(locationRequest, new LocationCallback(), Looper.getMainLooper());
+    }
 
 }
+
+
+

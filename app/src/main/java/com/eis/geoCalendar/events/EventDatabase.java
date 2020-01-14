@@ -62,4 +62,10 @@ public interface EventDatabase<E extends Event> {
      * @return {@code true} if the event is parsable and present, {@code false} otherwise.
      */
     boolean contains(@NonNull final E event);
+
+    /**
+     * Method to get the number of Events in the database.
+     * @return The number of Events in the database.
+     */
+    int count();
 }

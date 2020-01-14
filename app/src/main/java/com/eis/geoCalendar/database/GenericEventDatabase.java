@@ -239,11 +239,12 @@ public class GenericEventDatabase<E extends Event> implements EventDatabase<E> {
         return (physicalDatabase.access().getCountWhere(dataFromEvent) >= 1);
     }
 
+    /**
+     * Method to get the number of Events in the database.
+     * @return The number of Events in the database.
+     */
     @Override
-    public boolean equals(@Nullable Object obj) {
-        if (!(obj instanceof GenericEventDatabase))
-            return false;
-        GenericEventDatabase other = (GenericEventDatabase) obj;
-        return this.eventType.equals(other.eventType) && this.name.equals(other.name);
+    public int count(){
+        return physicalDatabase.access().count();
     }
 }

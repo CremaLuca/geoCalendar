@@ -62,4 +62,11 @@ class MockEventDatabase<E extends Event> implements EventDatabase<E> {
     public boolean contains(@NonNull E event) {
         return events.contains(event);
     }
+    /**
+     * @return The number of events in the database.
+     */
+    @Override
+    public int count(){
+        return events.size();
+    }
 }

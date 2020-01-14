@@ -29,99 +29,19 @@ import static org.junit.Assert.assertTrue;
 @RunWith(Parameterized.class)
 public class JsonEventParserTest<E extends Event> {
 
-    private static final String exampleContent = "Hello World!";
-    private static final ExamplePOJO exampleComplexContent = new ExamplePOJO();
-    private static final GPSPosition examplePosition = new GPSPosition(100.0, 50.0);
-    private static final DateTime exampleDateTime = DateTime.now();
-
-    /**
-     * GenericEvent with some simple content, and the corresponding {@link TypeToken}.
-     */
-    private static final String simpleEventName = "GenericEvent<String>";
-    private static final GenericEvent<String> simpleEvent = new GenericEvent<>(
-            examplePosition,
-            exampleContent
-    );
-    private static final TypeToken<GenericEvent<String>> simpleToken =
-            new TypeToken<GenericEvent<String>>() {
-            };
-
-    /**
-     * GenericEvent with some complex content, and the corresponding {@link TypeToken}.
-     */
-    private static final String complexEventName = "GenericEvent<ExamplePOJO>";
-    private static final GenericEvent<ExamplePOJO> complexEvent = new GenericEvent<>(
-            examplePosition,
-            exampleComplexContent
-    );
-    private static final TypeToken<GenericEvent<ExamplePOJO>> complexToken =
-            new TypeToken<GenericEvent<ExamplePOJO>>() {
-            };
-
-    /**
-     * GenericTimedEvent with some simple content, and the corresponding {@link TypeToken}.
-     */
-    private static final String simpleTimedEventName = "GenericTimedEvent<String>";
-    private static final GenericTimedEvent<String> simpleTimedEvent =
-            new GenericTimedEvent<>(
-                    examplePosition,
-                    exampleContent,
-                    exampleDateTime
-            );
-    private static final TypeToken<GenericTimedEvent<String>> simpleTimedToken =
-            new TypeToken<GenericTimedEvent<String>>() {
-            };
-
-    /**
-     * GenericTimedEvent with some complex content, and the corresponding {@link TypeToken}.
-     */
-    private static final String complexTimedEventName = "GenericTimedEvent<ExamplePOJO>";
-    private static final GenericTimedEvent<ExamplePOJO> complexTimedEvent =
-            new GenericTimedEvent<>(
-                    examplePosition,
-                    exampleComplexContent,
-                    exampleDateTime
-            );
-    private static final TypeToken<GenericTimedEvent<ExamplePOJO>> complexTimedToken =
-            new TypeToken<GenericTimedEvent<ExamplePOJO>>() {
-            };
-
-
     private JsonEventParser<E> eventParser;
     private TypeToken<E> currentEventTypeToken;
     private E currentEvent;
     private boolean shouldAllowGeneric;
 
     /**
-     * Just a class to mimic a complex Pojo to be stored as nested data in the parsed Json.
+     * Method returning params for the tests. They are stored in {@link EventProvider}.
+     * @see EventProvider#nameTokenExampleGeneric() For parameter explanation.
+     * @return A collection of parameter sets suited for these tests.
      */
-    private static class ExamplePOJO {
-        public String publicField = "I'm public";
-        private String privateField = "I'm private";
-        protected String protectedField = "I'm protected";
-
-        @Override
-        public boolean equals(@Nullable Object obj) {
-            if (!(obj instanceof ExamplePOJO))
-                return false;
-            ExamplePOJO other = (ExamplePOJO) obj;
-            return (
-                    this.publicField.equals(other.publicField)
-                            && this.privateField.equals(other.privateField)
-                            && this.protectedField.equals(other.protectedField)
-            );
-        }
-    }
-
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> params() {
-        return Arrays.asList(new Object[][]{
-                {simpleEventName, simpleToken, simpleEvent, true},
-                {complexEventName, complexToken, complexEvent, false},
-                {simpleTimedEventName, simpleTimedToken, simpleTimedEvent, true},
-                {complexTimedEventName, complexTimedToken,
-                        complexTimedEvent, false}
-        });
+        return EventProvider.nameTokenExampleGeneric();
     }
 
     /**

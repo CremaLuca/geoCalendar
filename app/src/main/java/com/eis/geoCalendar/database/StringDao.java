@@ -62,6 +62,13 @@ public abstract class StringDao {
     public abstract StringEntity[] getAllEntities();
 
     /**
+     * Method to get the number of rows in the table.
+     * @return The number of rows in the table.
+     */
+    @Query(SELECT_COUNT_ALL_QUERY)
+    public abstract int count();
+
+    /**
      * Returns how many {@code StringEntities} with that entityValue are presents.
      *
      * @param entityValue String value for the where clause.

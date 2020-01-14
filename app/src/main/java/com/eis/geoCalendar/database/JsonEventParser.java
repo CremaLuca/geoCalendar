@@ -78,7 +78,6 @@ public class JsonEventParser<E extends Event> implements EventParser<E, String> 
         try{
             gson.fromJson(stringData, eventType.getType());
         }catch (JsonSyntaxException e){
-            e.printStackTrace();
             return false;
         }
         return true;

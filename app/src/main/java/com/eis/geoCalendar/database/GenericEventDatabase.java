@@ -28,7 +28,7 @@ import java.util.Map;
  * <p>
  * The class is structured as an Object Pool, where instances are created with the following
  * primary key:
- * {@link GenericEventDatabase#DB_NAME_PREFIX} + {@link GenericEventDatabase#eventType} + [db-name]
+ * [PREFIX] + [{@link GenericEventDatabase#eventType}] + [db-name]
  * <p>
  * This means the databases for Event type A will be separated from Event type B.
  *
@@ -39,7 +39,16 @@ import java.util.Map;
 
 public class GenericEventDatabase<E extends Event> implements EventDatabase<E> {
 
-    private static final String DB_NAME_PREFIX = "geoCalendar-database-";
+    /**
+     * The following String ensures a combination of {@link TypeToken} and database name won't
+     * collide. Because it cannot be part of a {@link Class}' name.
+     */
+    private static final String SEPARATOR = "-";
+    //Prefix used to reduce chances of collisions with any other class' Room Databases.
+    private static final String DB_NAME_PREFIX = "geoCalendar-database";
+    //String to be formatted with the appropriate parameters.
+    private static final String DB_NAME_TEMPLATE =
+            DB_NAME_PREFIX + SEPARATOR + "%1$s" + SEPARATOR + "%2$s";
 
     //Map containing all the active instances for the actual Room Database.
     private static Map<String, RoomEventDatabase> physicalInstances = new ArrayMap<>();
@@ -82,6 +91,8 @@ public class GenericEventDatabase<E extends Event> implements EventDatabase<E> {
      * @param <E>       The stored {@code Event} type.
      * @return The existing appropriate instance, if possible, or a newly created appropriate
      * instance.
+     * @see GenericEventDatabase#generateName(TypeToken, String) For more info on why the cast is
+     * safe.
      */
     @SuppressWarnings("unchecked")
     public static <E extends Event> GenericEventDatabase<E> getInstance(Context context,
@@ -89,6 +100,7 @@ public class GenericEventDatabase<E extends Event> implements EventDatabase<E> {
                                                                         String name) {
         String fullName = generateName(eventType, name);
         if (activeInstances.get(fullName) != null) {
+            //This would throw a warning
             return (GenericEventDatabase<E>) activeInstances.get(fullName);
         }
         GenericEventDatabase<E> newInstance = new GenericEventDatabase<>(
@@ -102,16 +114,17 @@ public class GenericEventDatabase<E extends Event> implements EventDatabase<E> {
 
     /**
      * Method to generate the full name for the database.
-     * Considering a class name cannot contain the character '-', it is borderline impossible for
-     * this method to assign the same name to databases containing different Event classes.
-     * Because of this, instances can be considered safe to cast.
+     * Considering a class name cannot contain the character '-' (see
+     * {@link GenericEventDatabase#SEPARATOR}), it is borderline impossible for this method to
+     * assign colliding names to databases containing different Event classes.
+     * Because of this, instances can be safely cast to their specific subtype.
      *
      * @param token    The type of Event stored.
      * @param baseName The base name, given by the user.
      * @return The full name, in the form [This class' defined prefix]+[Event Type]+[Given name].
      */
     private static <E extends Event> String generateName(TypeToken<E> token, String baseName) {
-        return DB_NAME_PREFIX + token.toString() + "-" + baseName;
+        return String.format(DB_NAME_TEMPLATE, token.toString(), baseName);
     }
 
     /**

@@ -95,12 +95,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onEventReturn(LatLng pos, String description) {
         GPSPosition eventPos = new GPSPosition(pos.latitude, pos.longitude);
-        GenericEvent<String> event = new GenericEvent<String>(eventPos, description);
+        GenericEvent<String> event = new GenericEvent<>(eventPos, description);
         //eventManager.addEvent(event);
         Marker created = mMap.addMarker(new MarkerOptions().position(pos).title(description)); //automatically cuts title if too long
         created.setTag(event);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
-
     }
 
     /**

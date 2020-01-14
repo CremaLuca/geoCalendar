@@ -1,4 +1,4 @@
-package com.eis.geoCalendar.network;
+package com.eis.geoCalendar.gps;
 
 import com.eis.geoCalendar.gps.GPSPosition;
 

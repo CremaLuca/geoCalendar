@@ -1,22 +1,23 @@
 package com.eis.geoCalendar.gps;
 
-import com.eis.geoCalendar.network.PositionSourceListener;
-
 /**
- * Class that gives to the user his GPS position every T seconds
+ * //TODO.
  *
- * @author Alessandra Tonin, Luca Crema
+ * @author Luca Crema
  * @since 13/01/2020
  */
-public class GPSPositionSource {
+public interface GPSPositionSource {
     /**
-     * Sets a {@link PositionSourceListener}
+     * Sets a {@link PositionSourceListener} and starts retrieving position data.
      *
-     * @param listener
-     * @param updateTimeInMillis
+     * @param listener The listener to set
+     * @param updateTimeInMillis Time interval between each update
      */
-    void setPositionSourceListener(PositionSourceListener listener, int updateTimeInMillis) {
+    void setPositionSourceListener(PositionSourceListener listener, int updateTimeInMillis);
 
-    }
+    /**
+     * Removes the current {@link PositionSourceListener} if it is set.
+     */
+    void removePositionSourceListener();
 
 }

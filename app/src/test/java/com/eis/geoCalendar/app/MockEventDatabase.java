@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
 /**
  * Implementation of EventDatabase to use in tests
  */
@@ -62,11 +63,12 @@ class MockEventDatabase<E extends Event> implements EventDatabase<E> {
     public boolean contains(@NonNull E event) {
         return events.contains(event);
     }
+
     /**
      * @return The number of events in the database.
      */
     @Override
-    public int count(){
+    public int count() {
         return events.size();
     }
 }

@@ -21,6 +21,7 @@ import java.util.Map;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.fail;
 
 /**
  * Test class for {@link EventDatabasePool}.
@@ -40,7 +41,6 @@ public class GenericEventDatabasePoolTest {
     private static final String EXAMPLE_CONTENT = "Hello World!";
     private static final String ANOTHER_EXAMPLE_CONTENT = "Hello from the other side";
     private static final GPSPosition EXAMPLE_POSITION = new GPSPosition(100.0, 50.0);
-    private static final DateTime EXAMPLE_DATE_TIME = DateTime.now();
     private static final String DEFAULT_DB_NAME = "test-db";
 
     private static final GenericEvent<String> SIMPLE_EVENT = new GenericEvent<>(
@@ -87,7 +87,7 @@ public class GenericEventDatabasePoolTest {
      * database cannot be reset between tests automatically.
      */
     public static void clearActiveInstances() {
-        AbstractEventDatabaseTest.clearActiveInstances();
+        RoomEventDatabaseTest.clearActiveInstances();
         try {
             //Getting the field named "activeInstances" (the map with all active databases)
             Field instance = EventDatabasePool.class.getDeclaredField("activeInstances");
@@ -148,9 +148,9 @@ public class GenericEventDatabasePoolTest {
     public void canAddMultipleAndTheyAreCorrect() {
         database.saveEvents(SOME_EVENTS);
         List<GenericEvent<String>> containedEvents = database.getSavedEvents();
-        assertEquals(SOME_EVENTS.size(), containedEvents.size());
         for (int i = 0; i < SOME_EVENTS.size(); i++) {
-            assertEquals(containedEvents.get(i), SOME_EVENTS.get(i));
+            if(!containedEvents.get(i).equals(SOME_EVENTS.get(i)))
+                fail();
         }
     }
 

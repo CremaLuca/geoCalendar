@@ -16,6 +16,7 @@ import edu.emory.mathcs.backport.java.util.Arrays;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.fail;
 
 /**
  * Class testing {@link AbstractEventDatabase}.
@@ -25,7 +26,7 @@ import static org.junit.Assert.assertNotEquals;
  * @author Riccardo De Zen
  */
 @RunWith(RobolectricTestRunner.class)
-public class AbstractEventDatabaseTest {
+public class RoomEventDatabaseTest {
 
     private static final String DEFAULT_DB_NAME = "Default DB";
     private static final String EXAMPLE = "Hello World!";
@@ -143,7 +144,8 @@ public class AbstractEventDatabaseTest {
         StringEntity[] allEntities = database.access().getAllEntities();
         assertEquals(EXAMPLE_COLLECTION.size(), allEntities.length);
         for (int i = 0; i < EXAMPLE_COLLECTION.size(); i++) {
-            assertEquals(EXAMPLE_COLLECTION.get(i), allEntities[i]);
+            if(!EXAMPLE_COLLECTION.get(i).equals(allEntities[i]))
+                fail();
         }
     }
 

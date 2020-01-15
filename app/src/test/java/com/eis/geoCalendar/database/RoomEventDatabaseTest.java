@@ -117,7 +117,8 @@ public class RoomEventDatabaseTest {
     }
 
     /**
-     * Testing the insertion is actually correct, through {@link AbstractStringDao#contains(String)}.
+     * Testing the insertion is actually correct, through
+     * {@link AbstractStringDao#contains(String)}.
      */
     @Test
     public void canAddOneAndItsCorrect() {
@@ -136,7 +137,8 @@ public class RoomEventDatabaseTest {
     }
 
     /**
-     * Testing multiple insertions are actually correct, through {@link AbstractStringDao#getAllEntities()}.
+     * Testing multiple insertions are actually correct, through
+     * {@link AbstractStringDao#getAllEntities()}.
      */
     @Test
     public void canAddMultipleAndTheyAreCorrect() {
@@ -144,7 +146,7 @@ public class RoomEventDatabaseTest {
         StringEntity[] allEntities = database.access().getAllEntities();
         assertEquals(EXAMPLE_COLLECTION.size(), allEntities.length);
         for (int i = 0; i < EXAMPLE_COLLECTION.size(); i++) {
-            if(!EXAMPLE_COLLECTION.get(i).equals(allEntities[i]))
+            if (!EXAMPLE_COLLECTION.get(i).equals(allEntities[i]))
                 fail();
         }
     }

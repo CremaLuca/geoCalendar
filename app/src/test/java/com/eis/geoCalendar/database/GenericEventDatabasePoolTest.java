@@ -3,7 +3,6 @@ package com.eis.geoCalendar.database;
 import com.eis.geoCalendar.app.GenericEvent;
 import com.eis.geoCalendar.events.EventDatabase;
 import com.eis.geoCalendar.gps.GPSPosition;
-import com.eis.geoCalendar.timedEvents.DateTime;
 import com.google.gson.reflect.TypeToken;
 
 import org.junit.After;
@@ -27,7 +26,8 @@ import static junit.framework.TestCase.fail;
  * Test class for {@link EventDatabasePool}.
  * Checking only single instance database functionality. For Object Pool features see
  * {@link EventDatabasePoolTest}.
- * Due to the fact {@link EventDatabasePool} is mostly mirrors {@link AbstractEventDatabase} methods,
+ * Due to the fact {@link EventDatabasePool} is mostly mirrors {@link AbstractEventDatabase}
+ * methods,
  * the tests mirror that same class' tests as well.
  *
  * @author Riccardo De Zen.
@@ -123,7 +123,8 @@ public class GenericEventDatabasePoolTest {
     }
 
     /**
-     * Testing the insertion is actually correct, through {@link AbstractStringDao#contains(String)}.
+     * Testing the insertion is actually correct, through
+     * {@link AbstractStringDao#contains(String)}.
      */
     @Test
     public void canAddOneAndItsCorrect() {
@@ -142,14 +143,15 @@ public class GenericEventDatabasePoolTest {
     }
 
     /**
-     * Testing multiple insertions are actually correct, through {@link AbstractStringDao#getAllEntities()}.
+     * Testing multiple insertions are actually correct, through
+     * {@link AbstractStringDao#getAllEntities()}.
      */
     @Test
     public void canAddMultipleAndTheyAreCorrect() {
         database.saveEvents(SOME_EVENTS);
         List<GenericEvent<String>> containedEvents = database.getSavedEvents();
         for (int i = 0; i < SOME_EVENTS.size(); i++) {
-            if(!containedEvents.get(i).equals(SOME_EVENTS.get(i)))
+            if (!containedEvents.get(i).equals(SOME_EVENTS.get(i)))
                 fail();
         }
     }

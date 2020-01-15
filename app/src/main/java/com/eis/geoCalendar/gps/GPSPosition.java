@@ -3,6 +3,7 @@ package com.eis.geoCalendar.gps;
 import android.location.Location;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Represents a position calculated with GPS latitude and longitude coordinates.
@@ -13,30 +14,31 @@ import androidx.annotation.NonNull;
  */
 public class GPSPosition {
 
-    private Location position;
+    private double latitude;
+    private double longitude;
 
     public GPSPosition(double latitude, double longitude) {
-        position = new Location("GPSPosition");
-        position.setLatitude(latitude);
-        position.setLongitude(longitude);
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
-    public GPSPosition(Location position){
-        this.position = position;
+    public GPSPosition(Location position) {
+        this.latitude = position.getLatitude();
+        this.longitude = position.getLongitude();
     }
 
     /**
      * @return The latitude position
      */
     public double getLatitude() {
-        return position.getLatitude();
+        return latitude;
     }
 
     /**
      * @return The longitude position
      */
     public double getLongitude() {
-        return position.getLongitude();
+        return longitude;
     }
 
     /**
@@ -45,8 +47,17 @@ public class GPSPosition {
      */
     public float getDistance(@NonNull final GPSPosition otherPosition) {
         float[] results = new float[1];
-
-        Location.distanceBetween(getLatitude(), getLongitude(), otherPosition.getLatitude(), otherPosition.getLongitude(), results);
+        Location.distanceBetween(getLatitude(), getLongitude(), otherPosition.getLatitude(),
+                otherPosition.getLongitude(), results);
         return results[0];
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (!(obj instanceof GPSPosition))
+            return false;
+        GPSPosition other = (GPSPosition) obj;
+        return getLatitude() == other.getLatitude()
+                && getLongitude() == other.getLongitude();
     }
 }

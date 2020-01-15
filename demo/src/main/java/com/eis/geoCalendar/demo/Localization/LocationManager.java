@@ -33,7 +33,7 @@ public class LocationManager {
     };
 
 
-    private final static String LocationManagerTag = "LocationManagerTag";
+    private static final String LOCATION_MANAGER_TAG = "LOCATION_MANAGER_TAG";
 
     private Context currentContext;
     private LocationRequest locationRequest;
@@ -61,27 +61,27 @@ public class LocationManager {
         mFusedLocationClient.getLocationAvailability().addOnSuccessListener(new OnSuccessListener<LocationAvailability>() {
             @Override
             public void onSuccess(LocationAvailability locationAvailability) {
-                Log.d(LocationManagerTag, "onSuccess: locationAvailability.isLocationAvailable " + locationAvailability.isLocationAvailable());
+                Log.d(LOCATION_MANAGER_TAG, "onSuccess: locationAvailability.isLocationAvailable " + locationAvailability.isLocationAvailable());
 
                 mFusedLocationClient.requestLocationUpdates(locationRequest, locationIntent)
                         .addOnCompleteListener(new OnCompleteListener() {
                             @Override
                             public void onComplete(@NonNull Task task) {
-                                Log.d(LocationManagerTag, "Update Result: " + task.getResult());
+                                Log.d(LOCATION_MANAGER_TAG, "Update Result: " + task.getResult());
                             }
                         });
 
-                Log.d(LocationManagerTag, "Requested updated location: ");
+                Log.d(LOCATION_MANAGER_TAG, "Requested updated location: ");
 
                 mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
-                        Log.d(LocationManagerTag, "Completed lastLocation");
-                        Log.d(LocationManagerTag, "Task<Location> successful " + task.isSuccessful());
+                        Log.d(LOCATION_MANAGER_TAG, "Completed lastLocation");
+                        Log.d(LOCATION_MANAGER_TAG, "Task<Location> successful " + task.isSuccessful());
 
                         if (task.isSuccessful() && task.getResult() != null) {
                             mLastLocation = task.getResult();
-                            Log.d(LocationManagerTag, "Victory!" + mLastLocation.toString());
+                            Log.d(LOCATION_MANAGER_TAG, "Victory!" + mLastLocation.toString());
                             command.execute(mLastLocation);
                             /*
                             mLastLocation is used directly here because once out of OnComplete
@@ -89,21 +89,21 @@ public class LocationManager {
                             becomes null
                             */
                         } else if (!task.isSuccessful()) {
-                            Log.d(LocationManagerTag, "Task<Location> not successful");
+                            Log.d(LOCATION_MANAGER_TAG, "Task<Location> not successful");
                         } else if (task.getResult() == null) {
-                            Log.d(LocationManagerTag, "Task<Location> result is null");
+                            Log.d(LOCATION_MANAGER_TAG, "Task<Location> result is null");
                         }
-                        Log.d(LocationManagerTag, "End of OnComplete " + mLastLocation.toString());
+                        Log.d(LOCATION_MANAGER_TAG, "End of OnComplete " + mLastLocation.toString());
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d(LocationManagerTag, "Task<Location>: " + e.getMessage());
+                        Log.d(LOCATION_MANAGER_TAG, "Task<Location>: " + e.getMessage());
                     }
                 }).addOnCanceledListener(new OnCanceledListener() {
                     @Override
                     public void onCanceled() {
-                        Log.d(LocationManagerTag, "Task<Location> getLastLocation: Canceled");
+                        Log.d(LOCATION_MANAGER_TAG, "Task<Location> getLastLocation: Canceled");
                     }
                 });
             }
@@ -111,13 +111,13 @@ public class LocationManager {
                 .addOnCanceledListener(new OnCanceledListener() {
                     @Override
                     public void onCanceled() {
-                        Log.d(LocationManagerTag, "Task<Location>: Canceled");
+                        Log.d(LOCATION_MANAGER_TAG, "Task<Location>: Canceled");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.e(LocationManagerTag, "Task<Location>: " + e.getMessage());
+                        Log.e(LOCATION_MANAGER_TAG, "Task<Location>: " + e.getMessage());
                     }
                 });
 

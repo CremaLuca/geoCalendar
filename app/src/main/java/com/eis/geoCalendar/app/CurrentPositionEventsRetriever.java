@@ -1,11 +1,16 @@
 package com.eis.geoCalendar.app;
 
+import android.content.Context;
+
+import androidx.annotation.NonNull;
+
 import com.eis.geoCalendar.events.AsyncEventManager;
 import com.eis.geoCalendar.events.GetEventListener;
 import com.eis.geoCalendar.gps.GPSPosition;
 import com.eis.geoCalendar.gps.GPSPositionSource;
 import com.eis.geoCalendar.gps.PositionSourceListener;
 import com.eis.geoCalendar.network.NetworkEvent;
+import com.google.android.gms.location.LocationServices;
 
 /**
  * This class handles the retrieving of the events near to the user's position.
@@ -20,42 +25,43 @@ public class CurrentPositionEventsRetriever<E extends NetworkEvent> {
     private AsyncEventManager<E> networkEventManager;
     private GetEventListener getEventListener;
     private float precision;
-    static int updateTime = 5000; //update time in millis
+    private int updateTime = 5000; //update time in millis
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param eventManager The event manager
      * @param listener     Callback for event retrieval
      * @param precision    The precision used to retrieve events
+     * @param context      The current application context
      */
-    CurrentPositionEventsRetriever(AsyncEventManager<E> eventManager, GetEventListener<E> listener, float precision) {
-        positionSource = new AndroidGPSPositionSource();
+    public CurrentPositionEventsRetriever(@NonNull AsyncEventManager<E> eventManager, @NonNull GetEventListener<E> listener, @NonNull float precision, @NonNull Context context) {
+        this.positionSource = new AndroidGPSPositionSource(context);
         this.precision = precision;
         this.networkEventManager = eventManager;
-        getEventListener = listener;
+        this.getEventListener = listener;
     }
 
     /**
-     * Overrides current position source
+     * Overrides current position source.
      *
      * @param positionSource The new position source
      */
-    public void setPositionSource(GPSPositionSource positionSource) {
+    public void setPositionSource(@NonNull GPSPositionSource positionSource) {
         this.positionSource = positionSource;
     }
 
     /**
-     * Overrides current update time
+     * Overrides current update time.
      *
      * @param updateTime The new update time
      */
-    public void setUpdateTime(int updateTime) {
+    public void setUpdateTime(@NonNull int updateTime) {
         this.updateTime = updateTime;
     }
 
     /**
-     * Starts retrieving events
+     * Starts retrieving events.
      */
     public void startEventRetrieval() {
         positionSource.setPositionSourceListener(new PositionSourceListener() {
@@ -68,7 +74,7 @@ public class CurrentPositionEventsRetriever<E extends NetworkEvent> {
 
 
     /**
-     * Stops retrieving events
+     * Stops retrieving events.
      */
     public void stopEventRetrieval() {
         positionSource.removePositionSourceListener();

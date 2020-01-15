@@ -8,8 +8,9 @@ import com.google.gson.reflect.TypeToken;
 
 /**
  * Class meant to convert {@code Events} to and from a Json String.
- * @author Riccardo De Zen
+ *
  * @param <E> The type of {@link Event} to convert.
+ * @author Riccardo De Zen
  */
 public class JsonEventParser<E extends Event> implements EventParser<E, String> {
 
@@ -46,7 +47,7 @@ public class JsonEventParser<E extends Event> implements EventParser<E, String> 
      */
     @Override
     public E dataToEvent(String stringToParse) throws IllegalArgumentException {
-        if(!isDataParsable(stringToParse))
+        if (!isDataParsable(stringToParse))
             throw new IllegalArgumentException(DATA_PARSE_ERR);
         return gson.fromJson(stringToParse, eventType.getType());
     }
@@ -75,9 +76,9 @@ public class JsonEventParser<E extends Event> implements EventParser<E, String> 
      */
     @Override
     public boolean isDataParsable(String stringData) {
-        try{
+        try {
             gson.fromJson(stringData, eventType.getType());
-        }catch (JsonSyntaxException e){
+        } catch (JsonSyntaxException e) {
             return false;
         }
         return true;

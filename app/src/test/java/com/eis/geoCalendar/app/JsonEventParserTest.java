@@ -1,11 +1,7 @@
 package com.eis.geoCalendar.app;
 
-import androidx.annotation.Nullable;
-
 import com.eis.geoCalendar.database.JsonEventParser;
 import com.eis.geoCalendar.events.Event;
-import com.eis.geoCalendar.gps.GPSPosition;
-import com.eis.geoCalendar.timedEvents.DateTime;
 import com.google.gson.reflect.TypeToken;
 
 import org.junit.Before;
@@ -13,7 +9,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.util.Arrays;
 import java.util.Collection;
 
 import static junit.framework.TestCase.assertEquals;
@@ -35,13 +30,13 @@ public class JsonEventParserTest<E extends Event> {
     private boolean shouldAllowGeneric;
 
     /**
-     * Method returning params for the tests. They are stored in {@link EventProvider}.
-     * @see EventProvider#nameTokenExampleGeneric() For parameter explanation.
+     * Method returning params for the tests. They are stored in {@link EventTestHelper}.
+     * @see EventTestHelper#nameTokenExampleGeneric() For parameter explanation.
      * @return A collection of parameter sets suited for these tests.
      */
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> params() {
-        return EventProvider.nameTokenExampleGeneric();
+        return EventTestHelper.nameTokenExampleGeneric();
     }
 
     /**

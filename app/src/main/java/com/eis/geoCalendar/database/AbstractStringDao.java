@@ -15,7 +15,7 @@ import java.util.Collection;
  * @author Riccardo De Zen
  */
 @Dao
-public abstract class StringDao {
+public abstract class AbstractStringDao {
 
     private static final String TABLE_NAME = StringEntity.DEFAULT_NAME;
     private static final String SELECT_ALL_QUERY = "SELECT * FROM " + TABLE_NAME;
@@ -76,7 +76,7 @@ public abstract class StringDao {
      * @return {@code true} if the value is present, {@code false} otherwise.
      */
     public boolean contains(String value) {
-        return (getCountWhere(value) != 0);
+        return getCountWhere(value) != 0;
     }
 
     /**

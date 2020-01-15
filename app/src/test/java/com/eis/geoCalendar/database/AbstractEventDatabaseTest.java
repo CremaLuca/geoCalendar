@@ -18,14 +18,14 @@ import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertNotEquals;
 
 /**
- * Class testing {@link com.eis.geoCalendar.database.RoomEventDatabase}.
+ * Class testing {@link AbstractEventDatabase}.
  * Due to the fact the class is generalized to hold any kind of String (through
  * {@link StringEntity}), nothing related to Events will be tested here.
  *
  * @author Riccardo De Zen
  */
 @RunWith(RobolectricTestRunner.class)
-public class RoomEventDatabaseTest {
+public class AbstractEventDatabaseTest {
 
     private static final String DEFAULT_DB_NAME = "Default DB";
     private static final String EXAMPLE = "Hello World!";
@@ -37,11 +37,11 @@ public class RoomEventDatabaseTest {
     };
     private static final List<StringEntity> EXAMPLE_COLLECTION = Arrays.asList(EXAMPLE_ARRAY);
 
-    private RoomEventDatabase database;
+    private AbstractEventDatabase database;
 
     @Before
     public void setup() {
-        database = RoomEventDatabase.getInMemoryInstance(RuntimeEnvironment.systemContext,
+        database = AbstractEventDatabase.getInMemoryInstance(RuntimeEnvironment.systemContext,
                 DEFAULT_DB_NAME);
     }
 
@@ -61,7 +61,7 @@ public class RoomEventDatabaseTest {
     public static void clearActiveInstances() {
         try {
             //Getting the field named "activeInstances" (the map with all active databases)
-            Field instance = RoomEventDatabase.class.getDeclaredField("activeInstances");
+            Field instance = AbstractEventDatabase.class.getDeclaredField("activeInstances");
             //Making it accessible
             instance.setAccessible(true);
             //Casting it to a Map
@@ -79,8 +79,8 @@ public class RoomEventDatabaseTest {
      */
     @Test
     public void poolSameName() {
-        RoomEventDatabase anotherDatabase =
-                RoomEventDatabase.getInMemoryInstance(RuntimeEnvironment.systemContext,
+        AbstractEventDatabase anotherDatabase =
+                AbstractEventDatabase.getInMemoryInstance(RuntimeEnvironment.systemContext,
                         DEFAULT_DB_NAME);
         assertEquals(database, anotherDatabase);
     }
@@ -90,8 +90,8 @@ public class RoomEventDatabaseTest {
      */
     @Test
     public void poolDifferentName() {
-        RoomEventDatabase anotherDatabase =
-                RoomEventDatabase.getInMemoryInstance(RuntimeEnvironment.systemContext,
+        AbstractEventDatabase anotherDatabase =
+                AbstractEventDatabase.getInMemoryInstance(RuntimeEnvironment.systemContext,
                         "Another name");
         assertNotEquals(database, anotherDatabase);
     }
@@ -116,7 +116,7 @@ public class RoomEventDatabaseTest {
     }
 
     /**
-     * Testing the insertion is actually correct, through {@link StringDao#contains(String)}.
+     * Testing the insertion is actually correct, through {@link AbstractStringDao#contains(String)}.
      */
     @Test
     public void canAddOneAndItsCorrect() {
@@ -135,7 +135,7 @@ public class RoomEventDatabaseTest {
     }
 
     /**
-     * Testing multiple insertions are actually correct, through {@link StringDao#getAllEntities()}.
+     * Testing multiple insertions are actually correct, through {@link AbstractStringDao#getAllEntities()}.
      */
     @Test
     public void canAddMultipleAndTheyAreCorrect() {
@@ -170,7 +170,7 @@ public class RoomEventDatabaseTest {
     }
 
     /**
-     * Testing if {@link StringDao#getCountWhere(String)} finds a single entity.
+     * Testing if {@link AbstractStringDao#getCountWhere(String)} finds a single entity.
      * Due to how {@link StringEntity} is structured, the database will only contain one entity
      * with a certain value. It cannot contain duplicates.
      */

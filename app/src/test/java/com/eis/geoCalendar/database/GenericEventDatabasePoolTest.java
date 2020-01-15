@@ -26,7 +26,7 @@ import static junit.framework.TestCase.assertTrue;
  * Test class for {@link EventDatabasePool}.
  * Checking only single instance database functionality. For Object Pool features see
  * {@link EventDatabasePoolTest}.
- * Due to the fact {@link EventDatabasePool} is mostly mirrors {@link RoomEventDatabase} methods,
+ * Due to the fact {@link EventDatabasePool} is mostly mirrors {@link AbstractEventDatabase} methods,
  * the tests mirror that same class' tests as well.
  *
  * @author Riccardo De Zen.
@@ -87,7 +87,7 @@ public class GenericEventDatabasePoolTest {
      * database cannot be reset between tests automatically.
      */
     public static void clearActiveInstances() {
-        RoomEventDatabaseTest.clearActiveInstances();
+        AbstractEventDatabaseTest.clearActiveInstances();
         try {
             //Getting the field named "activeInstances" (the map with all active databases)
             Field instance = EventDatabasePool.class.getDeclaredField("activeInstances");
@@ -123,7 +123,7 @@ public class GenericEventDatabasePoolTest {
     }
 
     /**
-     * Testing the insertion is actually correct, through {@link StringDao#contains(String)}.
+     * Testing the insertion is actually correct, through {@link AbstractStringDao#contains(String)}.
      */
     @Test
     public void canAddOneAndItsCorrect() {
@@ -142,7 +142,7 @@ public class GenericEventDatabasePoolTest {
     }
 
     /**
-     * Testing multiple insertions are actually correct, through {@link StringDao#getAllEntities()}.
+     * Testing multiple insertions are actually correct, through {@link AbstractStringDao#getAllEntities()}.
      */
     @Test
     public void canAddMultipleAndTheyAreCorrect() {

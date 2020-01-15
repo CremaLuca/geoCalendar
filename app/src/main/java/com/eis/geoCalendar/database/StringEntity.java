@@ -54,7 +54,7 @@ class StringEntity {
 
     @Override
     public boolean equals(@Nullable Object obj) {
-        if(!(obj instanceof StringEntity))
+        if (!(obj instanceof StringEntity))
             return false;
         StringEntity other = (StringEntity) obj;
         return this.getValue().equals(other.getValue());

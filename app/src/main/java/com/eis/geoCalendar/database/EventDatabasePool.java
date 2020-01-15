@@ -25,15 +25,15 @@ import java.util.Map;
  * The class is structured as an Object Pool, where instances are created with the following
  * primary key:
  * [PREFIX] + [{@link EventDatabasePool#eventType}] + [db-name]
- * <p>
  * This means the databases for Event type A will be separated from Event type B.
+ * To avoid losing the Object Pool behaviour when extending, the class has been made {@code final}.
  *
  * @param <E> The type of event this Database stores.
  * @author Riccardo De Zen
  * @author Giorgia Bortoletti
  */
 
-public class EventDatabasePool<E extends Event> implements EventDatabase<E> {
+public final class EventDatabasePool<E extends Event> implements EventDatabase<E> {
 
     /**
      * The following String ensures a combination of {@link TypeToken} and database name won't
@@ -49,7 +49,7 @@ public class EventDatabasePool<E extends Event> implements EventDatabase<E> {
     //Map containing all the active instances for this Database class.
     private static Map<String, EventDatabasePool> activeInstances = new ArrayMap<>();
 
-    private RoomEventDatabase physicalDatabase;
+    private AbstractEventDatabase physicalDatabase;
     private TypeToken<E> eventType;
     private JsonEventParser<E> parser;
     private String name;
@@ -57,12 +57,12 @@ public class EventDatabasePool<E extends Event> implements EventDatabase<E> {
     /**
      * Only available constructor.
      *
-     * @param context   The calling Context, needed to instantiate the Database.
-     * @param eventType A reference to the Class this Database stores.
-     * @param name      The name for this Database.
+     * @param eventType        A reference to the Class this Database stores.
+     * @param name             The name for this Database.
+     * @param physicalDatabase The actual {@link AbstractEventDatabase} this Object should access.
      */
-    private EventDatabasePool(Context context, TypeToken<E> eventType, String name,
-                              RoomEventDatabase physicalDatabase) {
+    private EventDatabasePool(TypeToken<E> eventType, String name,
+                              AbstractEventDatabase physicalDatabase) {
         this.physicalDatabase = physicalDatabase;
         this.eventType = eventType;
         this.name = name;
@@ -94,10 +94,9 @@ public class EventDatabasePool<E extends Event> implements EventDatabase<E> {
             return (EventDatabasePool<E>) activeInstances.get(fullName);
         }
         EventDatabasePool<E> newInstance = new EventDatabasePool<>(
-                context,
                 eventType,
                 fullName,
-                RoomEventDatabase.getInstance(context, fullName)
+                AbstractEventDatabase.getInstance(context, fullName)
         );
         activeInstances.put(fullName, newInstance);
         return newInstance;
@@ -107,22 +106,21 @@ public class EventDatabasePool<E extends Event> implements EventDatabase<E> {
      * Method to retrieve an in-memory Instance of the Database.
      * Works the same as getInstance, but is meant for testing purposes only.
      *
-     * @see RoomEventDatabase#getInMemoryInstance(Context, String) for further information.
+     * @see AbstractEventDatabase#getInMemoryInstance(Context, String) for further information.
      */
     @SuppressWarnings("unchecked")
     static <E extends Event> EventDatabase<E> getInMemoryInstance(Context context,
-                                                                         TypeToken<E> eventType,
-                                                                         String name) {
+                                                                  TypeToken<E> eventType,
+                                                                  String name) {
         String fullName = generateName(eventType, name);
         if (activeInstances.get(fullName) != null) {
             //This would throw a warning
             return (EventDatabasePool<E>) activeInstances.get(fullName);
         }
         EventDatabasePool<E> newInstance = new EventDatabasePool<>(
-                context,
                 eventType,
                 fullName,
-                RoomEventDatabase.getInMemoryInstance(context, fullName)
+                AbstractEventDatabase.getInMemoryInstance(context, fullName)
         );
         activeInstances.put(fullName, newInstance);
         return newInstance;
@@ -144,9 +142,18 @@ public class EventDatabasePool<E extends Event> implements EventDatabase<E> {
     }
 
     /**
+     * Getter for {@link EventDatabasePool#eventType}.
+     *
+     * @return {@link EventDatabasePool#eventType}: The stored Event type in this Database.
+     */
+    public TypeToken<E> getStoredEventType() {
+        return eventType;
+    }
+
+    /**
      * Getter for {@link EventDatabasePool#name}.
      *
-     * @return {@link EventDatabasePool}: The name for this Database.
+     * @return {@link EventDatabasePool#name}: The name for this Database.
      */
     public String getName() {
         return name;
@@ -235,7 +242,7 @@ public class EventDatabasePool<E extends Event> implements EventDatabase<E> {
         if (!parser.isEventParsable(event))
             return false;
         String dataFromEvent = parser.eventToData(event);
-        return (physicalDatabase.access().contains(dataFromEvent));
+        return physicalDatabase.access().contains(dataFromEvent);
     }
 
     /**

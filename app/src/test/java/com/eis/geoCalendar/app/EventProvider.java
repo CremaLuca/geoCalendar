@@ -18,19 +18,20 @@ public class EventProvider {
 
     //Template for Pojo fields.
     private static final String POJO_FIELD_TEMPLATE = "I'm %s field example";
+
+
     /**
      * Example data used in the instantiation of example Events.
      */
     private static final String EXAMPLE_CONTENT = "Hello World!";
+    private static final GPSPosition EXAMPLE_POSITION = new GPSPosition(100.0, 50.0);
+    private static final DateTime EXAMPLE_DATE_TIME = DateTime.now();
 
     private static final ExamplePOJO EXAMPLE_COMPLEX_CONTENT = new ExamplePOJO(
             String.format(POJO_FIELD_TEMPLATE, "public"),
             String.format(POJO_FIELD_TEMPLATE, "private"),
             String.format(POJO_FIELD_TEMPLATE, "protected")
     );
-
-    private static final GPSPosition EXAMPLE_POSITION = new GPSPosition(100.0, 50.0);
-    private static final DateTime EXAMPLE_DATE_TIME = DateTime.now();
 
     /**
      * {@link GenericEvent} with some simple content, and the corresponding {@link TypeToken}.
@@ -127,27 +128,6 @@ public class EventProvider {
      * @see JsonEventParserTest#params() for an example usage.
      */
     public static Collection<Object[]> nameTokenExampleGeneric() {
-        return Arrays.asList(new Object[][]{
-                {simpleEventName, simpleToken, simpleEvent, simpleSupportsGenerification},
-                {complexEventName, complexToken, complexEvent, complexSupportsGenerification},
-                {simpleTimedEventName, simpleTimedToken, simpleTimedEvent,
-                        simpleTimedSupportsGenerification},
-                {complexTimedEventName, complexTimedToken,
-                        complexTimedEvent, complexTimedSupportsGenerification}
-        });
-    }
-
-    /**
-     * Method returning parameter sets for testing.
-     *
-     * @return A collection of parameter sets in the form:
-     * - Test name: An appropriate name the test can choose to use.
-     * - {@link TypeToken}: A {@code TypeToken} for the type of {@code Event} being tested.
-     * - exampleEvent: An example {@code Event} matching the token.
-     * - anotherExampleEvent: Another {@code Event} matching the token.
-     * @see com.eis.geoCalendar.app.database.GenericEventDatabaseTest for an example usage.
-     */
-    public static Collection<Object[]> nameTokenExampleAnotherExample() {
         return Arrays.asList(new Object[][]{
                 {simpleEventName, simpleToken, simpleEvent, simpleSupportsGenerification},
                 {complexEventName, complexToken, complexEvent, complexSupportsGenerification},

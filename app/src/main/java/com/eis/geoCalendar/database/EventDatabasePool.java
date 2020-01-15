@@ -3,11 +3,7 @@ package com.eis.geoCalendar.database;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.collection.ArrayMap;
-import androidx.room.Database;
-import androidx.room.Room;
-import androidx.room.RoomDatabase;
 
 import com.eis.geoCalendar.events.Event;
 import com.eis.geoCalendar.events.EventDatabase;
@@ -28,7 +24,7 @@ import java.util.Map;
  * <p>
  * The class is structured as an Object Pool, where instances are created with the following
  * primary key:
- * [PREFIX] + [{@link GenericEventDatabase#eventType}] + [db-name]
+ * [PREFIX] + [{@link EventDatabasePool#eventType}] + [db-name]
  * <p>
  * This means the databases for Event type A will be separated from Event type B.
  *
@@ -37,7 +33,7 @@ import java.util.Map;
  * @author Giorgia Bortoletti
  */
 
-public class GenericEventDatabase<E extends Event> implements EventDatabase<E> {
+public class EventDatabasePool<E extends Event> implements EventDatabase<E> {
 
     /**
      * The following String ensures a combination of {@link TypeToken} and database name won't
@@ -50,20 +46,13 @@ public class GenericEventDatabase<E extends Event> implements EventDatabase<E> {
     private static final String DB_NAME_TEMPLATE =
             DB_NAME_PREFIX + SEPARATOR + "%1$s" + SEPARATOR + "%2$s";
 
-    //Map containing all the active instances for the actual Room Database.
-    private static Map<String, RoomEventDatabase> physicalInstances = new ArrayMap<>();
     //Map containing all the active instances for this Database class.
-    private static Map<String, GenericEventDatabase> activeInstances = new ArrayMap<>();
+    private static Map<String, EventDatabasePool> activeInstances = new ArrayMap<>();
 
     private RoomEventDatabase physicalDatabase;
     private TypeToken<E> eventType;
     private JsonEventParser<E> parser;
     private String name;
-
-    @Database(entities = StringEntity.class, version = 1)
-    public static abstract class RoomEventDatabase extends RoomDatabase {
-        abstract StringDao access();
-    }
 
     /**
      * Only available constructor.
@@ -72,8 +61,9 @@ public class GenericEventDatabase<E extends Event> implements EventDatabase<E> {
      * @param eventType A reference to the Class this Database stores.
      * @param name      The name for this Database.
      */
-    private GenericEventDatabase(Context context, TypeToken<E> eventType, String name) {
-        this.physicalDatabase = getDatabase(context, DB_NAME_PREFIX + name);
+    private EventDatabasePool(Context context, TypeToken<E> eventType, String name,
+                              RoomEventDatabase physicalDatabase) {
+        this.physicalDatabase = physicalDatabase;
         this.eventType = eventType;
         this.name = name;
         this.parser = new JsonEventParser<>(eventType);
@@ -91,22 +81,48 @@ public class GenericEventDatabase<E extends Event> implements EventDatabase<E> {
      * @param <E>       The stored {@code Event} type.
      * @return The existing appropriate instance, if possible, or a newly created appropriate
      * instance.
-     * @see GenericEventDatabase#generateName(TypeToken, String) For more info on why the cast is
+     * @see EventDatabasePool#generateName(TypeToken, String) For more info on why the cast is
      * safe.
      */
     @SuppressWarnings("unchecked")
-    public static <E extends Event> GenericEventDatabase<E> getInstance(Context context,
-                                                                        TypeToken<E> eventType,
-                                                                        String name) {
+    public static <E extends Event> EventDatabase<E> getInstance(Context context,
+                                                                 TypeToken<E> eventType,
+                                                                 String name) {
         String fullName = generateName(eventType, name);
         if (activeInstances.get(fullName) != null) {
             //This would throw a warning
-            return (GenericEventDatabase<E>) activeInstances.get(fullName);
+            return (EventDatabasePool<E>) activeInstances.get(fullName);
         }
-        GenericEventDatabase<E> newInstance = new GenericEventDatabase<>(
+        EventDatabasePool<E> newInstance = new EventDatabasePool<>(
                 context,
                 eventType,
-                fullName
+                fullName,
+                RoomEventDatabase.getInstance(context, fullName)
+        );
+        activeInstances.put(fullName, newInstance);
+        return newInstance;
+    }
+
+    /**
+     * Method to retrieve an in-memory Instance of the Database.
+     * Works the same as getInstance, but is meant for testing purposes only.
+     *
+     * @see RoomEventDatabase#getInMemoryInstance(Context, String) for further information.
+     */
+    @SuppressWarnings("unchecked")
+    static <E extends Event> EventDatabase<E> getInMemoryInstance(Context context,
+                                                                         TypeToken<E> eventType,
+                                                                         String name) {
+        String fullName = generateName(eventType, name);
+        if (activeInstances.get(fullName) != null) {
+            //This would throw a warning
+            return (EventDatabasePool<E>) activeInstances.get(fullName);
+        }
+        EventDatabasePool<E> newInstance = new EventDatabasePool<>(
+                context,
+                eventType,
+                fullName,
+                RoomEventDatabase.getInMemoryInstance(context, fullName)
         );
         activeInstances.put(fullName, newInstance);
         return newInstance;
@@ -115,7 +131,7 @@ public class GenericEventDatabase<E extends Event> implements EventDatabase<E> {
     /**
      * Method to generate the full name for the database.
      * Considering a class name cannot contain the character '-' (see
-     * {@link GenericEventDatabase#SEPARATOR}), it is borderline impossible for this method to
+     * {@link EventDatabasePool#SEPARATOR}), it is borderline impossible for this method to
      * assign colliding names to databases containing different Event classes.
      * Because of this, instances can be safely cast to their specific subtype.
      *
@@ -128,23 +144,12 @@ public class GenericEventDatabase<E extends Event> implements EventDatabase<E> {
     }
 
     /**
-     * Method to get the database with a certain name, instantiating one if necessary.
+     * Getter for {@link EventDatabasePool#name}.
      *
-     * @param context The calling Context.
-     * @param name    The name for the Database.
-     * @return The appropriate instance for a certain Database.
+     * @return {@link EventDatabasePool}: The name for this Database.
      */
-    private RoomEventDatabase getDatabase(Context context, String name) {
-        if (physicalInstances.get(name) != null)
-            return physicalInstances.get(name);
-        RoomEventDatabase newInstance = Room.databaseBuilder(
-                context,
-                RoomEventDatabase.class,
-                name)
-                .allowMainThreadQueries()
-                .build();
-        physicalInstances.put(name, newInstance);
-        return newInstance;
+    public String getName() {
+        return name;
     }
 
     /**
@@ -179,8 +184,6 @@ public class GenericEventDatabase<E extends Event> implements EventDatabase<E> {
 
     /**
      * Removes an event from memory.
-     * Despite the Database being able to store different types of Events, only Events matching
-     * the type {@link E} will be queried.
      *
      * @param event The event.
      * @return {@code true} if the event was present and has been removed, {@code false} otherwise.
@@ -194,8 +197,6 @@ public class GenericEventDatabase<E extends Event> implements EventDatabase<E> {
 
     /**
      * Removes a list of events from memory.
-     * Despite the Database being able to store different types of Events, only Events matching
-     * the type {@link E} will be queried.
      *
      * @param events The list of events.
      * @return A map that associates to every event if it was present and has been removed or not.
@@ -211,8 +212,6 @@ public class GenericEventDatabase<E extends Event> implements EventDatabase<E> {
 
     /**
      * Retrieves all saved events from memory.
-     * Despite the Database being able to store different types of Events, only Events matching
-     * the type {@link E} will be queried.
      *
      * @return An {@link ArrayList} of saved events.
      */
@@ -236,15 +235,16 @@ public class GenericEventDatabase<E extends Event> implements EventDatabase<E> {
         if (!parser.isEventParsable(event))
             return false;
         String dataFromEvent = parser.eventToData(event);
-        return (physicalDatabase.access().getCountWhere(dataFromEvent) >= 1);
+        return (physicalDatabase.access().contains(dataFromEvent));
     }
 
     /**
      * Method to get the number of Events in the database.
+     *
      * @return The number of Events in the database.
      */
     @Override
-    public int count(){
+    public int count() {
         return physicalDatabase.access().count();
     }
 }

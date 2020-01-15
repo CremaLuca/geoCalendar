@@ -63,10 +63,21 @@ public abstract class StringDao {
 
     /**
      * Method to get the number of rows in the table.
+     *
      * @return The number of rows in the table.
      */
     @Query(SELECT_COUNT_ALL_QUERY)
     public abstract int count();
+
+    /**
+     * Method to check whether the table contains a certain value.
+     *
+     * @param value The value to look for.
+     * @return {@code true} if the value is present, {@code false} otherwise.
+     */
+    public boolean contains(String value) {
+        return (getCountWhere(value) != 0);
+    }
 
     /**
      * Returns how many {@code StringEntities} with that entityValue are presents.
@@ -74,7 +85,7 @@ public abstract class StringDao {
      * @param entityValue String value for the where clause.
      * @return A counter of how many {@code StringEntities} with entityValue have presents.
      */
-    @Query(SELECT_COUNT_ALL_QUERY+" WHERE "+StringEntity.VALUE_COLUMN_NAME+" = :entityValue")
-    public abstract int getCountWhere(String entityValue);
+    @Query(SELECT_COUNT_ALL_QUERY + " WHERE " + StringEntity.VALUE_COLUMN_NAME + " = :entityValue")
+    protected abstract int getCountWhere(String entityValue);
 
 }

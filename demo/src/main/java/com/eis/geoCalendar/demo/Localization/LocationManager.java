@@ -3,9 +3,7 @@ package com.eis.geoCalendar.demo.Localization;
 import android.Manifest;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.location.Location;
-import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -24,20 +22,18 @@ import static com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCU
 
 /**
  * @author Turcato
- *
+ * <p>
  * TODO: this is here temporarely just for the demo
  */
 public class LocationManager {
-    private static final String[] permissions = {
+    private static final String[] PERMISSIONS = {
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.READ_PHONE_STATE,
     };
 
 
-    private final String LocationManagerTag = "LocationManagerTag";
-    private final String MAPS_START_URL = "https://www.google.com/maps/search/?api=1&query=";
-    //NOTE: concat latitude,longitude
+    private final static String LocationManagerTag = "LocationManagerTag";
 
     private Context currentContext;
     private LocationRequest locationRequest;
@@ -46,7 +42,7 @@ public class LocationManager {
 
     private FusedLocationProviderClient mFusedLocationClient;
 
-    public LocationManager(Context applicationContext){
+    public LocationManager(Context applicationContext) {
         currentContext = applicationContext;
     }
 
@@ -56,8 +52,7 @@ public class LocationManager {
      *
      * @param command object of a class that implements interface Command
      */
-    public void getLastLocation(final Command<Location> command)
-    {
+    public void getLastLocation(final Command<Location> command) {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(currentContext);
         mFusedLocationClient.flushLocations();
         locationRequest = LocationRequest.create();
@@ -82,11 +77,11 @@ public class LocationManager {
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
                         Log.d(LocationManagerTag, "Completed lastLocation");
-                        Log.d(LocationManagerTag, "Task<Location> successful " +  task.isSuccessful());
+                        Log.d(LocationManagerTag, "Task<Location> successful " + task.isSuccessful());
 
                         if (task.isSuccessful() && task.getResult() != null) {
                             mLastLocation = task.getResult();
-                            Log.d(LocationManagerTag, "Victory!" +mLastLocation.toString());
+                            Log.d(LocationManagerTag, "Victory!" + mLastLocation.toString());
                             command.execute(mLastLocation);
                             /*
                             mLastLocation is used directly here because once out of OnComplete
@@ -98,7 +93,7 @@ public class LocationManager {
                         } else if (task.getResult() == null) {
                             Log.d(LocationManagerTag, "Task<Location> result is null");
                         }
-                        Log.d(LocationManagerTag, "End of OnComplete " +mLastLocation.toString());
+                        Log.d(LocationManagerTag, "End of OnComplete " + mLastLocation.toString());
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -131,10 +126,9 @@ public class LocationManager {
     }
 
     /**
-     *
      * @return An array containing all required system Permissions
      */
     public static String[] getPermissions() {
-        return permissions;
+        return PERMISSIONS;
     }
 }

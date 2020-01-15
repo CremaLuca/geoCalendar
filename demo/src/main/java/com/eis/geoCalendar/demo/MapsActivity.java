@@ -21,7 +21,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.eis.geoCalendar.demo.Localization.*;
+import com.eis.geoCalendar.demo.Localization.LocationManager;
+import com.eis.geoCalendar.demo.Localization.Command;
 
 
 /**
@@ -36,7 +37,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final String REMOVE_EVENT_DIALOG_TAG = "removeEventDialog";
     private static final int APP_PERMISSION_REQUEST_CODE = 0;
     private LocationManager locationManager;
-
 
 
     @Override
@@ -84,8 +84,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * @author Turcato
      * Requests Android permissions if not granted
      */
-    public void requestPermissions()
-    {
+    public void requestPermissions() {
         ActivityCompat.requestPermissions(this, LocationManager.getPermissions(), APP_PERMISSION_REQUEST_CODE);
     }
 

@@ -13,7 +13,7 @@ import com.google.android.gms.maps.model.LatLng;
 public class MoveMapCommand implements Command<Location> {
     private GoogleMap googleMap;
 
-    public MoveMapCommand(GoogleMap map){
+    public MoveMapCommand(GoogleMap map) {
         googleMap = map;
     }
 

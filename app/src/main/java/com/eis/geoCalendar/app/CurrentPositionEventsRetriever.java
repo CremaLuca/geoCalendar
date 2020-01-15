@@ -8,7 +8,8 @@ import com.eis.geoCalendar.gps.PositionSourceListener;
 import com.eis.geoCalendar.network.NetworkEvent;
 
 /**
- * This class handles the retrieving of the events near to the user's position
+ * This class handles the retrieving of the events near to the user's position.
+ * Before calling the listener with updates, method StartEventRetrieval() must be called.
  *
  * @author Tonin Alessandra
  * @author Luca Crema
@@ -16,7 +17,7 @@ import com.eis.geoCalendar.network.NetworkEvent;
  */
 public class CurrentPositionEventsRetriever<E extends NetworkEvent> {
     private GPSPositionSource positionSource;
-    private AsyncEventManager networkEventManager;
+    private AsyncEventManager<E> networkEventManager;
     private GetEventListener getEventListener;
     private float precision;
     static int updateTime = 5000; //update time in millis
@@ -56,7 +57,7 @@ public class CurrentPositionEventsRetriever<E extends NetworkEvent> {
     /**
      * Starts retrieving events
      */
-    void startEventRetrieval() {
+    public void startEventRetrieval() {
         positionSource.setPositionSourceListener(new PositionSourceListener() {
             @Override
             public void onPositionRetrieved(GPSPosition userPosition) {
@@ -69,7 +70,7 @@ public class CurrentPositionEventsRetriever<E extends NetworkEvent> {
     /**
      * Stops retrieving events
      */
-    void stopEventRetrieval() {
+    public void stopEventRetrieval() {
         positionSource.removePositionSourceListener();
     }
 

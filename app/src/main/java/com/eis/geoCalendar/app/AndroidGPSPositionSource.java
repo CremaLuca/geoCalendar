@@ -10,7 +10,8 @@ import com.google.android.gms.location.LocationRequest;
 
 
 /**
- * This class get
+ * This class updates the user's position every updateTimeInMillis
+ *
  * @author Alessandra Tonin
  * @since 14/01/2020
  */
@@ -24,33 +25,39 @@ public class AndroidGPSPositionSource implements GPSPositionSource {
     private FusedLocationProviderClient fusedLocationClient;
     private LocationCallback locationCallback;
 
+    /**
+     * Constructor. Creates a location request to get the most accurate locations available.
+     */
+    AndroidGPSPositionSource() {
+        locationCallback = new LocationCallback();
+        locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
 
     @Override
     public void setPositionSourceListener(PositionSourceListener listener, int updateTimeInMillis) {
         positionSourceListener = listener;
-
+        locationRequest.setInterval(updateTimeInMillis);
+        requestLocationUpdate();
     }
 
     @Override
     public void removePositionSourceListener() {
-
+        stopLocationUpdates();
     }
 
     /**
-     * Method to connect to location services and make a location request.
+     * Requests a location update. Before this, you should create a location request (constructor)
      */
-    public void createLocationRequest() {
-        //creates location request and sets its parameters
-        locationRequest = LocationRequest.create();
-        locationRequest.setInterval(CurrentPositionEventsRetriever.updateTime);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    private void requestLocationUpdate() {
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
     }
 
     /**
-     * Requests a location update. Before this, you should call createLocationRequest()
+     * Stops requesting location updates
      */
-    public void requestLocationUpdate() {
-        fusedLocationClient.requestLocationUpdates(locationRequest, new LocationCallback(), Looper.getMainLooper());
+    private void stopLocationUpdates() {
+        fusedLocationClient.removeLocationUpdates(locationCallback);
     }
 
 }

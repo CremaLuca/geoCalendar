@@ -73,7 +73,7 @@ public class EventDatabasePoolTest {
      * Test confirming same type and different name result in different instance.
      */
     @Test
-    public void DifferentNameSameTypeAreDifferent() {
+    public void differentNameSameTypeAreDifferent() {
         assertNotEquals(
                 EventDatabasePool.getInstance(
                         RuntimeEnvironment.systemContext,
@@ -92,7 +92,7 @@ public class EventDatabasePoolTest {
      * Test confirming same type and name result in different instance.
      */
     @Test
-    public void DifferentNameDifferentTypeAreDifferent() {
+    public void differentNameDifferentTypeAreDifferent() {
         assertNotEquals(
                 EventDatabasePool.getInstance(
                         RuntimeEnvironment.systemContext,

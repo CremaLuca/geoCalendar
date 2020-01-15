@@ -18,7 +18,7 @@ import java.util.Map;
  * @author Riccardo De Zen.
  */
 @Database(entities = StringEntity.class, version = 1)
-public abstract class AbstractEventDatabase extends RoomDatabase {
+abstract class AbstractEventDatabase extends RoomDatabase {
 
     //Map containing the active instances for this database.
     private static Map<String, AbstractEventDatabase> activeInstances = new ArrayMap<>();

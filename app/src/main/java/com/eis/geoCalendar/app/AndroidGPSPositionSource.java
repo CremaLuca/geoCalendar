@@ -7,6 +7,7 @@ import com.eis.geoCalendar.gps.PositionSourceListener;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 
 
 /**
@@ -19,7 +20,8 @@ import com.google.android.gms.location.LocationRequest;
 //TODO: remember this class need android.permission.ACCESS_FINE_LOCATION (or ACCESS_COARSE_LOCATION, or both)
 
 
-public class AndroidGPSPositionSource implements GPSPositionSource {
+public class AndroidGPSPositionSource extends LocationCallback implements GPSPositionSource {
+    private int updateTimeInMillis;
     private PositionSourceListener positionSourceListener;
     private LocationRequest locationRequest;
     private FusedLocationProviderClient fusedLocationClient;
@@ -29,7 +31,12 @@ public class AndroidGPSPositionSource implements GPSPositionSource {
      * Constructor. Creates a location request to get the most accurate locations available.
      */
     AndroidGPSPositionSource() {
-        locationCallback = new LocationCallback();
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult result) {
+                setPositionSourceListener(positionSourceListener, updateTimeInMillis);
+            }
+        };
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
@@ -37,6 +44,7 @@ public class AndroidGPSPositionSource implements GPSPositionSource {
     @Override
     public void setPositionSourceListener(PositionSourceListener listener, int updateTimeInMillis) {
         positionSourceListener = listener;
+        this.updateTimeInMillis = updateTimeInMillis;
         locationRequest.setInterval(updateTimeInMillis);
         requestLocationUpdate();
     }

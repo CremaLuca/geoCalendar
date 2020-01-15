@@ -1,7 +1,9 @@
 package com.eis.geoCalendar.demo;
 
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -19,6 +21,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.eis.geoCalendar.demo.Localization.LocationManager;
+import com.eis.geoCalendar.demo.Localization.Command;
 
 
 /**
@@ -31,6 +35,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private EventManager<Event<String>> eventManager;
     private static final String CREATE_EVENT_DIALOG_TAG = "createEventDialog";
     private static final String REMOVE_EVENT_DIALOG_TAG = "removeEventDialog";
+    private static final int APP_PERMISSION_REQUEST_CODE = 0;
+    private LocationManager locationManager;
 
 
     @Override
@@ -44,7 +50,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //Creating the event manager
         eventManager = new GenericEventManager<>(null);
-
+        locationManager = new LocationManager(getApplicationContext());
+        requestPermissions();
     }
 
 
@@ -67,7 +74,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMapLongClickListener(this);           //To add Events
         mMap.setOnInfoWindowLongClickListener(this);    //To delete Events
 
+        //Retrieve current position
+        Command<Location> moveMapCommand = new MoveMapCommand(mMap);
+        locationManager.getLastLocation(moveMapCommand);
+    }
 
+
+    /***
+     * @author Turcato
+     * Requests Android permissions if not granted
+     */
+    public void requestPermissions() {
+        ActivityCompat.requestPermissions(this, LocationManager.getPermissions(), APP_PERMISSION_REQUEST_CODE);
     }
 
     /**

@@ -3,8 +3,6 @@ package com.eis.geoCalendar.app;
 import android.content.Context;
 import android.os.Looper;
 
-import androidx.annotation.NonNull;
-
 import com.eis.geoCalendar.gps.GPSPosition;
 import com.eis.geoCalendar.gps.GPSPositionSource;
 import com.eis.geoCalendar.gps.PositionSourceListener;
@@ -14,49 +12,49 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
+import androidx.annotation.NonNull;
+
 
 /**
- * This class updates the user's position every updateTimeInMillis.
- * This class needs android.permission.ACCESS_FINE_LOCATION (or ACCESS_COARSE_LOCATION, or both).
+ * Source for current phone's GPS position.
+ * android.permission.ACCESS_FINE_LOCATION (or ACCESS_COARSE_LOCATION, or both) permission is needed in order to work properly.
  *
  * @author Alessandra Tonin
+ * @author Luca Crema
  * @since 14/01/2020
  */
 public class AndroidGPSPositionSource extends LocationCallback implements GPSPositionSource {
-    //private int updateTimeInMillis;
+
     private PositionSourceListener positionSourceListener;
     private LocationRequest locationRequest;
     private FusedLocationProviderClient fusedLocationClient;
     private LocationCallback locationCallback;
-    private Context currentContext;
 
     /**
      * Constructor. Creates a location request to get the most accurate locations available.
      */
     public AndroidGPSPositionSource(Context appContext) {
-        this.currentContext = appContext;
-        this.fusedLocationClient = LocationServices.getFusedLocationProviderClient(currentContext);
+        this.fusedLocationClient = LocationServices.getFusedLocationProviderClient(appContext);
         this.locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult result) {
-                //check this
+                //TODO: Make sure this method returns the last location
                 positionSourceListener.onPositionRetrieved(new GPSPosition(result.getLastLocation()));
             }
         };
-        this.locationRequest = LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        this.locationRequest = LocationRequest.create().setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
     /**
-     * Sets a {@link PositionSourceListener} and requests location updates.
+     * Sets a {@link PositionSourceListener} and starts requesting location updates.
+     * Parameter's {@link PositionSourceListener#onPositionRetrieved(GPSPosition)} will be called every {@code updateTimeInMillis} seconds.
      *
-     * @param listener           The listener to set
+     * @param listener           The listener to subscribe to be called upon update.
      * @param updateTimeInMillis Time interval between each update
      */
     @Override
-    public void setPositionSourceListener(@NonNull PositionSourceListener listener, @NonNull int updateTimeInMillis) {
+    public void setPositionSourceListener(@NonNull final PositionSourceListener listener, final int updateTimeInMillis) {
         this.positionSourceListener = listener;
-        //this.updateTimeInMillis = updateTimeInMillis;
         locationRequest.setInterval(updateTimeInMillis);
         requestLocationUpdate();
     }
@@ -70,7 +68,7 @@ public class AndroidGPSPositionSource extends LocationCallback implements GPSPos
     }
 
     /**
-     * Requests a location update. Before this, you should create a location request (constructor).
+     * Subscribes the locationCallback to be called upon location update.
      */
     private void requestLocationUpdate() {
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());

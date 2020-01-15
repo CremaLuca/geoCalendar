@@ -40,7 +40,7 @@ public class AndroidGPSPositionSource extends LocationCallback implements GPSPos
             @Override
             public void onLocationResult(LocationResult result) {
                 //check this
-                positionSourceListener.onPositionRetrieved(new GPSPosition(result.getLocations().get(0)));
+                positionSourceListener.onPositionRetrieved(new GPSPosition(result.getLastLocation()));
             }
         };
         this.locationRequest = LocationRequest.create();

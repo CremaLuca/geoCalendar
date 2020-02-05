@@ -1,44 +1,24 @@
 package com.eis.geoCalendar.demo;
 
+import android.os.Bundle;
+
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import android.location.Location;
-import android.os.Bundle;
-import android.widget.Toast;
-
-
-import com.eis.geoCalendar.app.GenericEvent;
 import com.eis.geoCalendar.app.GenericEventManager;
-import com.eis.geoCalendar.app.network.GenericEventNetwork;
-import com.eis.geoCalendar.app.network.GenericNetworkEvent;
-import com.eis.geoCalendar.app.network.GenericNetworkedEventManager;
+import com.eis.geoCalendar.demo.Behaviour.EventMapBehaviour;
+import com.eis.geoCalendar.demo.Localization.LocationManager;
 import com.eis.geoCalendar.events.Event;
 import com.eis.geoCalendar.events.EventManager;
-import com.eis.geoCalendar.gps.GPSPosition;
-import com.eis.geoCalendar.network.EventNetworkManager;
-import com.eis.geoCalendar.network.NetworkEvent;
-import com.eis.geoCalendar.network.NetworkEventUser;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
-import com.google.android.gms.maps.GoogleMap.OnInfoWindowLongClickListener;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.eis.geoCalendar.demo.Localization.LocationManager;
-import com.eis.geoCalendar.demo.Localization.Command;
+
 
 
 /**
  * @author Turcato
  */
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
-        OnMapLongClickListener, OnInfoWindowLongClickListener, ResultEventListener, RemoveEventListener {
+public class MapsActivity extends FragmentActivity {
 
-    private GoogleMap mMap;
     private EventManager<Event<String>> eventManager;
 
 
@@ -46,49 +26,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final String REMOVE_EVENT_DIALOG_TAG = "removeEventDialog";
     private static final int APP_PERMISSION_REQUEST_CODE = 0;
     private LocationManager locationManager;
+    private EventMapBehaviour eventMapBehaviour;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
 
         //Creating the event manager
         eventManager = new GenericEventManager<>(null);
         locationManager = new LocationManager(getApplicationContext());
+        eventMapBehaviour = new EventMapBehaviour<>(getApplicationContext());
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+
+        //My job here is done
+        mapFragment.getMapAsync(eventMapBehaviour);
+
         requestPermissions();
-
     }
-
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        //Collect all events from EventManager
-
-        //set onClick listener
-        mMap.setOnMapLongClickListener(this);           //To add Events
-        mMap.setOnInfoWindowLongClickListener(this);    //To delete Events
-
-        //Retrieve current position
-        Command<Location> moveMapCommand = new MoveMapCommand(mMap);
-        locationManager.getLastLocation(moveMapCommand);
-    }
-
 
     /***
      * @author Turcato
@@ -98,59 +57,4 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         ActivityCompat.requestPermissions(this, LocationManager.getPermissions(), APP_PERMISSION_REQUEST_CODE);
     }
 
-    /**
-     * Called when user clicks (taps) on the map
-     * Collects the position associated and opens Dialog for creating event
-     *
-     * @param latLng The position on the map where the user clicked
-     */
-    @Override
-    public void onMapLongClick(LatLng latLng) {
-        Toast.makeText(getApplicationContext(), "Clicked at " + latLng.toString(), Toast.LENGTH_SHORT).show();
-
-        CreateLocatedEventDialogFragment createEventDialog = new CreateLocatedEventDialogFragment();
-        createEventDialog.show(getSupportFragmentManager(), CREATE_EVENT_DIALOG_TAG);
-        createEventDialog.setResultActivity(this);
-        createEventDialog.setEventPosition(latLng);
-    }
-
-    /**
-     * Called by a fragment of the application that returns the parameters to Create a new event and update the map
-     *
-     * @param pos         The position of the event to create
-     * @param description The description of the event to create
-     */
-    @Override
-    public void onEventReturn(LatLng pos, String description) {
-        GPSPosition eventPos = new GPSPosition(pos.latitude, pos.longitude);
-        GenericEvent<String> event = new GenericEvent<>(eventPos, description);
-        //eventManager.addEvent(event);
-        Marker created = mMap.addMarker(new MarkerOptions().position(pos).title(description)); //automatically cuts title if too long
-        created.setTag(event);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
-    }
-
-    /**
-     * Called when user long presses an InfoWindow of Marker
-     * Opens a dialog that asks the user if the event has to be deleted
-     *
-     * @param marker The marker whose InfoWindow was pressed
-     */
-    @Override
-    public void onInfoWindowLongClick(Marker marker) {
-        RemoveLocatedEventDialog removeLocatedEventDialog = new RemoveLocatedEventDialog();
-        removeLocatedEventDialog.setMarker(marker);
-        removeLocatedEventDialog.setRemoveEventListener(this);
-        removeLocatedEventDialog.show(getSupportFragmentManager(), REMOVE_EVENT_DIALOG_TAG);
-    }
-
-    /**
-     * Removes the Located Event mark from the map
-     *
-     * @param marker The marker to be removed
-     */
-    @Override
-    public void removeMark(Marker marker) {
-        marker.remove();
-    }
 }

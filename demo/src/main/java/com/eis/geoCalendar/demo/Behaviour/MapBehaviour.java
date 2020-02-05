@@ -1,10 +1,9 @@
 package com.eis.geoCalendar.demo.Behaviour;
 
-import android.content.Context;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 
+import com.eis.geoCalendar.demo.Localization.OnLocationAvailableListener;
 import com.eis.geoCalendar.demo.RemoveEventListener;
 import com.eis.geoCalendar.demo.ResultEventListener;
 import com.google.android.gms.maps.GoogleMap;
@@ -18,7 +17,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
  * Defining a class that implements this interface allows to divide the application's logic from the UI activity
  */
 public interface MapBehaviour extends OnMapReadyCallback,
-        GoogleMap.OnMapLongClickListener, GoogleMap.OnInfoWindowLongClickListener, ResultEventListener, RemoveEventListener {
+        GoogleMap.OnMapLongClickListener, GoogleMap.OnInfoWindowLongClickListener,
+        ResultEventListener, RemoveEventListener, OnLocationAvailableListener {
 
     /**
      *

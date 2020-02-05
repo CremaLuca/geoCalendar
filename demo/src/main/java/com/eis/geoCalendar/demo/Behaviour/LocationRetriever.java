@@ -1,7 +1,10 @@
 package com.eis.geoCalendar.demo.Behaviour;
 
-import com.eis.geoCalendar.gps.GPSPosition;
+import com.eis.geoCalendar.demo.Localization.OnLocationAvailableListener;
+
 
 public interface LocationRetriever {
-    GPSPosition getCurretnLocation();
+    void getCurrentLocation();
+
+    void setOnLocationAvailableListener(OnLocationAvailableListener onLocationAvailableListener);
 }

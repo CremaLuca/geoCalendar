@@ -29,7 +29,7 @@ public class RemoveLocatedEventDialog extends DialogFragment {
         Builder builder = new Builder(getActivity());
         builder.setTitle(R.string.RemoveEventDialogTitle); //defined in strings.xml
         // Add the buttons
-        builder.setPositiveButton(R.string.DELETE, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.REMOVE, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked DELETE
                 removeEventListener.removeMark(marker);
@@ -49,14 +49,14 @@ public class RemoveLocatedEventDialog extends DialogFragment {
     /**
      * @param marker Set the marker to be remove
      */
-    void setMarker(Marker marker) {
+    public void setMarker(Marker marker) {
         this.marker = marker;
     }
 
     /**
      * @param removeEventListener Listener to call when DELETE is pressed
      */
-    void setRemoveEventListener(RemoveEventListener removeEventListener) {
+    public void setRemoveEventListener(RemoveEventListener removeEventListener) {
         this.removeEventListener = removeEventListener;
     }
 }

@@ -1,69 +1,44 @@
-package com.eis.geoCalendar.demo;
+package com.eis.geoCalendar.demo.Behaviour;
 
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentActivity;
-
+import android.content.Context;
 import android.location.Location;
-import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 
 import com.eis.geoCalendar.app.GenericEvent;
-import com.eis.geoCalendar.app.GenericEventManager;
-import com.eis.geoCalendar.app.network.GenericEventNetwork;
-import com.eis.geoCalendar.app.network.GenericNetworkEvent;
-import com.eis.geoCalendar.app.network.GenericNetworkedEventManager;
-import com.eis.geoCalendar.events.Event;
-import com.eis.geoCalendar.events.EventManager;
+import com.eis.geoCalendar.demo.CreateLocatedEventDialogFragment;
+import com.eis.geoCalendar.demo.Localization.Command;
+import com.eis.geoCalendar.demo.Behaviour.MapBehaviour;
+import com.eis.geoCalendar.demo.MoveMapCommand;
+import com.eis.geoCalendar.demo.RemoveLocatedEventDialog;
 import com.eis.geoCalendar.gps.GPSPosition;
-import com.eis.geoCalendar.network.EventNetworkManager;
-import com.eis.geoCalendar.network.NetworkEvent;
-import com.eis.geoCalendar.network.NetworkEventUser;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
-import com.google.android.gms.maps.GoogleMap.OnInfoWindowLongClickListener;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.eis.geoCalendar.demo.Localization.LocationManager;
-import com.eis.geoCalendar.demo.Localization.Command;
 
-
-/**
- * @author Turcato
- */
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
-        OnMapLongClickListener, OnInfoWindowLongClickListener, ResultEventListener, RemoveEventListener {
-
+public class EventMapBehaviour implements MapBehaviour {
     private GoogleMap mMap;
-    private EventManager<Event<String>> eventManager;
+    private FragmentManager supportFragmentManager;
+    private Context appContext;
+    private LocationRetriever locationRetriever;
 
-
-    private static final String CREATE_EVENT_DIALOG_TAG = "createEventDialog";
-    private static final String REMOVE_EVENT_DIALOG_TAG = "removeEventDialog";
-    private static final int APP_PERMISSION_REQUEST_CODE = 0;
-    private LocationManager locationManager;
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
-        //Creating the event manager
-        eventManager = new GenericEventManager<>(null);
-        locationManager = new LocationManager(getApplicationContext());
-        requestPermissions();
-
+    public EventMapBehaviour(@NonNull Context context) {
+        appContext = context;
     }
 
+    @Override
+    public void getSupportFragmentManager(@NonNull FragmentManager supportFragmentManager) {
+        this.supportFragmentManager = supportFragmentManager;
+    }
+
+    @Override
+    public void getLocationRetriever(@NonNull LocationRetriever locationRetriever) {
+        this.locationRetriever = locationRetriever;
+    }
 
     /**
      * Manipulates the map once available.
@@ -86,17 +61,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //Retrieve current position
         Command<Location> moveMapCommand = new MoveMapCommand(mMap);
-        locationManager.getLastLocation(moveMapCommand);
+        locationRetriever.getCurretnLocation();
     }
 
-
-    /***
-     * @author Turcato
-     * Requests Android permissions if not granted
-     */
-    public void requestPermissions() {
-        ActivityCompat.requestPermissions(this, LocationManager.getPermissions(), APP_PERMISSION_REQUEST_CODE);
-    }
 
     /**
      * Called when user clicks (taps) on the map
@@ -153,4 +120,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void removeMark(Marker marker) {
         marker.remove();
     }
+
 }

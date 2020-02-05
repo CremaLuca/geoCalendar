@@ -63,7 +63,7 @@ public class CreateLocatedEventDialogFragment extends DialogFragment {
     /**
      * @param resultEventListener Listener to call when result is available
      */
-    void setResultActivity(ResultEventListener resultEventListener) {
+    public void setResultActivity(ResultEventListener resultEventListener) {
         resultListener = resultEventListener;
     }
 
@@ -72,7 +72,7 @@ public class CreateLocatedEventDialogFragment extends DialogFragment {
      *
      * @param latLng The position for an Event that must be created (in this dialog is not canceled)
      */
-    void setEventPosition(LatLng latLng) {
+    public void setEventPosition(LatLng latLng) {
         this.latLng = latLng;
     }
 }

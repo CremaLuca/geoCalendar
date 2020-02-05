@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">Demo</string>
     <string name="title_activity_maps">Map</string>
-    <string name="CreateEventDialogTitle">Create new Located Event</string>
-    <string name="RemoveEventDialogTitle">Remove the Located Event</string>
+    <string name="CreateEventDialogTitle">New Event</string>
+    <string name="RemoveEventDialogTitle">Remove Event</string>
     <string name="OK">OK</string>
     <string name="CANCEL">Cancel</string>
-    <string name="DELETE">DELETE</string>
+    <string name="REMOVE">Remove</string>
 </resources>

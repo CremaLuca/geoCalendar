@@ -3,8 +3,8 @@ package com.eis.geoCalendar.demo.Behaviour;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 
-import com.eis.geoCalendar.demo.Dialogs.AddEventDialog;
-import com.eis.geoCalendar.demo.Dialogs.RemoveEventDialog;
+import com.eis.geoCalendar.demo.Dialogs.AbstractAddEventDialog;
+import com.eis.geoCalendar.demo.Dialogs.AbstractRemoveEventDialog;
 import com.eis.geoCalendar.demo.Localization.OnLocationAvailableListener;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -32,13 +32,13 @@ public interface MapBehaviour extends OnMapReadyCallback,
     void setLocationRetriever(@NonNull LocationRetriever locationRetriever);
 
     /**
-     * @param dialog An object of a class that extends AddEventDialog
+     * @param dialog An object of a class that extends AbstractAddEventDialog
      */
-    void setAddEventDialog(@NonNull AddEventDialog dialog);
+    void setAddEventDialog(@NonNull AbstractAddEventDialog dialog);
 
     /**
-     * @param dialog An object of a class that extends RemoveEventDialog
+     * @param dialog An object of a class that extends AbstractRemoveEventDialog
      */
-    void setRemoveEventDialog(@NonNull RemoveEventDialog dialog);
+    void setRemoveEventDialog(@NonNull AbstractRemoveEventDialog dialog);
 
 }

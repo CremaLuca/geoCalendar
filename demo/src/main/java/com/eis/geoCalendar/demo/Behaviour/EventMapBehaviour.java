@@ -7,8 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 
 import com.eis.geoCalendar.app.GenericEvent;
-import com.eis.geoCalendar.demo.Dialogs.AddEventDialog;
-import com.eis.geoCalendar.demo.Dialogs.RemoveEventDialog;
+import com.eis.geoCalendar.demo.Dialogs.AbstractAddEventDialog;
+import com.eis.geoCalendar.demo.Dialogs.AbstractRemoveEventDialog;
 import com.eis.geoCalendar.events.Event;
 import com.eis.geoCalendar.events.EventManager;
 import com.eis.geoCalendar.gps.GPSPosition;
@@ -36,8 +36,8 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     private LocationRetriever locationRetriever;
     private EventManager<Event<String>> eventManager;
     private ArrayList<Event<String>> currentEvents;
-    private AddEventDialog addEventDialog;
-    private RemoveEventDialog removeEventDialog;
+    private AbstractAddEventDialog addEventDialog;
+    private AbstractRemoveEventDialog removeEventDialog;
 
     private static final String CREATE_EVENT_DIALOG_TAG = "CREATE_EVENT_DIALOG_TAG";
     private static final String REMOVE_EVENT_DIALOG_TAG = "REMOVE_EVENT_DIALOG_TAG";
@@ -86,12 +86,12 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     }
 
     @Override
-    public void setAddEventDialog(@NonNull AddEventDialog dialog) {
+    public void setAddEventDialog(@NonNull AbstractAddEventDialog dialog) {
         this.addEventDialog = dialog;
     }
 
     @Override
-    public void setRemoveEventDialog(@NonNull RemoveEventDialog dialog) {
+    public void setRemoveEventDialog(@NonNull AbstractRemoveEventDialog dialog) {
         this.removeEventDialog = dialog;
     }
 

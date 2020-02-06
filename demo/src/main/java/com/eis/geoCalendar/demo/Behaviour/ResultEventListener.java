@@ -1,4 +1,4 @@
-package com.eis.geoCalendar.demo;
+package com.eis.geoCalendar.demo.Behaviour;
 
 import com.google.android.gms.maps.model.LatLng;
 

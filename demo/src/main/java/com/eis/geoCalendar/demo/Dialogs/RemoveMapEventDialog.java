@@ -1,4 +1,4 @@
-package com.eis.geoCalendar.demo;
+package com.eis.geoCalendar.demo.Dialogs;
 
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
@@ -6,8 +6,9 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
 
+import com.eis.geoCalendar.demo.Behaviour.RemoveEventListener;
+import com.eis.geoCalendar.demo.R;
 import com.google.android.gms.maps.model.Marker;
 
 /**
@@ -15,7 +16,7 @@ import com.google.android.gms.maps.model.Marker;
  * <p>
  * This class defines a DialogFragment to remove a Located Event mark
  */
-public class RemoveLocatedEventDialog extends DialogFragment {
+public class RemoveMapEventDialog extends RemoveEventDialog {
     private Marker marker;
     private RemoveEventListener removeEventListener;
 

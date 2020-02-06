@@ -7,8 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 
 import com.eis.geoCalendar.app.GenericEvent;
-import com.eis.geoCalendar.demo.CreateLocatedEventDialogFragment;
-import com.eis.geoCalendar.demo.RemoveLocatedEventDialog;
+import com.eis.geoCalendar.demo.Dialogs.AddEventDialog;
+import com.eis.geoCalendar.demo.Dialogs.RemoveEventDialog;
 import com.eis.geoCalendar.events.Event;
 import com.eis.geoCalendar.events.EventManager;
 import com.eis.geoCalendar.gps.GPSPosition;
@@ -36,6 +36,8 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     private LocationRetriever locationRetriever;
     private EventManager<Event<String>> eventManager;
     private ArrayList<Event<String>> currentEvents;
+    private AddEventDialog addEventDialog;
+    private RemoveEventDialog removeEventDialog;
 
     private static final String CREATE_EVENT_DIALOG_TAG = "CREATE_EVENT_DIALOG_TAG";
     private static final String REMOVE_EVENT_DIALOG_TAG = "REMOVE_EVENT_DIALOG_TAG";
@@ -81,6 +83,16 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     @Override
     public void setLocationRetriever(@NonNull LocationRetriever locationRetriever) {
         this.locationRetriever = locationRetriever;
+    }
+
+    @Override
+    public void setAddEventDialog(@NonNull AddEventDialog dialog) {
+        this.addEventDialog = dialog;
+    }
+
+    @Override
+    public void setRemoveEventDialog(@NonNull RemoveEventDialog dialog) {
+        this.removeEventDialog = dialog;
     }
 
     /**
@@ -148,11 +160,9 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     @Override
     public void onMapLongClick(LatLng latLng) {
         Toast.makeText(appContext, "Clicked at " + latLng.toString(), Toast.LENGTH_SHORT).show();
-
-        CreateLocatedEventDialogFragment createEventDialog = new CreateLocatedEventDialogFragment();
-        createEventDialog.show(supportFragmentManager, CREATE_EVENT_DIALOG_TAG);
-        createEventDialog.setResultActivity(this);
-        createEventDialog.setEventPosition(latLng);
+        addEventDialog.show(supportFragmentManager, CREATE_EVENT_DIALOG_TAG);
+        addEventDialog.setResultListener(this);
+        addEventDialog.setEventPosition(latLng);
     }
 
     /**
@@ -181,10 +191,9 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
      */
     @Override
     public void onInfoWindowLongClick(Marker marker) {
-        RemoveLocatedEventDialog removeLocatedEventDialog = new RemoveLocatedEventDialog();
-        removeLocatedEventDialog.setMarker(marker);
-        removeLocatedEventDialog.setRemoveEventListener(this);
-        removeLocatedEventDialog.show(supportFragmentManager, REMOVE_EVENT_DIALOG_TAG);
+        removeEventDialog.setMarker(marker);
+        removeEventDialog.setRemoveEventListener(this);
+        removeEventDialog.show(supportFragmentManager, REMOVE_EVENT_DIALOG_TAG);
     }
 
     /**

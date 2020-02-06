@@ -24,7 +24,7 @@ public interface MapBehaviour extends OnMapReadyCallback,
      *
      * @param supportFragmentManager needed to interact with the user through dialogs
      */
-    void getSupportFragmentManager(@NonNull FragmentManager supportFragmentManager);
+    void setSupportFragmentManager(@NonNull FragmentManager supportFragmentManager);
 
-    void getLocationRetriever(@NonNull LocationRetriever locationRetriever);
+    void setLocationRetriever(@NonNull LocationRetriever locationRetriever);
 }

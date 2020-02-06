@@ -71,7 +71,7 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
      * @param supportFragmentManager Needed to interact with the user through dialogs
      */
     @Override
-    public void getSupportFragmentManager(@NonNull FragmentManager supportFragmentManager) {
+    public void setSupportFragmentManager(@NonNull FragmentManager supportFragmentManager) {
         this.supportFragmentManager = supportFragmentManager;
     }
 
@@ -79,7 +79,7 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
      * @param locationRetriever An instance of an object that implements locationRetriever to get the gps position
      */
     @Override
-    public void getLocationRetriever(@NonNull LocationRetriever locationRetriever) {
+    public void setLocationRetriever(@NonNull LocationRetriever locationRetriever) {
         this.locationRetriever = locationRetriever;
     }
 

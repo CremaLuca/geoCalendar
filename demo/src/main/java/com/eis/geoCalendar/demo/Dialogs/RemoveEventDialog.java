@@ -1,4 +1,4 @@
-package com.eis.geoCalendar.demo;
+package com.eis.geoCalendar.demo.Dialogs;
 
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
@@ -6,8 +6,9 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
 
+import com.eis.geoCalendar.demo.Behaviour.RemoveEventListener;
+import com.eis.geoCalendar.demo.R;
 import com.google.android.gms.maps.model.Marker;
 
 /**
@@ -15,7 +16,7 @@ import com.google.android.gms.maps.model.Marker;
  * <p>
  * This class defines a DialogFragment to remove a Located Event mark
  */
-public class RemoveLocatedEventDialog extends DialogFragment {
+public class RemoveEventDialog extends AbstractRemoveEventDialog {
     private Marker marker;
     private RemoveEventListener removeEventListener;
 
@@ -29,7 +30,7 @@ public class RemoveLocatedEventDialog extends DialogFragment {
         Builder builder = new Builder(getActivity());
         builder.setTitle(R.string.RemoveEventDialogTitle); //defined in strings.xml
         // Add the buttons
-        builder.setPositiveButton(R.string.DELETE, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.REMOVE, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked DELETE
                 removeEventListener.removeMark(marker);
@@ -49,14 +50,14 @@ public class RemoveLocatedEventDialog extends DialogFragment {
     /**
      * @param marker Set the marker to be remove
      */
-    void setMarker(Marker marker) {
+    public void setMarker(Marker marker) {
         this.marker = marker;
     }
 
     /**
      * @param removeEventListener Listener to call when DELETE is pressed
      */
-    void setRemoveEventListener(RemoveEventListener removeEventListener) {
+    public void setRemoveEventListener(RemoveEventListener removeEventListener) {
         this.removeEventListener = removeEventListener;
     }
 }

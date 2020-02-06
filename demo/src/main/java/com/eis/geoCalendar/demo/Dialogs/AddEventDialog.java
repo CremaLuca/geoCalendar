@@ -1,4 +1,4 @@
-package com.eis.geoCalendar.demo;
+package com.eis.geoCalendar.demo.Dialogs;
 
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
@@ -8,16 +8,17 @@ import android.text.InputType;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
 
+import com.eis.geoCalendar.demo.Behaviour.ResultEventListener;
+import com.eis.geoCalendar.demo.R;
 import com.google.android.gms.maps.model.LatLng;
 
 /**
  * @author Turcato
  * <p>
- * This class defines a DialogFragment to Create a Located Event with Description defined by user
+ * This class defines a DialogFragment to Create a Localized Event with Description defined by user
  */
-public class CreateLocatedEventDialogFragment extends DialogFragment {
+public class AddEventDialog extends AbstractAddEventDialog {
     private ResultEventListener resultListener;
     private LatLng latLng;
 
@@ -60,10 +61,11 @@ public class CreateLocatedEventDialogFragment extends DialogFragment {
         return builder.create();
     }
 
+
     /**
      * @param resultEventListener Listener to call when result is available
      */
-    void setResultActivity(ResultEventListener resultEventListener) {
+    public void setResultListener(ResultEventListener resultEventListener) {
         resultListener = resultEventListener;
     }
 
@@ -72,7 +74,7 @@ public class CreateLocatedEventDialogFragment extends DialogFragment {
      *
      * @param latLng The position for an Event that must be created (in this dialog is not canceled)
      */
-    void setEventPosition(LatLng latLng) {
+    public void setEventPosition(LatLng latLng) {
         this.latLng = latLng;
     }
 }

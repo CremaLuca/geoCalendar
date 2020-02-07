@@ -10,12 +10,13 @@ import com.eis.geoCalendar.gps.GPSPosition;
 import java.util.ArrayList;
 
 /**
- * This class manages all scheduled events.
+ * This class manages all generic events.
  *
  * @param <E> The generic event.
  * @author Francesco Bau'
  * @author Luca Crema
  * @version 1.0
+ * @see com.eis.geoCalendar.events.Event
  * @see com.eis.geoCalendar.events.EventManager
  * @since 24/12/2019
  */
@@ -56,32 +57,32 @@ public class GenericEventManager<E extends Event> implements EventManager<E> {
     /**
      * Searches for events in a given circle of gps positions.
      *
-     * @param p     The center of the circle of search.
-     * @param range The radius of the circe of search in meters.
+     * @param centerPosition The center of the circle of search.
+     * @param range          The radius of the circe of search in meters.
      * @return {@link ArrayList} of events in the given area. It's empty if there is none.
      */
     @Override
-    public ArrayList<E> getEventsInRange(@NonNull GPSPosition p, float range) {
+    public ArrayList<E> getEventsInRange(@NonNull GPSPosition centerPosition, float range) {
         ArrayList<E> eventsList = new ArrayList<>();
         for (E event : database.getSavedEvents()) {
-            if (event.getPosition().getDistance(p) < range)
+            if (event.getPosition().getDistance(centerPosition) < range)
                 eventsList.add(event);
         }
         return eventsList;
     }
 
     /**
-     * Searches for the closest event to a given {@link GPSPosition}
+     * Searches for the closest event to a given {@link GPSPosition}.
      *
-     * @param p The position used to calculate the closest event
-     * @return The closest event to the given Position if there is one, {@code null} otherwise
+     * @param centerPosition The position used to calculate the closest event.
+     * @return The closest event to the given Position if there is one, {@code null} otherwise.
      */
     @Override
-    public E getClosestEvent(@NonNull GPSPosition p) {
+    public E getClosestEvent(@NonNull GPSPosition centerPosition) {
         if (database.getSavedEvents().isEmpty()) return null;
         E relativeClosestEvent = database.getSavedEvents().get(0);
         for (E event : database.getSavedEvents()) {
-            if (event.getPosition().getDistance(p) < relativeClosestEvent.getPosition().getDistance(p))
+            if (event.getPosition().getDistance(centerPosition) < relativeClosestEvent.getPosition().getDistance(centerPosition))
                 relativeClosestEvent = event;
         }
         return relativeClosestEvent;

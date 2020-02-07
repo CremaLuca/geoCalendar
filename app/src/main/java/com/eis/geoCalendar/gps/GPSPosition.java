@@ -4,16 +4,20 @@ import android.location.Location;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Represents a position calculated with GPS latitude and longitude coordinates.
  * Adapter for {@link android.location.Location} class.
  *
  * @author someone from group 4
  * @author Giorgia Bortoletti
+ * @author Niccolò Turcato (just some tweaking)
  */
 public class GPSPosition {
+    private Location mLocation = new Location(GPS_POSITION);
 
-    Location mLocation = new Location("GPSPosition");
+    private static final String GPS_POSITION = "GPSPosition";
 
     /**
      * Default constructor
@@ -22,20 +26,31 @@ public class GPSPosition {
     }
 
     /**
-     * Constructor that required {@link Location} as param
+     * Constructor that requires {@link Location} as param
      *
-     * @param mLocation The {@link Location} obj
+     * @param mLocation     The {@link Location} obj
      */
-    public GPSPosition(Location mLocation) {
+    public GPSPosition(@NonNull Location mLocation) {
         this.mLocation = mLocation;
+    }
+
+    /**
+     * Constructor that requires {@link LatLng} as param
+     *
+     * @param location The {@link LatLng} obj
+     */
+    public GPSPosition(@NonNull LatLng location) {
+        mLocation = new Location(GPS_POSITION); //provider name is unnecessary
+        mLocation.setLatitude(location.latitude);
+        mLocation.setLongitude(location.longitude);
     }
 
     /**
      * Method used to update or set the location coordinates for this {@link GPSPosition} object
      *
-     * @param latitude
-     * @param longitude
-     * @return the {@link GPSPosition} object updates
+     * @param latitude      The updated GPS latitude
+     * @param longitude     The updated GPS longitude
+     * @return the updated {@link GPSPosition} object
      */
     public GPSPosition updateLocation(double latitude, double longitude) {
         this.mLocation.setLatitude(latitude);
@@ -44,21 +59,21 @@ public class GPSPosition {
     }
 
     /**
-     * @return The latitude position
+     * @return The latitude of this {@link GPSPosition} object
      */
     public double getLatitude() {
         return mLocation.getLatitude();
     }
 
     /**
-     * @return The longitude position
+     * @return The longitude of this {@link GPSPosition} object
      */
     public double getLongitude() {
         return mLocation.getLongitude();
     }
 
     /**
-     * @param otherPosition A position to calculate the distance from
+     * @param otherPosition     A position to calculate the distance from
      * @return The distance in meters from the given position.
      */
     public double getDistance(@NonNull final GPSPosition otherPosition) {
@@ -66,8 +81,8 @@ public class GPSPosition {
     }
 
     /**
-     * @param obj       the reference object with which to compare.
-     * @param precision the precision in meters within which the positions remain equal.
+     * @param obj       The reference object with which to compare.
+     * @param precision The precision in meters within which the positions remain equal.
      * @return true if this object is equal to obj argument in the precision argument range, false otherwise.
      */
     public boolean equals(@NonNull Object obj, double precision) {
@@ -77,12 +92,12 @@ public class GPSPosition {
             return true;
         if (this.getDistance((GPSPosition) obj) <= precision)
             return true;
-        //Should not reach this return
+
         return false;
     }
 
     /**
-     * @param obj the reference object with which to compare.
+     * @param obj   The reference object with which to compare.
      * @return true if this object is the same as the obj argument, false otherwise.
      */
     @Override

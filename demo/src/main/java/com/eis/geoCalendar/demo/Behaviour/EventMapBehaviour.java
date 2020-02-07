@@ -152,7 +152,7 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     }
 
     /**
-     * Called when user clicks (taps) on the map
+     * Called when user clicks (taps) on the map for a prolonged time
      * Collects the position associated and opens Dialog for creating event
      *
      * @param latLng The position on the map where the user clicked

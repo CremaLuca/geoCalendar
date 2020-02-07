@@ -6,4 +6,8 @@
     <string name="OK">OK</string>
     <string name="CANCEL">Cancel</string>
     <string name="REMOVE">Remove</string>
+
+    <string name="action_keep">Keep</string>
+    <string name="action_inbox">Inbox</string>
+    <string name="action_hangout">Hangout</string>
 </resources>

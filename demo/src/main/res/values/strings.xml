@@ -10,4 +10,14 @@
     <string name="action_keep">Keep</string>
     <string name="action_inbox">Inbox</string>
     <string name="action_hangout">Hangout</string>
+
+    <string name="bottom_sheet_option">Option</string>
+
+
+    <string name="action_share">Share</string>
+    <string name="action_upload">Upload</string>
+    <string name="action_copy">Copy</string>
+    <string name="action_print">Print</string>
+    <string name="title_activity_main">MainActivity</string>
+
 </resources>

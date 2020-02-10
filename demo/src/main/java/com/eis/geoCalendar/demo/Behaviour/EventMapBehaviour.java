@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 
 import com.eis.geoCalendar.app.GenericEvent;
+import com.eis.geoCalendar.demo.Bottomsheet.EventBottomSheetDialogFragment;
 import com.eis.geoCalendar.demo.Dialogs.AbstractAddEventDialog;
 import com.eis.geoCalendar.demo.Dialogs.AbstractRemoveEventDialog;
 import com.eis.geoCalendar.events.Event;
@@ -41,6 +42,7 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
 
     private static final String CREATE_EVENT_DIALOG_TAG = "CREATE_EVENT_DIALOG_TAG";
     private static final String REMOVE_EVENT_DIALOG_TAG = "REMOVE_EVENT_DIALOG_TAG";
+    private static final String EVENT_DESCRIPTION_BOTTOMSHEET_DIALOG_TAG = "EVENT_DESCRIPTION_BOTTOMSHEET_DIALOG_TAG";
 
     /**
      * Constructor that creates a fully operative EventMapBehaviour object
@@ -111,6 +113,7 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
         //set onClick listener
         mMap.setOnMapLongClickListener(this);           //To add Events
         mMap.setOnInfoWindowLongClickListener(this);    //To delete Events
+        mMap.setOnMarkerClickListener(this);
 
         //Retrieve current position
         locationRetriever.setOnLocationAvailableListener(this);
@@ -163,6 +166,19 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
         addEventDialog.show(supportFragmentManager, CREATE_EVENT_DIALOG_TAG);
         addEventDialog.setResultListener(this);
         addEventDialog.setEventPosition(latLng);
+    }
+
+    /**
+     * TODO
+     *
+     * @param marker
+     * @return
+     */
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        EventBottomSheetDialogFragment bottomSheet = new EventBottomSheetDialogFragment();
+        bottomSheet.show(supportFragmentManager, EVENT_DESCRIPTION_BOTTOMSHEET_DIALOG_TAG);
+        return false;
     }
 
     /**

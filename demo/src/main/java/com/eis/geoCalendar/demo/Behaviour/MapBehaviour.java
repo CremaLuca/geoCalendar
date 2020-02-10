@@ -18,6 +18,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
  */
 public interface MapBehaviour extends OnMapReadyCallback,
         GoogleMap.OnMapLongClickListener, GoogleMap.OnInfoWindowLongClickListener,
+        GoogleMap.OnMarkerClickListener,
         ResultEventListener, RemoveEventListener, OnLocationAvailableListener {
 
     /**

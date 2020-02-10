@@ -1,13 +1,14 @@
 package com.eis.geoCalendar.demo;
 
 import android.os.Bundle;
+import android.widget.LinearLayout;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import com.eis.geoCalendar.app.GenericEventManager;
 import com.eis.geoCalendar.demo.Behaviour.EventMapBehaviour;
+import com.eis.geoCalendar.demo.Bottomsheet.EventBottomSheetDialogFragment;
 import com.eis.geoCalendar.demo.Dialogs.AddEventDialog;
 import com.eis.geoCalendar.demo.Dialogs.RemoveEventDialog;
 import com.eis.geoCalendar.demo.Localization.LocationManager;
@@ -30,6 +31,9 @@ public class MapsActivity extends FragmentActivity {
     private LocationManager locationManager;
     private EventMapBehaviour eventMapBehaviour;
     private BottomSheetBehavior bottomSheetBehavior;
+
+    LinearLayout layoutBottomSheet;
+
 
     private static final String MAPS_ACTIVITY_TAG = "MAPS_ACTIVITY_TAG";
 
@@ -59,55 +63,8 @@ public class MapsActivity extends FragmentActivity {
         //My job here is done
         mapFragment.getMapAsync(eventMapBehaviour);
 
-        try {
+        EventBottomSheetDialogFragment eventBottomSheetDialogFragment = new EventBottomSheetDialogFragment();
 
-
-            // get the bottom sheet view
-            ConstraintLayout bottomSheetLayout = findViewById(R.id.bottom_sheet);
-            // init the bottom sheet behavior
-            bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
-
-            if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-            } else {
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
-            }
-        } catch (Exception e) {
-
-        }
-        /*
-        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                switch (newState) {
-                    case BottomSheetBehavior.STATE_HIDDEN:
-
-                        break;
-                    case BottomSheetBehavior.STATE_EXPANDED:
-
-
-                        break;
-                    case BottomSheetBehavior.STATE_COLLAPSED:
-
-                        break;
-                    case BottomSheetBehavior.STATE_DRAGGING:
-
-                        break;
-                    case BottomSheetBehavior.STATE_SETTLING:
-
-                        break;
-                }
-                Log.d(MAPS_ACTIVITY_TAG, "onStateChanged: " + newState);
-            }
-
-
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-            }
-        });
-        */
 
 
     }

@@ -3,6 +3,8 @@ package com.eis.geoCalendar.demo.Behaviour;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 
+import com.eis.geoCalendar.demo.Bottomsheet.AbstractMapEventBottomSheetBehaviour;
+import com.eis.geoCalendar.demo.Bottomsheet.OnActionButtonClickListener;
 import com.eis.geoCalendar.demo.Dialogs.AbstractAddEventDialog;
 import com.eis.geoCalendar.demo.Dialogs.AbstractRemoveEventDialog;
 import com.eis.geoCalendar.demo.Localization.OnLocationAvailableListener;
@@ -18,8 +20,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
  */
 public interface MapBehaviour extends OnMapReadyCallback,
         GoogleMap.OnMapLongClickListener, GoogleMap.OnInfoWindowLongClickListener,
-        GoogleMap.OnMarkerClickListener,
-        ResultEventListener, RemoveEventListener, OnLocationAvailableListener {
+        GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener,
+        ResultEventListener, RemoveEventListener, OnLocationAvailableListener,
+        OnActionButtonClickListener {
 
     /**
      *
@@ -41,5 +44,10 @@ public interface MapBehaviour extends OnMapReadyCallback,
      * @param dialog An object of a class that extends AbstractRemoveEventDialog
      */
     void setRemoveEventDialog(@NonNull AbstractRemoveEventDialog dialog);
+
+    /**
+     * @param abstractMapEventBottomSheetBehaviour An object of a class that extends AbstractMapEventBottomSheetBehaviour
+     */
+    void setBottomSheetBehaviour(@NonNull AbstractMapEventBottomSheetBehaviour abstractMapEventBottomSheetBehaviour);
 
 }

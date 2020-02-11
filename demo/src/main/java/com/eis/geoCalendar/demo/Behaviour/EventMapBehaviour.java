@@ -1,13 +1,15 @@
 package com.eis.geoCalendar.demo.Behaviour;
 
 import android.content.Context;
+import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 
 import com.eis.geoCalendar.app.GenericEvent;
-import com.eis.geoCalendar.demo.Bottomsheet.EventBottomSheetDialogFragment;
+import com.eis.geoCalendar.demo.Bottomsheet.AbstractMapEventBottomSheetBehaviour;
 import com.eis.geoCalendar.demo.Dialogs.AbstractAddEventDialog;
 import com.eis.geoCalendar.demo.Dialogs.AbstractRemoveEventDialog;
 import com.eis.geoCalendar.events.Event;
@@ -39,6 +41,7 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     private ArrayList<Event<String>> currentEvents;
     private AbstractAddEventDialog addEventDialog;
     private AbstractRemoveEventDialog removeEventDialog;
+    private AbstractMapEventBottomSheetBehaviour bottomSheetBehaviour;
 
     private static final String CREATE_EVENT_DIALOG_TAG = "CREATE_EVENT_DIALOG_TAG";
     private static final String REMOVE_EVENT_DIALOG_TAG = "REMOVE_EVENT_DIALOG_TAG";
@@ -108,13 +111,21 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        //Collect all events from EventManager
+        mMap.setMyLocationEnabled(true);
+
+        mMap.getUiSettings().setMapToolbarEnabled(true);
 
         //set onClick listener
         mMap.setOnMapLongClickListener(this);           //To add Events
         mMap.setOnInfoWindowLongClickListener(this);    //To delete Events
         mMap.setOnMarkerClickListener(this);
+        mMap.setOnMapClickListener(this);
 
+        //If the Bottom Sheet has been set the map mustn't put elements in its field of action
+        if (bottomSheetBehaviour != null) {
+            mMap.setPadding(0, 0, 0, bottomSheetBehaviour.getFullLayoutHeight());
+            Log.d("Sheet height", "Sheet height" + bottomSheetBehaviour.getFullLayoutHeight());
+        }
         //Retrieve current position
         locationRetriever.setOnLocationAvailableListener(this);
         locationRetriever.getCurrentLocation();
@@ -169,16 +180,33 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     }
 
     /**
-     * TODO
+     * Moves the camera to the marker's location and, if set,
+     * expands the bottomSheet to display Marker's event's description
+     * Note: returning false for this event will fire the default
      *
-     * @param marker
-     * @return
+     * @param marker The marker that caused this callback
+     * @return True if the listener has consumed the event, false otherwise.
      */
     @Override
     public boolean onMarkerClick(Marker marker) {
-        EventBottomSheetDialogFragment bottomSheet = new EventBottomSheetDialogFragment();
-        bottomSheet.show(supportFragmentManager, EVENT_DESCRIPTION_BOTTOMSHEET_DIALOG_TAG);
+        moveMap(marker.getPosition());
+        if (bottomSheetBehaviour != null) {
+            bottomSheetBehaviour.setDisplayedText(marker.getTitle());
+            if (bottomSheetBehaviour.isShown())
+                bottomSheetBehaviour.hide();
+            else
+                bottomSheetBehaviour.show();
+
+
+            return true;
+        }
         return false;
+    }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+        if (bottomSheetBehaviour != null)
+            bottomSheetBehaviour.hide();
     }
 
     /**
@@ -226,4 +254,23 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
             eventManager.removeEvent(event);
     }
 
+    /**
+     * @param abstractMapEventBottomSheetBehaviour An object of a class that extends AbstractMapEventBottomSheetBehaviour
+     */
+    @Override
+    public void setBottomSheetBehaviour(@NonNull AbstractMapEventBottomSheetBehaviour abstractMapEventBottomSheetBehaviour) {
+        this.bottomSheetBehaviour = abstractMapEventBottomSheetBehaviour;
+        bottomSheetBehaviour.setOnActionButtonClickListener(this);
+    }
+
+    /**
+     * This is called from the action Button of the BottomSheet
+     *
+     * @param v The View obj that caused this callback
+     */
+    @Override
+    public void OnActionButtonClick(View v) {
+        if (bottomSheetBehaviour != null)
+            bottomSheetBehaviour.hide();
+    }
 }

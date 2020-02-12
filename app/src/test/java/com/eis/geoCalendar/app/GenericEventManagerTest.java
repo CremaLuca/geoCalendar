@@ -20,8 +20,10 @@ import static org.mockito.Mockito.when;
 public class GenericEventManagerTest {
 
     public static final String DEFAULT_CONTENT = "Test content";
-    public static final GPSPosition DEFAULT_GPS_POSITION = new GPSPosition(33.12345675f, 15.22323232f);
-    public static final GPSPosition DISTANT_GPS_POSITION = new GPSPosition(15.32132312f, 33.23232323f);
+    public static final GPSPosition DEFAULT_GPS_POSITION =
+            new GPSPosition().updateLocation(33.12345675f, 15.22323232f);
+    public static final GPSPosition DISTANT_GPS_POSITION =
+            new GPSPosition().updateLocation(15.32132312f, 33.23232323f);
 
     @Mock
     private Event<String> mockTimedEvent;

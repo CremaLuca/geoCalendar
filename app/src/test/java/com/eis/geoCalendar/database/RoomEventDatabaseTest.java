@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.annotation.Config;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -25,6 +26,7 @@ import static org.junit.Assert.fail;
  *
  * @author Riccardo De Zen
  */
+@Config(sdk = 28)
 @RunWith(RobolectricTestRunner.class)
 public class RoomEventDatabaseTest {
 

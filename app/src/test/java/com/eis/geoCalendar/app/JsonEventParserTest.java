@@ -31,8 +31,9 @@ public class JsonEventParserTest<E extends Event> {
 
     /**
      * Method returning params for the tests. They are stored in {@link EventTestHelper}.
-     * @see EventTestHelper#nameTokenExampleGeneric() For parameter explanation.
+     *
      * @return A collection of parameter sets suited for these tests.
+     * @see EventTestHelper#nameTokenExampleGeneric() For parameter explanation.
      */
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> params() {
@@ -103,8 +104,8 @@ public class JsonEventParserTest<E extends Event> {
         JsonEventParser<GenericEvent> moreGenericParser = new JsonEventParser<>(rawTypeToken);
         GenericEvent moreGenericEvent = moreGenericParser.dataToEvent(data);
         /*
-         * If the current Event should be parsed even by a raw type, then equals should return true,
-         * otherwise it should return false. This is a negated XOR.
+         * If the current Event should be parsed even with a raw type, then equals should return
+         * true, otherwise it should return false. This is a negated XOR.
          */
         assertFalse(shouldAllowGeneric ^ currentEvent.equals(moreGenericEvent));
     }

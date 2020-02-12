@@ -40,7 +40,8 @@ abstract class AbstractEventDatabase extends RoomDatabase {
     static AbstractEventDatabase getInstance(Context context, String name) {
         if (activeInstances.get(name) != null)
             return activeInstances.get(name);
-        AbstractEventDatabase newInstance = Room.databaseBuilder(context, AbstractEventDatabase.class, name)
+        AbstractEventDatabase newInstance = Room.databaseBuilder(context,
+                AbstractEventDatabase.class, name)
                 .allowMainThreadQueries()
                 .enableMultiInstanceInvalidation()
                 .build();
@@ -49,7 +50,8 @@ abstract class AbstractEventDatabase extends RoomDatabase {
     }
 
     /**
-     * Same as {@link AbstractEventDatabase#getInstance(Context, String)} but the database is created
+     * Same as {@link AbstractEventDatabase#getInstance(Context, String)} but the database is
+     * created
      * and stored directly in the device's memory, it can prove useful in some scenarios, but it
      * has been added for testing purposes only: Room databases cannot be physically instantiated
      * during Unit Testing.

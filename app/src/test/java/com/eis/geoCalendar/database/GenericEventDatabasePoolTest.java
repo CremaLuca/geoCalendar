@@ -1,5 +1,7 @@
 package com.eis.geoCalendar.database;
 
+import androidx.test.core.app.ApplicationProvider;
+
 import com.eis.geoCalendar.app.GenericEvent;
 import com.eis.geoCalendar.events.EventDatabase;
 import com.eis.geoCalendar.gps.GPSPosition;
@@ -11,7 +13,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
+import org.robolectric.annotation.Config;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -32,6 +34,7 @@ import static junit.framework.TestCase.fail;
  *
  * @author Riccardo De Zen.
  */
+@Config(sdk = 28)
 @RunWith(RobolectricTestRunner.class)
 public class GenericEventDatabasePoolTest {
 
@@ -64,10 +67,13 @@ public class GenericEventDatabasePoolTest {
         SOME_EVENTS.add(ANOTHER_SIMPLE_EVENT);
     }
 
+    /**
+     * Setting up the database.
+     */
     @Before
     public void setDatabase() {
         database = EventDatabasePool.getInMemoryInstance(
-                RuntimeEnvironment.systemContext,
+                ApplicationProvider.getApplicationContext(),
                 EVENT_TOKEN,
                 DEFAULT_DB_NAME
         );

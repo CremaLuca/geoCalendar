@@ -40,9 +40,13 @@ public final class EventDatabasePool<E extends Event> implements EventDatabase<E
      * collide. Because it cannot be part of a {@link Class}' name.
      */
     private static final String SEPARATOR = "-";
-    //Prefix used to reduce chances of collisions with any other class' Room Databases.
+    /**
+     * Prefix used to reduce chances of collisions with any other class' Room Databases.
+     */
     private static final String DB_NAME_PREFIX = "geoCalendar-database";
-    //String to be formatted with the appropriate parameters.
+    /**
+     * String to be formatted with the appropriate parameters.
+     */
     private static final String DB_NAME_TEMPLATE =
             DB_NAME_PREFIX + SEPARATOR + "%1$s" + SEPARATOR + "%2$s";
 
@@ -90,7 +94,7 @@ public final class EventDatabasePool<E extends Event> implements EventDatabase<E
                                                                  String name) {
         String fullName = generateName(eventType, name);
         if (activeInstances.get(fullName) != null) {
-            //This would throw a warning
+            //This would throw a warning.
             return (EventDatabasePool<E>) activeInstances.get(fullName);
         }
         EventDatabasePool<E> newInstance = new EventDatabasePool<>(

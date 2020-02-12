@@ -1,13 +1,18 @@
 package com.eis.geoCalendar.database;
 
+import android.content.Context;
+
+import androidx.test.core.app.ApplicationProvider;
+
 import com.eis.geoCalendar.app.GenericEvent;
 import com.eis.geoCalendar.app.GenericTimedEvent;
 import com.google.gson.reflect.TypeToken;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
+import org.robolectric.annotation.Config;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -17,6 +22,7 @@ import static org.junit.Assert.assertNotEquals;
  *
  * @author Riccardo De Zen
  */
+@Config(sdk = 28)
 @RunWith(RobolectricTestRunner.class)
 public class EventDatabasePoolTest {
 
@@ -31,6 +37,16 @@ public class EventDatabasePoolTest {
             new TypeToken<GenericTimedEvent>() {
             };
 
+    private Context context;
+
+    /**
+     * Method setting up the Context to run the database on.
+     */
+    @Before
+    public void setupContext() {
+        context = ApplicationProvider.getApplicationContext();
+    }
+
     /**
      * Test confirming same type and name result in same instance.
      */
@@ -38,12 +54,12 @@ public class EventDatabasePoolTest {
     public void sameNameSameTypeAreSame() {
         assertEquals(
                 EventDatabasePool.getInstance(
-                        RuntimeEnvironment.systemContext,
+                        context,
                         EXAMPLE_TOKEN,
                         DEFAULT_DB_NAME
                 ),
                 EventDatabasePool.getInstance(
-                        RuntimeEnvironment.systemContext,
+                        context,
                         EXAMPLE_TOKEN,
                         DEFAULT_DB_NAME
                 )
@@ -57,12 +73,12 @@ public class EventDatabasePoolTest {
     public void sameNameDifferentTypeAreDifferent() {
         assertNotEquals(
                 EventDatabasePool.getInstance(
-                        RuntimeEnvironment.systemContext,
+                        context,
                         EXAMPLE_TOKEN,
                         DEFAULT_DB_NAME
                 ),
                 EventDatabasePool.getInstance(
-                        RuntimeEnvironment.systemContext,
+                        context,
                         TIMED_TOKEN,
                         DEFAULT_DB_NAME
                 )
@@ -76,12 +92,12 @@ public class EventDatabasePoolTest {
     public void differentNameSameTypeAreDifferent() {
         assertNotEquals(
                 EventDatabasePool.getInstance(
-                        RuntimeEnvironment.systemContext,
+                        context,
                         EXAMPLE_TOKEN,
                         DEFAULT_DB_NAME
                 ),
                 EventDatabasePool.getInstance(
-                        RuntimeEnvironment.systemContext,
+                        context,
                         EXAMPLE_TOKEN,
                         ALTERNATIVE_DB_NAME
                 )
@@ -95,12 +111,12 @@ public class EventDatabasePoolTest {
     public void differentNameDifferentTypeAreDifferent() {
         assertNotEquals(
                 EventDatabasePool.getInstance(
-                        RuntimeEnvironment.systemContext,
+                        context,
                         EXAMPLE_TOKEN,
                         DEFAULT_DB_NAME
                 ),
                 EventDatabasePool.getInstance(
-                        RuntimeEnvironment.systemContext,
+                        context,
                         TIMED_TOKEN,
                         ALTERNATIVE_DB_NAME
                 )

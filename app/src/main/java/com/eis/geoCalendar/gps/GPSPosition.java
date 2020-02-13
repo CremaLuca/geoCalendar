@@ -3,6 +3,7 @@ package com.eis.geoCalendar.gps;
 import android.location.Location;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -28,10 +29,24 @@ public class GPSPosition {
     /**
      * Constructor that requires {@link Location} as param
      *
-     * @param mLocation     The {@link Location} obj
+     * @param mLocation The {@link Location} obj
      */
     public GPSPosition(@NonNull Location mLocation) {
         this.mLocation = mLocation;
+    }
+
+    /**
+     * Constructor that requires latitude and longitude.
+     *
+     * @param latitude  The latitude for this {@link GPSPosition}. Must be a suitable latitude
+     *                  for {@link Location}.
+     * @param longitude The longitude for this {@link GPSPosition}. Must be a suitable longitude
+     *                  for {@link Location}.
+     */
+    public GPSPosition(double latitude, double longitude) {
+        mLocation = new Location(GPS_POSITION); //provider name is unnecessary
+        mLocation.setLatitude(latitude);
+        mLocation.setLongitude(longitude);
     }
 
     /**
@@ -48,8 +63,8 @@ public class GPSPosition {
     /**
      * Method used to update or set the location coordinates for this {@link GPSPosition} object
      *
-     * @param latitude      The updated GPS latitude
-     * @param longitude     The updated GPS longitude
+     * @param latitude  The updated GPS latitude
+     * @param longitude The updated GPS longitude
      * @return the updated {@link GPSPosition} object
      */
     public GPSPosition updateLocation(double latitude, double longitude) {
@@ -73,7 +88,7 @@ public class GPSPosition {
     }
 
     /**
-     * @param otherPosition     A position to calculate the distance from
+     * @param otherPosition A position to calculate the distance from
      * @return The distance in meters from the given position.
      */
     public double getDistance(@NonNull final GPSPosition otherPosition) {
@@ -83,25 +98,23 @@ public class GPSPosition {
     /**
      * @param obj       The reference object with which to compare.
      * @param precision The precision in meters within which the positions remain equal.
-     * @return true if this object is equal to obj argument in the precision argument range, false otherwise.
+     * @return true if this object is equal to obj argument in the precision argument range,
+     * false otherwise.
      */
-    public boolean equals(@NonNull Object obj, double precision) {
-        if (obj == null || !(obj instanceof GPSPosition))
-            return false;
+    public boolean equals(@Nullable Object obj, double precision) {
         if (obj == this)
             return true;
-        if (this.getDistance((GPSPosition) obj) <= precision)
-            return true;
-
-        return false;
+        if (!(obj instanceof GPSPosition))
+            return false;
+        return this.getDistance((GPSPosition) obj) <= precision;
     }
 
     /**
-     * @param obj   The reference object with which to compare.
+     * @param obj The reference object with which to compare.
      * @return true if this object is the same as the obj argument, false otherwise.
      */
     @Override
-    public boolean equals(@NonNull Object obj) {
+    public boolean equals(@Nullable Object obj) {
         return equals(obj, 0);
     }
 }

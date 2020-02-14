@@ -1,7 +1,6 @@
 package com.eis.geoCalendar.demo.Bottomsheet;
 
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,9 +16,11 @@ import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_
 public class MapEventBottomSheetBehaviour extends AbstractMapEventBottomSheetBehaviour {
 
     private BottomSheetBehavior bottomSheetBehavior;
-    private Button actionButton;
+    private View actionView;
+    private View removeView;
     private TextView textView;
-    private OnActionButtonClickListener actionButtonClickListener;
+    private OnActionViewClickListener actionButtonClickListener;
+    private OnRemoveViewClickListener removeViewClickListener;
     private boolean isShown;
     private int height;
 
@@ -94,22 +95,38 @@ public class MapEventBottomSheetBehaviour extends AbstractMapEventBottomSheetBeh
     }
 
     /**
-     * @param actionBtn an action Button Contained in the BottomSheet layout that created this instance
+     * @param actionView an action Button Contained in the BottomSheet layout that created this instance
      */
     @Override
-    public void setActionButton(Button actionBtn) {
-        this.actionButton = actionBtn;
-        actionButton.setOnClickListener(this);
+    public void setActionView(View actionView) {
+        this.actionView = actionView;
+        this.actionView.setOnClickListener(this);
+    }
+
+    @Override
+    public void setRemoveView(View removeView) {
+        this.removeView = removeView;
+        this.removeView.setOnClickListener(this);
     }
 
     /**
-     * Sets a Listener for the action Button
+     * Sets a Listener for the action View
      *
-     * @param listener A Listener for the action Button
+     * @param listener A Listener for the action View
      */
     @Override
-    public void setOnActionButtonClickListener(OnActionButtonClickListener listener) {
+    public void setOnActionViewClickListener(OnActionViewClickListener listener) {
         this.actionButtonClickListener = listener;
+    }
+
+    /**
+     * Sets a Listener for the remove View
+     *
+     * @param listener A Listener for the remove View
+     */
+    @Override
+    public void setOnRemoveViewClickListener(OnRemoveViewClickListener listener) {
+        this.removeViewClickListener = listener;
     }
 
     /**
@@ -119,8 +136,12 @@ public class MapEventBottomSheetBehaviour extends AbstractMapEventBottomSheetBeh
      */
     @Override
     public void onClick(View v) {
-        if (actionButtonClickListener != null)
-            actionButtonClickListener.OnActionButtonClick(v);
+        if (v == actionView) {
+            if (actionButtonClickListener != null)
+                actionButtonClickListener.OnActionViewClick(v);
+        } else if (v == removeView) {
+            removeViewClickListener.OnRemoveViewClick(v);
+        }
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.eis.geoCalendar.demo.Bottomsheet;
 
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -14,9 +15,15 @@ public abstract class AbstractMapEventBottomSheetBehaviour //extends BottomSheet
         implements Button.OnClickListener {
 
     /**
-     * @param actionBtn An action Button Contained in the BottomSheet layout that created this instance
+     * @param actionView An action Button Contained in the BottomSheet layout that created this instance
      */
-    public abstract void setActionButton(Button actionBtn);
+    public abstract void setActionView(View actionView);
+
+    /**
+     * @param removeView A "remove" Button Contained in the BottomSheet layout that created this instance
+     */
+    public abstract void setRemoveView(View removeView);
+
 
     /**
      * @param textView A TextView Contained in the BottomSheet layout that created this instance
@@ -25,11 +32,18 @@ public abstract class AbstractMapEventBottomSheetBehaviour //extends BottomSheet
 
 
     /**
-     * Sets a Listener for the action Button
+     * Sets a Listener for the action View
      *
-     * @param listener A Listener for the action Button single click action
+     * @param listener A Listener for the action View single click action
      */
-    public abstract void setOnActionButtonClickListener(OnActionButtonClickListener listener);
+    public abstract void setOnActionViewClickListener(OnActionViewClickListener listener);
+
+    /**
+     * Sets a Listener for the remove View
+     *
+     * @param listener A Listener for the remove View single click action
+     */
+    public abstract void setOnRemoveViewClickListener(OnRemoveViewClickListener listener);
 
     /**
      * @param text The text that will be displayed by the TextView

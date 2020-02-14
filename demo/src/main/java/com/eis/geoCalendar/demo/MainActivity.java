@@ -36,17 +36,22 @@ public class MainActivity extends AppCompatActivity {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 
+        View goToNaivgatorButton = findViewById(R.id.go_to_navigator_imageButton);
+
 
         RelativeLayout bottomSheetLayout = findViewById(R.id.relative_layout_bottom_sheet);
         //FIXME bottomSheetLayout.getHeight() gets 0
         Log.d("Sheet height", "Activity Sheet height " + bottomSheetLayout.getHeight());
 
-        MapEventBottomSheetBehaviour bottomSheetBehavior = MapEventBottomSheetBehaviour.from((View) bottomSheetLayout, 220);
+        MapEventBottomSheetBehaviour bottomSheetBehavior = MapEventBottomSheetBehaviour.from(bottomSheetLayout, 220);
 
-        Button bottomSheetButton = findViewById(R.id.bottom_sheet_button);
+        Button bottomSheetActionButton = findViewById(R.id.bottom_sheet_action_button);
+        Button bottomSheetRemoveButton = findViewById(R.id.bottom_sheet_remove_button);
         TextView textView = findViewById(R.id.bottom_sheet_textView);
-        bottomSheetBehavior.setActionButton(bottomSheetButton);
+        bottomSheetBehavior.setActionView(bottomSheetActionButton);
+        bottomSheetBehavior.setRemoveView(bottomSheetRemoveButton);
         bottomSheetBehavior.setTextView(textView);
+
 
         locationManager = new LocationManager(getApplicationContext());
 
@@ -57,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
         eventMapBehaviour.setLocationRetriever(locationManager);
         eventMapBehaviour.setSupportFragmentManager(getSupportFragmentManager());
         eventMapBehaviour.setBottomSheetBehaviour(bottomSheetBehavior);
+        eventMapBehaviour.setGoToNavigatorView(goToNaivgatorButton);
+        eventMapBehaviour.setGoogleMapsAccess(locationManager);
 
 
         //My job here is done
@@ -67,4 +74,5 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
 }

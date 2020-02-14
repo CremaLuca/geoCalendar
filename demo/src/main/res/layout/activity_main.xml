@@ -33,12 +33,22 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         <Button
-            android:id="@+id/bottom_sheet_button"
+            android:id="@+id/bottom_sheet_action_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/bottom_sheet_textView"
+            android:layout_alignStart="@id/bottom_sheet_textView"
+            android:layout_marginStart="320dp"
             android:layout_marginLeft="323dp"
-            android:text="Button" />
+            android:text="Action" />
+
+        <Button
+            android:id="@+id/bottom_sheet_remove_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/bottom_sheet_action_button"
+            android:layout_marginLeft="323dp"
+            android:layout_marginTop="51dp"
+            android:text="Remove" />
     </RelativeLayout>
 
 

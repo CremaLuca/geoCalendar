@@ -3,7 +3,9 @@ package com.eis.geoCalendar.demo.Localization;
 import android.Manifest;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -28,12 +30,14 @@ import static com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCU
  * NOTE: this is here temporarely until something else is ready
  * NOTE: change log.d to the proper output if this goes to production
  */
-public class LocationManager implements LocationRetriever, OnCompleteListener<Location> {
+public class LocationManager implements LocationRetriever, OnCompleteListener<Location>, GoToGoogleMapsNavigator {
     private static final String[] PERMISSIONS = {
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.READ_PHONE_STATE,
     };
+    private final String MAPS_START_URL = "https://www.google.com/maps/search/?api=1&query=";
+    //NOTE: concat latitude,longitude
 
 
     private static final String LOCATION_MANAGER_TAG = "LOCATION_MANAGER_TAG";
@@ -127,4 +131,22 @@ public class LocationManager implements LocationRetriever, OnCompleteListener<Lo
         Log.d(LOCATION_MANAGER_TAG, "End of OnComplete " + mLastLocation.toString());
     }
 
+    /**
+     * @param context       Context where open maps
+     * @param mapsLatitude  latitude extracted by response sms
+     * @param mapsLongitude longitude extracted by response sms
+     * @author Turcato
+     * Open the default maps application at the given Location(latitude, longitude)
+     */
+    public void openMapsUrl(Context context, Double mapsLatitude, Double mapsLongitude) {
+        String url = MAPS_START_URL + mapsLatitude + "," + mapsLongitude;
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.getApplicationContext().startActivity(intent);
+    }
+
+    @Override
+    public void open(@NonNull LatLng position) {
+        openMapsUrl(currentContext, position.latitude, position.longitude);
+    }
 }

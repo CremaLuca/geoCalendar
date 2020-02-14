@@ -12,6 +12,7 @@ import com.eis.geoCalendar.app.GenericEvent;
 import com.eis.geoCalendar.demo.Bottomsheet.AbstractMapEventBottomSheetBehaviour;
 import com.eis.geoCalendar.demo.Dialogs.AbstractAddEventDialog;
 import com.eis.geoCalendar.demo.Dialogs.AbstractRemoveEventDialog;
+import com.eis.geoCalendar.demo.Localization.GoToGoogleMapsNavigator;
 import com.eis.geoCalendar.events.Event;
 import com.eis.geoCalendar.events.EventManager;
 import com.eis.geoCalendar.gps.GPSPosition;
@@ -42,6 +43,10 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     private AbstractAddEventDialog addEventDialog;
     private AbstractRemoveEventDialog removeEventDialog;
     private AbstractMapEventBottomSheetBehaviour bottomSheetBehaviour;
+    private View goToNavigatorView;
+    private GoToGoogleMapsNavigator goToGoogleMapsNavigator;
+
+    private Marker currentFocusMarker;
 
     private static final String CREATE_EVENT_DIALOG_TAG = "CREATE_EVENT_DIALOG_TAG";
     private static final String REMOVE_EVENT_DIALOG_TAG = "REMOVE_EVENT_DIALOG_TAG";
@@ -90,14 +95,46 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
         this.locationRetriever = locationRetriever;
     }
 
+    /**
+     * @param dialog An object of a class that extends AbstractAddEventDialog
+     */
     @Override
     public void setAddEventDialog(@NonNull AbstractAddEventDialog dialog) {
         this.addEventDialog = dialog;
+        this.addEventDialog.setResultListener(this);
     }
 
+    /**
+     * @param dialog An object of a class that extends AbstractRemoveEventDialog
+     */
     @Override
     public void setRemoveEventDialog(@NonNull AbstractRemoveEventDialog dialog) {
         this.removeEventDialog = dialog;
+        this.removeEventDialog.setRemoveEventListener(this);
+    }
+
+    /**
+     * Note that for successfully open a google Maps instance a GoToGoogleMapsNavigator object must be set
+     * This Method will set the view as INVISIBLE, it will turn visible when the user clicks on a Marker,
+     * and turn invisible again when another part of the map will be clicked
+     *
+     * @param goToNavigatorView An instance of a View object that will be used by a MapBehaviour
+     *                          object to receive the command for opening the device's google maps
+     *                          application at the current location on the maps,
+     */
+    @Override
+    public void setGoToNavigatorView(View goToNavigatorView) {
+        this.goToNavigatorView = goToNavigatorView;
+        this.goToNavigatorView.setOnClickListener(this);
+        this.goToNavigatorView.setVisibility(View.INVISIBLE);
+    }
+
+    /**
+     * @param googleMapsAccess An instance of an object that can open Google Maps application at a given Location
+     */
+    @Override
+    public void setGoogleMapsAccess(@NonNull GoToGoogleMapsNavigator googleMapsAccess) {
+        this.goToGoogleMapsNavigator = googleMapsAccess;
     }
 
     /**
@@ -175,38 +212,53 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     public void onMapLongClick(LatLng latLng) {
         Toast.makeText(appContext, "Clicked at " + latLng.toString(), Toast.LENGTH_SHORT).show();
         addEventDialog.show(supportFragmentManager, CREATE_EVENT_DIALOG_TAG);
-        addEventDialog.setResultListener(this);
         addEventDialog.setEventPosition(latLng);
     }
 
     /**
      * Moves the camera to the marker's location and, if set,
      * expands the bottomSheet to display Marker's event's description
-     * Note: returning false for this event will fire the default
+     * If a goToNavigatorView was set, it will turn visible
+     * Note: returning false for this event will fire the default event for Google Map
      *
      * @param marker The marker that caused this callback
      * @return True if the listener has consumed the event, false otherwise.
      */
     @Override
     public boolean onMarkerClick(Marker marker) {
+        currentFocusMarker = marker;
         moveMap(marker.getPosition());
+
+        if (goToNavigatorView != null)
+            goToNavigatorView.setVisibility(View.VISIBLE);
+
         if (bottomSheetBehaviour != null) {
             bottomSheetBehaviour.setDisplayedText(marker.getTitle());
             if (bottomSheetBehaviour.isShown())
                 bottomSheetBehaviour.hide();
             else
                 bottomSheetBehaviour.show();
-
-
             return true;
         }
         return false;
     }
 
+    /**
+     * If set, hides the Bottom Sheet
+     * If set, hides the goToNavigatorView
+     * Makes forget the previously set currentFocusMarker
+     *
+     * @param latLng The position on the map where the user clicked
+     */
     @Override
     public void onMapClick(LatLng latLng) {
         if (bottomSheetBehaviour != null)
             bottomSheetBehaviour.hide();
+
+        if (goToNavigatorView != null)
+            goToNavigatorView.setVisibility(View.INVISIBLE);
+
+        currentFocusMarker = null;
     }
 
     /**
@@ -229,29 +281,46 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
 
     /**
      * Called when user long presses an InfoWindow of Marker
-     * Opens a dialog that asks the user if the event has to be deleted
      *
      * @param marker The marker whose InfoWindow was pressed
      */
     @Override
     public void onInfoWindowLongClick(Marker marker) {
-        removeEventDialog.setMarker(marker);
-        removeEventDialog.setRemoveEventListener(this);
-        removeEventDialog.show(supportFragmentManager, REMOVE_EVENT_DIALOG_TAG);
+        currentFocusMarker = marker;
+        callRemoveEventDialog(marker);
     }
 
     /**
+     * Opens a dialog that asks the user if the event has to be deleted
+     * If the user accepts, the dialog will call RemoveMark method of this instance
+     *
+     * @param marker The marker that has been selected for confirming deletion
+     */
+    private void callRemoveEventDialog(Marker marker) {
+        if (removeEventDialog != null) {
+            removeEventDialog.setMarker(marker);
+            removeEventDialog.show(supportFragmentManager, REMOVE_EVENT_DIALOG_TAG);
+        }
+    }
+
+    /**
+     * Called by the RemoveEventDialog
      * Removes the Located Event mark from the map
+     * Makes forget the previously set currentFocusMarker
      *
      * @param marker The marker to be removed
      */
     @Override
     public void removeMark(Marker marker) {
+        currentFocusMarker = null;
         marker.remove();
         GPSPosition position = new GPSPosition(marker.getPosition().latitude, marker.getPosition().longitude);
         Event<String> event = new GenericEvent<>(position, "");
         if (eventManager != null)
             eventManager.removeEvent(event);
+
+        if (bottomSheetBehaviour != null)
+            bottomSheetBehaviour.hide();
     }
 
     /**
@@ -260,17 +329,42 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     @Override
     public void setBottomSheetBehaviour(@NonNull AbstractMapEventBottomSheetBehaviour abstractMapEventBottomSheetBehaviour) {
         this.bottomSheetBehaviour = abstractMapEventBottomSheetBehaviour;
-        bottomSheetBehaviour.setOnActionButtonClickListener(this);
+        bottomSheetBehaviour.setOnActionViewClickListener(this);
+        bottomSheetBehaviour.setOnRemoveViewClickListener(this);
     }
 
     /**
-     * This is called from the action Button of the BottomSheet
+     * This is called from the action View of the BottomSheet
      *
      * @param v The View obj that caused this callback
      */
     @Override
-    public void OnActionButtonClick(View v) {
+    public void OnActionViewClick(View v) {
+        //Note: This is where an action on the event can be performed
+        // currentFocusMarker is the current focused marker (if not null)
         if (bottomSheetBehaviour != null)
             bottomSheetBehaviour.hide();
+    }
+
+    /**
+     * This is called from the remove View of the BottomSheet, calls a Dialog to ask confirmation
+     *
+     * @param v The View obj that caused this callback
+     */
+    @Override
+    public void OnRemoveViewClick(View v) {
+        callRemoveEventDialog(currentFocusMarker);
+    }
+
+    /**
+     * If a {@code GoToGoogleMapsNavigator}  was set, this method will use it to open the google maps
+     * application at the current map's central position
+     *
+     * @param v The View object that the user clicked to open the google maps application at the current location on the map
+     */
+    @Override
+    public void onClick(View v) {
+        if (goToGoogleMapsNavigator != null)
+            goToGoogleMapsNavigator.open(mMap.getCameraPosition().target);
     }
 }

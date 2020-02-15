@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.eis.geoCalendar.demo.Behaviour.EventMapBehaviour;
 import com.eis.geoCalendar.demo.Bottomsheet.MapEventBottomSheetBehaviour;
@@ -24,11 +25,15 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout layoutBottomSheet;
     LocationManager locationManager;
     EventMapBehaviour eventMapBehaviour;
+    private final static int APP_PERMISSION_REQUEST_CODE = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        requestPermissions();
 
         //  layoutBottomSheet = findViewById(R.id.bottom_sheet);
         //  sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
@@ -73,6 +78,14 @@ public class MainActivity extends AppCompatActivity {
         View mapView = findViewById(R.id.mapView);
 
 
+    }
+
+    /***
+     * @author Turcato
+     * Requests Android permissions if not granted
+     */
+    public void requestPermissions() {
+        ActivityCompat.requestPermissions(this, LocationManager.getPermissions(), APP_PERMISSION_REQUEST_CODE);
     }
 
 }

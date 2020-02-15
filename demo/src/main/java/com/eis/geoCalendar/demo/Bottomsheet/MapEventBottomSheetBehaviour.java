@@ -163,8 +163,7 @@ public class MapEventBottomSheetBehaviour extends AbstractMapEventBottomSheetBeh
     }
 
     /**
-     *
-     * @return The defined layout height for this Bottom Sheet, <=0 means it was probably not set
+     * @return The defined layout's height for this Bottom Sheet, <=0 means it was probably not set
      */
     @Override
     public int getFullLayoutHeight() {

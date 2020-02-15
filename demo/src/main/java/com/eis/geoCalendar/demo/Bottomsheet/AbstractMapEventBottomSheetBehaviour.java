@@ -1,7 +1,6 @@
 package com.eis.geoCalendar.demo.Bottomsheet;
 
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 /**
@@ -12,7 +11,7 @@ import android.widget.TextView;
  * @author Turcato
  */
 public abstract class AbstractMapEventBottomSheetBehaviour //extends BottomSheetBehavior
-        implements Button.OnClickListener {
+        implements View.OnClickListener {
 
     /**
      * @param actionView An action Button Contained in the BottomSheet layout that created this instance

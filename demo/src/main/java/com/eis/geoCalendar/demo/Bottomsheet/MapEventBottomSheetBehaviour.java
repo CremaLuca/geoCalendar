@@ -1,5 +1,6 @@
 package com.eis.geoCalendar.demo.Bottomsheet;
 
+import android.util.ArrayMap;
 import android.view.View;
 import android.widget.TextView;
 
@@ -7,13 +8,18 @@ import androidx.annotation.NonNull;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
+import java.util.Map;
+
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED;
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN;
 
 /**
+ * Class built as an Object Pool, each View object can be used to create one and only Behaviour object
+ *
  * @author Turcato
  */
 public class MapEventBottomSheetBehaviour extends AbstractMapEventBottomSheetBehaviour {
+    private static Map<View, MapEventBottomSheetBehaviour> instances = new ArrayMap<>();
 
     private BottomSheetBehavior bottomSheetBehavior;
     private View actionView;
@@ -24,12 +30,15 @@ public class MapEventBottomSheetBehaviour extends AbstractMapEventBottomSheetBeh
     private boolean isShown;
     private int height;
 
+
     /**
      * This constructor is not accessible because the user should call method {@code from(View)}
      * to obtain an instance of this class
      *
+     * Builds an object starting from a BottomSheetBehavior defining its layout representation height
+     *
      * @param bottomSheetBehavior A BottomSheetBehavior's instance
-     * @param height              The height of the layout object used for the BottomSheet
+     * @param height              The height (pixels) of the layout object used for the BottomSheet
      */
     private MapEventBottomSheetBehaviour(BottomSheetBehavior bottomSheetBehavior, int height) {
         this.bottomSheetBehavior = bottomSheetBehavior;
@@ -39,22 +48,30 @@ public class MapEventBottomSheetBehaviour extends AbstractMapEventBottomSheetBeh
     }
 
     /**
-     * @param view   A design object that will behave as a persistent BottomSheet
-     * @param height The height of the layout object used for the BottomSheet
+     * @param view      A design object that will behave as a persistent BottomSheet
+     * @param height    The height of the layout object used for the BottomSheet
      * @return the MapEventBottomSheetBehaviour associated with the view.
      */
     public static MapEventBottomSheetBehaviour from(@NonNull View view, int height) {
-        return new MapEventBottomSheetBehaviour(BottomSheetBehavior.from(view), height);
+        if (instances.containsKey(view))
+            return instances.get(view);
+
+        MapEventBottomSheetBehaviour newInstance = new MapEventBottomSheetBehaviour(BottomSheetBehavior.from(view), height);
+        instances.put(view, newInstance);
+        return newInstance;
     }
 
     /**
-     * @param view A design object that will behave as a persistent BottomSheet
-     * @return the MapEventBottomSheetBehaviour associated with the view.
+     * @param view  A design object that will behave as a persistent BottomSheet
+     * @return The MapEventBottomSheetBehaviour associated with the view.
      */
     public static MapEventBottomSheetBehaviour from(@NonNull View view) {
         return new MapEventBottomSheetBehaviour(BottomSheetBehavior.from(view), 0);
     }
 
+    /**
+     * @return {@code True} if the Bottom Sheet is set to be shown on the screen, false otherwise
+     */
     public boolean isShown() {
         return isShown;
     }
@@ -140,10 +157,15 @@ public class MapEventBottomSheetBehaviour extends AbstractMapEventBottomSheetBeh
             if (actionButtonClickListener != null)
                 actionButtonClickListener.OnActionViewClick(v);
         } else if (v == removeView) {
-            removeViewClickListener.OnRemoveViewClick(v);
+            if (removeViewClickListener != null)
+                removeViewClickListener.OnRemoveViewClick(v);
         }
     }
 
+    /**
+     *
+     * @return The defined layout height for this Bottom Sheet, <=0 means it was probably not set
+     */
     @Override
     public int getFullLayoutHeight() {
         return height;

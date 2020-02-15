@@ -93,6 +93,7 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     @Override
     public void setLocationRetriever(@NonNull LocationRetriever locationRetriever) {
         this.locationRetriever = locationRetriever;
+        this.locationRetriever.setOnLocationAvailableListener(this);
     }
 
     /**
@@ -164,7 +165,7 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
             Log.d("Sheet height", "Sheet height" + bottomSheetBehaviour.getFullLayoutHeight());
         }
         //Retrieve current position
-        locationRetriever.setOnLocationAvailableListener(this);
+
         locationRetriever.getCurrentLocation();
 
         if (eventManager != null) {
@@ -174,6 +175,8 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     }
 
     /**
+     *
+     *
      * @param position The current available Gps position
      */
     @Override
@@ -304,7 +307,7 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     }
 
     /**
-     * Called by the RemoveEventDialog
+     * Called by the RemoveEventDialog if the user confirms to delete the event
      * Removes the Located Event mark from the map
      * Makes forget the previously set currentFocusMarker
      *

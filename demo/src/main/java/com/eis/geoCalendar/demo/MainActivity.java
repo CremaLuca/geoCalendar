@@ -12,14 +12,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.eis.geoCalendar.demo.Behaviour.EventMapBehaviour;
+import com.eis.geoCalendar.demo.Behaviour.OnEventCreatedListener;
+import com.eis.geoCalendar.demo.Behaviour.OnEventRemovedListener;
+import com.eis.geoCalendar.demo.Behaviour.OnEventTriggeredListener;
 import com.eis.geoCalendar.demo.Bottomsheet.MapEventBottomSheetBehaviour;
 import com.eis.geoCalendar.demo.Dialogs.AddEventDialog;
 import com.eis.geoCalendar.demo.Dialogs.RemoveEventDialog;
 import com.eis.geoCalendar.demo.Localization.LocationManager;
+import com.eis.geoCalendar.events.Event;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnEventCreatedListener, OnEventRemovedListener,
+        OnEventTriggeredListener {
 
     BottomSheetBehavior sheetBehavior;
     LinearLayout layoutBottomSheet;
@@ -70,6 +75,9 @@ public class MainActivity extends AppCompatActivity {
         eventMapBehaviour.setGoToNavigatorView(goToNaivgatorButton);
         eventMapBehaviour.setGoogleMapsAccess(locationManager);
 
+        eventMapBehaviour.subscribeOnEventCreatedListener(this);
+        eventMapBehaviour.subscribeOnEventRemovedListener(this);
+        eventMapBehaviour.subscribeOnEventTriggeredListener(this);
 
         //My job here is done
         mapFragment.getMapAsync(eventMapBehaviour);
@@ -77,6 +85,25 @@ public class MainActivity extends AppCompatActivity {
 
         View mapView = findViewById(R.id.mapView);
 
+
+    }
+
+    /**
+     * This activity can listen to event-related actions occurred on the map
+     */
+
+    @Override
+    public void onEventCreated(Event newEvent) {
+
+    }
+
+    @Override
+    public void onEventRemoved(Event removedEvent) {
+
+    }
+
+    @Override
+    public void onEventTriggered(Event event) {
 
     }
 

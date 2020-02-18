@@ -113,7 +113,7 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
      *                          application at the current location on the maps,
      */
     @Override
-    public void setGoToNavigatorView(View goToNavigatorView) {
+    public void setGoToNavigatorView(@NonNull View goToNavigatorView) {
         this.goToNavigatorView = goToNavigatorView;
         this.goToNavigatorView.setOnClickListener(this);
         this.goToNavigatorView.setVisibility(View.INVISIBLE);
@@ -354,7 +354,7 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     }
 
     /**
-     * If a {@code GoToGoogleMapsNavigator}  was set, this method will use it to open the google maps
+     * If a {@code GoToGoogleMapsNavigator} was set, this method will use it to open the google maps
      * application at the current map's central position
      *
      * @param v The View object that the user clicked to open the google maps application at the current location on the map
@@ -388,6 +388,7 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     public void subscribeOnEventTriggeredListener(OnEventTriggeredListener listener) {
         if (onEventTriggeredListeners == null)
             onEventTriggeredListeners = new ArrayList<>();
+        onEventTriggeredListeners.add(listener);
     }
 
     @Override

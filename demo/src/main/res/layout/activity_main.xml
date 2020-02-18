@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/AppTheme"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -14,18 +15,21 @@
 
     <!-- Adding Persistent bottom sheet after main content -->
     <RelativeLayout
+        style="@style/bottom_sheet_item"
         android:id="@+id/relative_layout_bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="220dp"
         android:layout_marginBottom="8dp"
         android:background="@color/colorAccent"
         android:elevation="20sp"
+
         app:layout_anchor="@+id/relative_layout_bottom_sheet"
         app:layout_anchorGravity="center"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
 
         <TextView
+            style="@style/bottom_sheet_item"
             android:id="@+id/bottom_sheet_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -34,20 +38,24 @@
 
         <Button
             android:id="@+id/bottom_sheet_action_button"
+            style="@style/ActionItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@id/bottom_sheet_textView"
-            android:layout_marginStart="320dp"
+            android:layout_marginStart="139dp"
             android:layout_marginLeft="323dp"
+            android:layout_toEndOf="@+id/bottom_sheet_textView"
             android:text="Action" />
 
         <Button
             android:id="@+id/bottom_sheet_remove_button"
+            style="@style/ActionItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@id/bottom_sheet_action_button"
+            android:layout_below="@+id/bottom_sheet_action_button"
+            android:layout_marginStart="138dp"
             android:layout_marginLeft="323dp"
-            android:layout_marginTop="51dp"
+            android:layout_marginTop="17dp"
+            android:layout_toEndOf="@+id/bottom_sheet_textView"
             android:text="Remove" />
     </RelativeLayout>
 

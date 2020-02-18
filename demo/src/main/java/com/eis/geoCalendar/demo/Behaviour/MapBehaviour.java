@@ -1,10 +1,16 @@
 package com.eis.geoCalendar.demo.Behaviour;
 
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 
+import com.eis.geoCalendar.demo.Bottomsheet.AbstractMapEventBottomSheetBehaviour;
+import com.eis.geoCalendar.demo.Bottomsheet.OnActionViewClickListener;
+import com.eis.geoCalendar.demo.Bottomsheet.OnRemoveViewClickListener;
 import com.eis.geoCalendar.demo.Dialogs.AbstractAddEventDialog;
 import com.eis.geoCalendar.demo.Dialogs.AbstractRemoveEventDialog;
+import com.eis.geoCalendar.demo.Localization.GoToGoogleMapsNavigator;
 import com.eis.geoCalendar.demo.Localization.OnLocationAvailableListener;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -18,7 +24,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
  */
 public interface MapBehaviour extends OnMapReadyCallback,
         GoogleMap.OnMapLongClickListener, GoogleMap.OnInfoWindowLongClickListener,
-        ResultEventListener, RemoveEventListener, OnLocationAvailableListener {
+        GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener,
+        ResultEventListener, RemoveEventListener, OnLocationAvailableListener,
+        OnActionViewClickListener, OnRemoveViewClickListener, View.OnClickListener {
 
     /**
      *
@@ -40,5 +48,21 @@ public interface MapBehaviour extends OnMapReadyCallback,
      * @param dialog An object of a class that extends AbstractRemoveEventDialog
      */
     void setRemoveEventDialog(@NonNull AbstractRemoveEventDialog dialog);
+
+    /**
+     * @param abstractMapEventBottomSheetBehaviour An object of a class that extends AbstractMapEventBottomSheetBehaviour
+     */
+    void setBottomSheetBehaviour(@NonNull AbstractMapEventBottomSheetBehaviour abstractMapEventBottomSheetBehaviour);
+
+    /**
+     * @param view A view clickable object that will be used by a MapBehaviour object to receive the command
+     *             for opening the device's google maps application at the current location on the maps
+     */
+    void setGoToNavigatorView(@NonNull View view);
+
+    /**
+     * @param googleMapsAccess An instance of an object that can open Google Maps application at a given Location
+     */
+    void setGoogleMapsAccess(@NonNull GoToGoogleMapsNavigator googleMapsAccess);
 
 }

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#efefef"
+    tools:context=".MainActivity">
+
+
+    <include
+        layout="@layout/activity_maps"
+        android:id="@+id/mapView" />
+
+    <!-- Adding Persistent bottom sheet after main content -->
+    <RelativeLayout
+        android:id="@+id/relative_layout_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/colorAccent"
+        android:elevation="20sp"
+        app:layout_anchor="@+id/relative_layout_bottom_sheet"
+        app:layout_anchorGravity="center"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+
+        <TextView
+            android:id="@+id/bottom_sheet_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+        <Button
+            android:id="@+id/bottom_sheet_action_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/bottom_sheet_textView"
+            android:layout_marginStart="320dp"
+            android:layout_marginLeft="323dp"
+            android:text="Action" />
+
+        <Button
+            android:id="@+id/bottom_sheet_remove_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/bottom_sheet_action_button"
+            android:layout_marginLeft="323dp"
+            android:layout_marginTop="51dp"
+            android:text="Remove" />
+    </RelativeLayout>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

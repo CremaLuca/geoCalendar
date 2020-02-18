@@ -1,6 +1,7 @@
 package com.eis.geoCalendar.demo.Behaviour;
 
 import android.content.Context;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -14,7 +15,6 @@ import com.eis.geoCalendar.demo.Dialogs.AbstractAddEventDialog;
 import com.eis.geoCalendar.demo.Dialogs.AbstractRemoveEventDialog;
 import com.eis.geoCalendar.demo.Localization.GoToGoogleMapsNavigator;
 import com.eis.geoCalendar.events.Event;
-import com.eis.geoCalendar.events.EventManager;
 import com.eis.geoCalendar.gps.GPSPosition;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -23,6 +23,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Class created to divide the code that manages the logic of interaction with the user from the
@@ -38,13 +39,18 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     private FragmentManager supportFragmentManager;
     private Context appContext;
     private LocationRetriever locationRetriever;
-    private EventManager<Event<String>> eventManager;
-    private ArrayList<Event<String>> currentEvents;
+
+
+    private Map<Marker, Event<String>> currentEvents;
     private AbstractAddEventDialog addEventDialog;
     private AbstractRemoveEventDialog removeEventDialog;
     private AbstractMapEventBottomSheetBehaviour bottomSheetBehaviour;
     private View goToNavigatorView;
     private GoToGoogleMapsNavigator goToGoogleMapsNavigator;
+
+    private ArrayList<OnEventCreatedListener<Event<String>>> onEventCreatedListeners;
+    private ArrayList<OnEventRemovedListener<Event<String>>> onEventRemovedListeners;
+    private ArrayList<OnEventTriggeredListener<Event<String>>> onEventTriggeredListeners;
 
     private Marker currentFocusMarker;
 
@@ -55,28 +61,11 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     /**
      * Constructor that creates a fully operative EventMapBehaviour object
      *
-     * @param context      Application's Context
-     * @param eventManager An instance of an object that implements EventManager
-     */
-    public EventMapBehaviour(@NonNull Context context, @NonNull EventManager<Event<String>> eventManager) {
-        this.eventManager = eventManager;
-        this.appContext = context;
-    }
-
-    /**
-     * Constructor that creates an EventMapBehaviour object without event managing (only UI and map)
-     *
      * @param context Application's Context
      */
     public EventMapBehaviour(@NonNull Context context) {
         this.appContext = context;
-    }
-
-    /**
-     * @param eventManager An instance of an object that implements EventManager
-     */
-    public void setEventManager(@NonNull EventManager<Event<String>> eventManager) {
-        this.eventManager = eventManager;
+        currentEvents = new ArrayMap<>();
     }
 
     /**
@@ -168,15 +157,9 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
 
         locationRetriever.getCurrentLocation();
 
-        if (eventManager != null) {
-            currentEvents = eventManager.getAllEvents();
-            addEventsToMap(currentEvents);
-        }
     }
 
     /**
-     *
-     *
      * @param position The current available Gps position
      */
     @Override
@@ -195,13 +178,16 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     }
 
     /**
+     * These events are defined elsewhere, so no need to notify listeners
+     *
      * @param events A bunch of events to position in the map (both description and Position must be defined)
      */
-    private void addEventsToMap(ArrayList<Event<String>> events) {
+    public void addEventsToMap(ArrayList<E> events) {
         for (Event<String> event : events) {
-            mMap.addMarker(new MarkerOptions().position(new LatLng(event.getPosition().getLatitude(),
+            Marker created = mMap.addMarker(new MarkerOptions().position(new LatLng(event.getPosition().getLatitude(),
                     event.getPosition().getLongitude()))
                     .title(event.getContent()));
+            currentEvents.put(created, event);
         }
     }
 
@@ -273,13 +259,16 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     @Override
     public void onEventReturn(LatLng pos, String description) {
         GPSPosition eventPos = new GPSPosition(pos.latitude, pos.longitude);
-        Event<String> event = new GenericEvent<>(eventPos, description);
-        if (eventManager != null)
-            eventManager.addEvent(event);
+        GenericEvent<String> event = new GenericEvent<>(eventPos, description);
+        if (onEventCreatedListeners != null && !onEventCreatedListeners.isEmpty())
+            for (OnEventCreatedListener<Event<String>> listener : onEventCreatedListeners)
+                listener.onEventCreated(event);
 
         Marker created = mMap.addMarker(new MarkerOptions().position(pos).title(description)); //automatically cuts title if too long
         created.setTag(event);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
+        currentEvents.put(created, event);
+
     }
 
     /**
@@ -316,14 +305,14 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     @Override
     public void removeMark(Marker marker) {
         currentFocusMarker = null;
-        marker.remove();
-        GPSPosition position = new GPSPosition(marker.getPosition().latitude, marker.getPosition().longitude);
-        Event<String> event = new GenericEvent<>(position, "");
-        if (eventManager != null)
-            eventManager.removeEvent(event);
+
+        if (onEventRemovedListeners != null && !onEventRemovedListeners.isEmpty())
+            for (OnEventRemovedListener<Event<String>> listener : onEventRemovedListeners)
+                listener.onEventRemoved(currentEvents.get(marker));
 
         if (bottomSheetBehaviour != null)
             bottomSheetBehaviour.hide();
+        marker.remove();
     }
 
     /**
@@ -345,6 +334,11 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     public void OnActionViewClick(View v) {
         //Note: This is where an action on the event can be performed
         // currentFocusMarker is the current focused marker (if not null)
+        if (currentFocusMarker != null)
+            if (onEventTriggeredListeners != null && !onEventTriggeredListeners.isEmpty())
+                for (OnEventTriggeredListener<Event<String>> listener : onEventTriggeredListeners)
+                    listener.onEventTriggered(currentEvents.get(currentFocusMarker));
+
         if (bottomSheetBehaviour != null)
             bottomSheetBehaviour.hide();
     }
@@ -369,5 +363,48 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     public void onClick(View v) {
         if (goToGoogleMapsNavigator != null)
             goToGoogleMapsNavigator.open(mMap.getCameraPosition().target);
+    }
+
+
+    /**
+     * IMPLEMENTATION OF THE OBSERVER DESIGN PATTERN FOR EVENT RELATED ACTIONS
+     */
+
+    @Override
+    public void subscribeOnEventCreatedListener(@NonNull OnEventCreatedListener listener) {
+        if (onEventCreatedListeners == null)
+            onEventCreatedListeners = new ArrayList<>();
+        onEventCreatedListeners.add(listener);
+    }
+
+    @Override
+    public void subscribeOnEventRemovedListener(OnEventRemovedListener listener) {
+        if (onEventRemovedListeners == null)
+            onEventRemovedListeners = new ArrayList<>();
+        onEventRemovedListeners.add(listener);
+    }
+
+    @Override
+    public void subscribeOnEventTriggeredListener(OnEventTriggeredListener listener) {
+        if (onEventTriggeredListeners == null)
+            onEventTriggeredListeners = new ArrayList<>();
+    }
+
+    @Override
+    public void unsubscribeOnEventCreatedListener(OnEventCreatedListener listener) {
+        if (onEventCreatedListeners != null)
+            onEventCreatedListeners.remove(listener);
+    }
+
+    @Override
+    public void unsubscribeOnEventRemovedListener(OnEventRemovedListener listener) {
+        if (onEventRemovedListeners != null)
+            onEventRemovedListeners.remove(listener);
+    }
+
+    @Override
+    public void unsubscribeOnEventTriggeredListener(OnEventTriggeredListener listener) {
+        if (onEventTriggeredListeners != null)
+            onEventTriggeredListeners.remove(listener);
     }
 }

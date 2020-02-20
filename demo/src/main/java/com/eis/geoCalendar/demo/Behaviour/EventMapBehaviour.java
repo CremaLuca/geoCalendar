@@ -61,6 +61,13 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
 
     /**
      * Constructor that creates a fully operative EventMapBehaviour object
+     *
+     * To link this object to an existing map it's necessary to call mapFragment.getMapAsync(),
+     * passing an instance of this class, this will trigger the creation of the map view
+     *
+     * Note that operations accessing the map can be done once that has been built (obv) and it has
+     * been initialized, set an OnMapInitializedListener to get notified of the complete initialization
+     * of the map
      */
     public EventMapBehaviour() {
         //currentEvents = new ArrayMap<>();
@@ -126,6 +133,9 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     }
 
     /**
+     * Operations on the map can be performed only once the map has been initialized, so this listener
+     * will be notified when this happens
+     *
      * @param onMapInitializedListener A listener that will be called when the map has been fully initialized
      */
     public void setOnMapInitializedListener(OnMapInitializedListener onMapInitializedListener) {
@@ -139,6 +149,8 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
+     *
+     * Once this method is finished it will notice the onMapInitializedListener that the map is ready
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {

@@ -28,6 +28,10 @@ import java.util.Map;
  * <p>
  * Subscription of Event related Listeners works follwing the Observer Design pattern
  *
+ * Note that operations accessing the map can be done once that has been built (obv) and it has
+ * been initialized, set an OnMapInitializedListener to get notified of the complete initialization
+ * of the map
+ *
  * @author Turcato
  */
 public class NetworkEventMapBehaviour extends EventMapBehaviour {

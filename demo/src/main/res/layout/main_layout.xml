@@ -7,14 +7,17 @@
     android:id="@+id/main_layout"
     android:fitsSystemWindows="true"
     tools:openDrawer="start"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context=".MainActivity">
 
     <include
-        layout="@layout/activity_main"
+        layout="@layout/application_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <android.support.design.widget.NavigationView
+    <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

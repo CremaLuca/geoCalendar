@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.graphics.drawable.DrawerArrowDrawable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -61,7 +63,9 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        requestWindowFeature(Window.FEATURE_ACTION_BAR);
+        setContentView(R.layout.main_layout);
 
         requestPermissions();
 
@@ -130,7 +134,6 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
         networkEventMapBehaviour.setOnMapInitializedListener(this);
 
 
-
         //My job here is done
         //mapFragment.getMapAsync(eventMapBehaviour);
         mapFragment.getMapAsync(networkEventMapBehaviour);
@@ -141,6 +144,13 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
         setSupportActionBar(toolbar);
 
 
+        DrawerLayout mDrawerLayout = findViewById(R.id.main_layout);
+        if (mDrawerLayout != null) {
+            ActionBarDrawerToggle mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.drawer_opened, R.string.drawer_closed);
+            mActionBarDrawerToggle.setDrawerArrowDrawable(new DrawerArrowDrawable(getApplicationContext()));
+            mActionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+            mActionBarDrawerToggle.setDrawerSlideAnimationEnabled(true);
+        }
     }
 
     private void addEvents() {

@@ -1,10 +1,8 @@
 package com.eis.geoCalendar.demo.Behaviour;
 
 import android.content.Context;
-import android.util.ArrayMap;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
@@ -23,34 +21,37 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.List;
+
+import static android.view.View.INVISIBLE;
 
 /**
- * Class created to divide the code that manages the logic of interaction with the user from the
- * activities, fragments, ecc.. code
+ * Class created to manage Events on a GoogleMap and divide the code that manages the logic of
+ * interaction with the user from the activities, fragments, ecc.. code
  * <p>
  * All that is needed to use this class is just to create a SupportMapFragment from a map activity
  * anc call getMapAsync(eventMapBehaviour)
+ * Subscription of Event related Listeners works follwing the Observer Design pattern
  *
  * @param <E> Type of event
  */
 public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour {
-    private GoogleMap mMap;
+    protected GoogleMap mMap;
     private FragmentManager supportFragmentManager;
     private Context appContext;
     private LocationRetriever locationRetriever;
 
 
-    private Map<Marker, Event<String>> currentEvents;
+    // private Map<Marker, Event<String>> currentEvents;
     private AbstractAddEventDialog addEventDialog;
     private AbstractRemoveEventDialog removeEventDialog;
     private AbstractMapEventBottomSheetBehaviour bottomSheetBehaviour;
     private View goToNavigatorView;
     private GoToGoogleMapsNavigator goToGoogleMapsNavigator;
 
-    private ArrayList<OnEventCreatedListener<Event<String>>> onEventCreatedListeners;
-    private ArrayList<OnEventRemovedListener<Event<String>>> onEventRemovedListeners;
-    private ArrayList<OnEventTriggeredListener<Event<String>>> onEventTriggeredListeners;
+    private List<OnEventCreatedListener> onEventCreatedListeners;
+    private List<OnEventRemovedListener> onEventRemovedListeners;
+    private List<OnEventTriggeredListener> onEventTriggeredListeners;
 
     private Marker currentFocusMarker;
 
@@ -60,12 +61,9 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
 
     /**
      * Constructor that creates a fully operative EventMapBehaviour object
-     *
-     * @param context Application's Context
      */
-    public EventMapBehaviour(@NonNull Context context) {
-        this.appContext = context;
-        currentEvents = new ArrayMap<>();
+    public EventMapBehaviour() {
+        //currentEvents = new ArrayMap<>();
     }
 
     /**
@@ -116,7 +114,7 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     public void setGoToNavigatorView(@NonNull View goToNavigatorView) {
         this.goToNavigatorView = goToNavigatorView;
         this.goToNavigatorView.setOnClickListener(this);
-        this.goToNavigatorView.setVisibility(View.INVISIBLE);
+        this.goToNavigatorView.setVisibility(INVISIBLE);
     }
 
     /**
@@ -172,7 +170,7 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
      *
      * @param data The gps position where the map will be focused
      */
-    private void moveMap(LatLng data) {
+    protected void moveMap(LatLng data) {
         mMap.moveCamera(CameraUpdateFactory.zoomTo(mMap.getMaxZoomLevel()));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(data));
     }
@@ -182,14 +180,16 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
      *
      * @param events A bunch of events to position in the map (both description and Position must be defined)
      */
-    public void addEventsToMap(ArrayList<E> events) {
+    public void addEventsToMap(List<E> events) {
         for (Event<String> event : events) {
             Marker created = mMap.addMarker(new MarkerOptions().position(new LatLng(event.getPosition().getLatitude(),
                     event.getPosition().getLongitude()))
                     .title(event.getContent()));
-            currentEvents.put(created, event);
+            //currentEvents.put(created, event);
+            created.setTag(event);
         }
     }
+
 
     /**
      * Called when user clicks (taps) on the map for a prolonged time
@@ -199,9 +199,8 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
      */
     @Override
     public void onMapLongClick(LatLng latLng) {
-        Toast.makeText(appContext, "Clicked at " + latLng.toString(), Toast.LENGTH_SHORT).show();
-        addEventDialog.show(supportFragmentManager, CREATE_EVENT_DIALOG_TAG);
         addEventDialog.setEventPosition(latLng);
+        addEventDialog.show(supportFragmentManager, CREATE_EVENT_DIALOG_TAG);
     }
 
     /**
@@ -245,7 +244,7 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
             bottomSheetBehaviour.hide();
 
         if (goToNavigatorView != null)
-            goToNavigatorView.setVisibility(View.INVISIBLE);
+            goToNavigatorView.setVisibility(INVISIBLE);
 
         currentFocusMarker = null;
     }
@@ -259,16 +258,15 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     @Override
     public void onEventReturn(LatLng pos, String description) {
         GPSPosition eventPos = new GPSPosition(pos.latitude, pos.longitude);
-        GenericEvent<String> event = new GenericEvent<>(eventPos, description);
+        Event event = new GenericEvent<>(eventPos, description);
         if (onEventCreatedListeners != null && !onEventCreatedListeners.isEmpty())
-            for (OnEventCreatedListener<Event<String>> listener : onEventCreatedListeners)
+            for (OnEventCreatedListener listener : onEventCreatedListeners)
                 listener.onEventCreated(event);
 
         Marker created = mMap.addMarker(new MarkerOptions().position(pos).title(description)); //automatically cuts title if too long
         created.setTag(event);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
-        currentEvents.put(created, event);
-
+        moveMap(pos);
+        //currentEvents.put(created, event);
     }
 
     /**
@@ -296,9 +294,10 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     }
 
     /**
-     * Called by the RemoveEventDialog if the user confirms to delete the event
-     * Removes the Located Event mark from the map
+     * Called by the RemoveEventDialog or the bottom sheet if the user confirms to delete the event
+     * Removes the Event mark from the map
      * Makes forget the previously set currentFocusMarker
+     * Calls all the onEventRemovedListeners
      *
      * @param marker The marker to be removed
      */
@@ -307,11 +306,13 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
         currentFocusMarker = null;
 
         if (onEventRemovedListeners != null && !onEventRemovedListeners.isEmpty())
-            for (OnEventRemovedListener<Event<String>> listener : onEventRemovedListeners)
-                listener.onEventRemoved(currentEvents.get(marker));
+            for (OnEventRemovedListener listener : onEventRemovedListeners)
+                listener.onEventRemoved((Event) marker.getTag());
 
         if (bottomSheetBehaviour != null)
             bottomSheetBehaviour.hide();
+        if (goToNavigatorView != null)
+            goToNavigatorView.setVisibility(INVISIBLE);
         marker.remove();
     }
 
@@ -336,8 +337,8 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
         // currentFocusMarker is the current focused marker (if not null)
         if (currentFocusMarker != null)
             if (onEventTriggeredListeners != null && !onEventTriggeredListeners.isEmpty())
-                for (OnEventTriggeredListener<Event<String>> listener : onEventTriggeredListeners)
-                    listener.onEventTriggered(currentEvents.get(currentFocusMarker));
+                for (OnEventTriggeredListener listener : onEventTriggeredListeners)
+                    listener.onEventTriggered((Event) currentFocusMarker.getTag());
 
         if (bottomSheetBehaviour != null)
             bottomSheetBehaviour.hide();

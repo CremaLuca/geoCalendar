@@ -1,22 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/AppTheme"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/AppTheme"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#efefef"
     tools:context=".MainActivity">
 
+    <RelativeLayout
+        android:id="@+id/action_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_anchor="@+id/action_bar"
+        app:layout_anchorGravity="center">
 
-    <include
-        layout="@layout/activity_maps"
-        android:id="@+id/mapView" />
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorAccent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                android:fitsSystemWindows="true" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+        <include
+            android:id="@+id/mapView"
+            layout="@layout/activity_maps" />
+    </RelativeLayout>
+
 
     <!-- Adding Persistent bottom sheet after main content -->
     <RelativeLayout
-        style="@style/bottom_sheet_item"
         android:id="@+id/relative_layout_bottom_sheet"
+        style="@style/bottom_sheet_item"
         android:layout_width="match_parent"
         android:layout_height="220dp"
         android:layout_marginBottom="8dp"
@@ -29,8 +55,8 @@
 
 
         <TextView
-            style="@style/bottom_sheet_item"
             android:id="@+id/bottom_sheet_textView"
+            style="@style/bottom_sheet_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TextView"

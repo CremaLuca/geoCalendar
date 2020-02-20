@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     style="@style/AppTheme"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#efefef"
-    tools:context=".MainActivity">
+    android:background="#efefef">
 
     <RelativeLayout
-        android:id="@+id/action_bar"
+        android:id="@+id/application"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_anchor="@+id/action_bar"
+        app:layout_anchor="@+id/application"
         app:layout_anchorGravity="center">
 
         <com.google.android.material.appbar.AppBarLayout
@@ -28,10 +26,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
-                android:fitsSystemWindows="true" />
+                android:fitsSystemWindows="true"
+                app:layout_scrollFlags="enterAlways|scroll" />
 
         </com.google.android.material.appbar.AppBarLayout>
-
 
         <include
             android:id="@+id/mapView"

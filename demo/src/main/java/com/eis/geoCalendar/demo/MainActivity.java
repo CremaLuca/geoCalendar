@@ -3,7 +3,6 @@ package com.eis.geoCalendar.demo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -22,6 +21,7 @@ import com.eis.geoCalendar.demo.Behaviour.NetworkEventMapBehaviour;
 import com.eis.geoCalendar.demo.Behaviour.OnEventCreatedListener;
 import com.eis.geoCalendar.demo.Behaviour.OnEventRemovedListener;
 import com.eis.geoCalendar.demo.Behaviour.OnEventTriggeredListener;
+import com.eis.geoCalendar.demo.Behaviour.OnMapInitializedListener;
 import com.eis.geoCalendar.demo.Bottomsheet.MapEventBottomSheetBehaviour;
 import com.eis.geoCalendar.demo.Dialogs.AddEventDialog;
 import com.eis.geoCalendar.demo.Dialogs.RemoveEventDialog;
@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements OnEventCreatedListener, OnEventRemovedListener,
-        OnEventTriggeredListener {
+        OnEventTriggeredListener, OnMapInitializedListener {
 
     BottomSheetBehavior sheetBehavior;
     LinearLayout layoutBottomSheet;
@@ -75,8 +75,6 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
 
 
         RelativeLayout bottomSheetLayout = findViewById(R.id.relative_layout_bottom_sheet);
-        //FIXME bottomSheetLayout.getHeight() gets 0
-        Log.d("Sheet height", "Activity Sheet height " + bottomSheetLayout.getHeight());
 
         MapEventBottomSheetBehaviour bottomSheetBehavior = MapEventBottomSheetBehaviour.from(bottomSheetLayout, 220);
 
@@ -129,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
         networkEventMapBehaviour.subscribeOnEventCreatedListener(this);
         networkEventMapBehaviour.subscribeOnEventRemovedListener(this);
         networkEventMapBehaviour.subscribeOnEventTriggeredListener(this);
+        networkEventMapBehaviour.setOnMapInitializedListener(this);
 
 
 
@@ -210,4 +209,12 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
         ActivityCompat.requestPermissions(this, LocationManager.getPermissions(), APP_PERMISSION_REQUEST_CODE);
     }
 
+    /**
+     * Called when the map is fully initialized and prepared by the Behaviour manager
+     */
+    @Override
+    public void onMapInitialized() {
+        //TODO retrieve correct height of the toolbar
+        networkEventMapBehaviour.setMapPadding(0, 130, 0, 0);
+    }
 }

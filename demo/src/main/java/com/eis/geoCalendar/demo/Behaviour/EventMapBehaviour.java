@@ -1,7 +1,6 @@
 package com.eis.geoCalendar.demo.Behaviour;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -52,6 +51,7 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     private List<OnEventCreatedListener> onEventCreatedListeners;
     private List<OnEventRemovedListener> onEventRemovedListeners;
     private List<OnEventTriggeredListener> onEventTriggeredListeners;
+    private OnMapInitializedListener onMapInitializedListener;
 
     private Marker currentFocusMarker;
 
@@ -126,6 +126,13 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     }
 
     /**
+     * @param onMapInitializedListener A listener that will be called when the map has been fully initialized
+     */
+    public void setOnMapInitializedListener(OnMapInitializedListener onMapInitializedListener) {
+        this.onMapInitializedListener = onMapInitializedListener;
+    }
+
+    /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
      * <p>
@@ -146,15 +153,12 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMapClickListener(this);
 
-        //If the Bottom Sheet has been set the map mustn't put elements in its field of action
-        if (bottomSheetBehaviour != null) {
-            mMap.setPadding(0, 0, 0, bottomSheetBehaviour.getFullLayoutHeight());
-            Log.d("Sheet height", "Sheet height" + bottomSheetBehaviour.getFullLayoutHeight());
-        }
         //Retrieve current position
 
         locationRetriever.getCurrentLocation();
 
+        if (onMapInitializedListener != null)
+            onMapInitializedListener.onMapInitialized();
     }
 
     /**
@@ -168,11 +172,30 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     /**
      * Moves the map's focus to the given position
      *
-     * @param data The gps position where the map will be focused
+     * @throws NullPointerException if the method is called before map's initialization
+     * @param data  The gps position where the map will be focused
      */
-    protected void moveMap(LatLng data) {
+    public void moveMap(LatLng data) {
         mMap.moveCamera(CameraUpdateFactory.zoomTo(mMap.getMaxZoomLevel()));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(data));
+    }
+
+    /**
+     * Sets padding on the map.
+     * This method allows you to define a visible region on the map, to signal to the map that portions
+     * of the map around the edges may be obscured, by setting padding on each of the four edges of the map.
+     * Map functions will be adapted to the padding. For example, the zoom controls, compass, copyright notices
+     * and Google logo will be moved to fit inside the defined region, camera movements will be relative
+     * to the center of the visible region, etc.
+     *
+     * @throws NullPointerException if the method is called before map's initialization
+     * @param left      The number of pixels of padding to be added on the left of the map. (>= 0)
+     * @param top       The number of pixels of padding to be added on the top of the map. (>= 0)
+     * @param right     The number of pixels of padding to be added on the right of the map. (>= 0)
+     * @param bottom    The number of pixels of padding to be added on the bottom of the map. (>= 0)
+     */
+    public void setMapPadding(int left, int top, int right, int bottom) {
+        mMap.setPadding(left, top, right, bottom);
     }
 
     /**

@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
         networkEventMapBehaviour.subscribeOnEventTriggeredListener(this);
         networkEventMapBehaviour.setOnMapInitializedListener(this);
 
+        networkEventMapBehaviour.allowMapRemovalNetworkEvents(false);
 
         //My job here is done
         //mapFragment.getMapAsync(eventMapBehaviour);

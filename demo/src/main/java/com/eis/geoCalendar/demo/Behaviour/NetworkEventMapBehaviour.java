@@ -27,7 +27,7 @@ import java.util.Map;
  * anc call getMapAsync(networkEventMapBehaviour)
  * <p>
  * Subscription of Event related Listeners works follwing the Observer Design pattern
- *
+ * <p>
  * Note that operations accessing the map can be done once that has been built (obv) and it has
  * been initialized, set an OnMapInitializedListener to get notified of the complete initialization
  * of the map
@@ -41,6 +41,7 @@ public class NetworkEventMapBehaviour extends EventMapBehaviour {
     private List<OnEventCreatedListener> onEventCreatedListeners;
     private int resourceMarker;
     private Bitmap userIcon;
+    private boolean allowMapRemovalNetworkEvents;
 
     private static final float MAX_COLOR = 360;
 
@@ -128,7 +129,9 @@ public class NetworkEventMapBehaviour extends EventMapBehaviour {
                 created = mMap.addMarker(new MarkerOptions().position(pos)
                         .icon(BitmapDescriptorFactory.defaultMarker(usersColors.get(event.getOwner())))
                         .title(event.getContent().toString()));
+
             currentEvents.put(created, event);
+            created.setTag(event);
         }
     }
 
@@ -190,6 +193,12 @@ public class NetworkEventMapBehaviour extends EventMapBehaviour {
         currentEvents.put(created, event);
     }
 
+    /**
+     * Adds the given event to the map, with the custom icon if set, if the the default icon will be used
+     *
+     * @param myEvent An event created from the current user
+     * @return The marker that represents the event on the map
+     */
     private Marker addMyEvent(NetworkEvent myEvent) {
         LatLng pos = new LatLng(myEvent.getPosition().getLatitude(),
                 myEvent.getPosition().getLongitude());
@@ -214,5 +223,41 @@ public class NetworkEventMapBehaviour extends EventMapBehaviour {
             onEventCreatedListeners.remove(listener);
     }
 
+    /**
+     * If set {@code True} it will be allowed for the user to remove from the map events coming
+     * from the network, listeners will be notified.
+     * If set to {@code False} it won't be allowed and if the user tries to remove a
+     * network event from the UI using whatever view nothing will happen, and listeners won't be notified
+     * <p>
+     * Whatever value this flag will be set, the user will always be able to delete its own events
+     *
+     * @param allow Boolean value that indicates will of the user to be able to delete network events
+     *              from the map
+     */
+    public void allowMapRemovalNetworkEvents(boolean allow) {
+        this.allowMapRemovalNetworkEvents = allow;
+    }
 
+    /**
+     * @param marker The marker that has been selected for confirming deletion
+     */
+    @Override
+    protected void callRemoveEventDialog(Marker marker) {
+        if (marker.getTag() instanceof NetworkEvent &&
+                (((NetworkEvent) marker.getTag()).getOwner().equals(myself) || allowMapRemovalNetworkEvents))
+            super.callRemoveEventDialog(marker);
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        if (marker.getTag() instanceof NetworkEvent)
+            if (!((NetworkEvent) marker.getTag()).getOwner().equals(myself))
+                if (allowMapRemovalNetworkEvents)
+                    bottomSheetBehaviour.setRemoveViewVisible(true);
+                else
+                    bottomSheetBehaviour.setRemoveViewVisible(false);
+            else
+                bottomSheetBehaviour.setRemoveViewVisible(true);
+        return super.onMarkerClick(marker);
+    }
 }

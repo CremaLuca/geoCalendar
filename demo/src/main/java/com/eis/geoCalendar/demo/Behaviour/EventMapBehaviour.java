@@ -30,7 +30,9 @@ import static android.view.View.INVISIBLE;
  * <p>
  * All that is needed to use this class is just to create a SupportMapFragment from a map activity
  * anc call getMapAsync(eventMapBehaviour)
- * Subscription of Event related Listeners works follwing the Observer Design pattern
+ *
+ * Subscription of Event related Listeners works follwing the Observer Design pattern, this class
+ * will notify listeners when the user creates/removes/triggers events using the map
  *
  * @param <E> Type of event
  */
@@ -44,7 +46,7 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     // private Map<Marker, Event<String>> currentEvents;
     private AbstractAddEventDialog addEventDialog;
     private AbstractRemoveEventDialog removeEventDialog;
-    private AbstractMapEventBottomSheetBehaviour bottomSheetBehaviour;
+    protected AbstractMapEventBottomSheetBehaviour bottomSheetBehaviour;
     private View goToNavigatorView;
     private GoToGoogleMapsNavigator goToGoogleMapsNavigator;
 
@@ -321,7 +323,7 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
      *
      * @param marker The marker that has been selected for confirming deletion
      */
-    private void callRemoveEventDialog(Marker marker) {
+    protected void callRemoveEventDialog(Marker marker) {
         if (removeEventDialog != null) {
             removeEventDialog.setMarker(marker);
             removeEventDialog.show(supportFragmentManager, REMOVE_EVENT_DIALOG_TAG);
@@ -406,6 +408,9 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
      * IMPLEMENTATION OF THE OBSERVER DESIGN PATTERN FOR EVENT RELATED ACTIONS
      */
 
+    /**
+     * @param listener An object that wait for the creation of an event
+     */
     @Override
     public void subscribeOnEventCreatedListener(@NonNull OnEventCreatedListener listener) {
         if (onEventCreatedListeners == null)
@@ -413,6 +418,10 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
         onEventCreatedListeners.add(listener);
     }
 
+    /**
+     *
+     * @param listener An object that wait for the removal of an event
+     */
     @Override
     public void subscribeOnEventRemovedListener(OnEventRemovedListener listener) {
         if (onEventRemovedListeners == null)
@@ -420,6 +429,10 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
         onEventRemovedListeners.add(listener);
     }
 
+    /**
+     *
+     * @param listener An object that wait for the trigger of an event
+     */
     @Override
     public void subscribeOnEventTriggeredListener(OnEventTriggeredListener listener) {
         if (onEventTriggeredListeners == null)
@@ -427,18 +440,30 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
         onEventTriggeredListeners.add(listener);
     }
 
+    /**
+     *
+     * @param listener An object that wait for the creation of an event
+     */
     @Override
     public void unsubscribeOnEventCreatedListener(OnEventCreatedListener listener) {
         if (onEventCreatedListeners != null)
             onEventCreatedListeners.remove(listener);
     }
 
+    /**
+     *
+     * @param listener An object that wait for the removal of an event
+     */
     @Override
     public void unsubscribeOnEventRemovedListener(OnEventRemovedListener listener) {
         if (onEventRemovedListeners != null)
             onEventRemovedListeners.remove(listener);
     }
 
+    /**
+     *
+     * @param listener An object that wait for the trigger of an event
+     */
     @Override
     public void unsubscribeOnEventTriggeredListener(OnEventTriggeredListener listener) {
         if (onEventTriggeredListeners != null)

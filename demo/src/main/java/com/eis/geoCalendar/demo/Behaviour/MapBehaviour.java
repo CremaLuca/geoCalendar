@@ -23,7 +23,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
  *
  * Defining a class that implements this interface allows to divide the application's logic from the UI activity
  *
- * Subscription of Event related Listeners works follwing the Observer Design pattern
+ * Subscription of Event related Listeners works following the Observer Design pattern
+ * https://refactoring.guru/design-patterns/observer
  *
  */
 public interface MapBehaviour<E extends Event> extends OnMapReadyCallback,

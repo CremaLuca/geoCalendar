@@ -24,7 +24,7 @@ import java.util.Map;
  * the logic of interaction with the user from the activities, fragments, ecc.. code
  * <p>
  * All that is needed to use this class is just to create a SupportMapFragment from a map activity
- * anc call getMapAsync(networkEventMapBehaviour)
+ * and call getMapAsync(networkEventMapBehaviour)
  * <p>
  * Subscription of Event related Listeners works follwing the Observer Design pattern
  * <p>
@@ -194,7 +194,7 @@ public class NetworkEventMapBehaviour extends EventMapBehaviour {
     }
 
     /**
-     * Adds the given event to the map, with the custom icon if set, if the the default icon will be used
+     * Adds the given event to the map, with the custom icon if set, if the default icon will be used
      *
      * @param myEvent An event created from the current user
      * @return The marker that represents the event on the map

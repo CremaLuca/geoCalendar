@@ -128,7 +128,6 @@ public class LocationManager implements LocationRetriever, OnCompleteListener<Lo
         } else if (task.getResult() == null) {
             Log.d(LOCATION_MANAGER_TAG, "Task<Location> result is null");
         }
-        Log.d(LOCATION_MANAGER_TAG, "End of OnComplete " + mLastLocation.toString());
     }
 
     /**

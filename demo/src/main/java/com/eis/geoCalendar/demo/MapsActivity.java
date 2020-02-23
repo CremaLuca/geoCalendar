@@ -50,7 +50,7 @@ public class MapsActivity extends FragmentActivity {
         locationManager = new LocationManager(getApplicationContext());
 
         //Creating the "Behaviour Manager"
-        eventMapBehaviour = new EventMapBehaviour<>(getApplicationContext());
+        eventMapBehaviour = new EventMapBehaviour<>();
         eventMapBehaviour.setAddEventDialog(new AddEventDialog());
         eventMapBehaviour.setRemoveEventDialog(new RemoveEventDialog());
         eventMapBehaviour.setLocationRetriever(locationManager);

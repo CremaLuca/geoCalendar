@@ -1,25 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/AppTheme"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#efefef"
-    tools:context=".MainActivity">
+    android:background="#efefef">
+
+    <RelativeLayout
+        android:id="@+id/application"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_anchor="@+id/application"
+        app:layout_anchorGravity="center">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorAccent"
+            app:layout_constraintTop_toTopOf="parent">
 
 
-    <include
-        layout="@layout/activity_maps"
-        android:id="@+id/mapView" />
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                android:fitsSystemWindows="true"
+                app:layout_scrollFlags="enterAlways|scroll" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <include
+            android:id="@+id/mapView"
+            layout="@layout/activity_maps" />
+    </RelativeLayout>
+
 
     <!-- Adding Persistent bottom sheet after main content -->
     <RelativeLayout
         android:id="@+id/relative_layout_bottom_sheet"
+        style="@style/bottom_sheet_item"
         android:layout_width="match_parent"
         android:layout_height="220dp"
         android:layout_marginBottom="8dp"
         android:background="@color/colorAccent"
         android:elevation="20sp"
+
         app:layout_anchor="@+id/relative_layout_bottom_sheet"
         app:layout_anchorGravity="center"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
@@ -27,6 +54,7 @@
 
         <TextView
             android:id="@+id/bottom_sheet_textView"
+            style="@style/bottom_sheet_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TextView"
@@ -34,20 +62,24 @@
 
         <Button
             android:id="@+id/bottom_sheet_action_button"
+            style="@style/ActionItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@id/bottom_sheet_textView"
-            android:layout_marginStart="320dp"
+            android:layout_marginStart="139dp"
             android:layout_marginLeft="323dp"
+            android:layout_toEndOf="@+id/bottom_sheet_textView"
             android:text="Action" />
 
         <Button
             android:id="@+id/bottom_sheet_remove_button"
+            style="@style/ActionItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@id/bottom_sheet_action_button"
+            android:layout_below="@+id/bottom_sheet_action_button"
+            android:layout_marginStart="138dp"
             android:layout_marginLeft="323dp"
-            android:layout_marginTop="51dp"
+            android:layout_marginTop="17dp"
+            android:layout_toEndOf="@+id/bottom_sheet_textView"
             android:text="Remove" />
     </RelativeLayout>
 

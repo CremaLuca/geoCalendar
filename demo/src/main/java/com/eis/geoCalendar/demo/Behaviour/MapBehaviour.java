@@ -12,6 +12,7 @@ import com.eis.geoCalendar.demo.Dialogs.AbstractAddEventDialog;
 import com.eis.geoCalendar.demo.Dialogs.AbstractRemoveEventDialog;
 import com.eis.geoCalendar.demo.Localization.GoToGoogleMapsNavigator;
 import com.eis.geoCalendar.demo.Localization.OnLocationAvailableListener;
+import com.eis.geoCalendar.events.Event;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
@@ -21,8 +22,12 @@ import com.google.android.gms.maps.OnMapReadyCallback;
  * This interface can be used to implement the variouse GoogleMap's events, without writing all interfaces' names
  *
  * Defining a class that implements this interface allows to divide the application's logic from the UI activity
+ *
+ * Subscription of Event related Listeners works following the Observer Design pattern
+ * https://refactoring.guru/design-patterns/observer
+ *
  */
-public interface MapBehaviour extends OnMapReadyCallback,
+public interface MapBehaviour<E extends Event> extends OnMapReadyCallback,
         GoogleMap.OnMapLongClickListener, GoogleMap.OnInfoWindowLongClickListener,
         GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener,
         ResultEventListener, RemoveEventListener, OnLocationAvailableListener,
@@ -64,5 +69,35 @@ public interface MapBehaviour extends OnMapReadyCallback,
      * @param googleMapsAccess An instance of an object that can open Google Maps application at a given Location
      */
     void setGoogleMapsAccess(@NonNull GoToGoogleMapsNavigator googleMapsAccess);
+
+    /**
+     * @param listener An object that wait for the creation of an event
+     */
+    void subscribeOnEventCreatedListener(OnEventCreatedListener<E> listener);
+
+    /**
+     * @param listener An object that wait for the creation of an event
+     */
+    void unsubscribeOnEventCreatedListener(OnEventCreatedListener<E> listener);
+
+    /**
+     * @param listener An object that wait for the removal of an event
+     */
+    void subscribeOnEventRemovedListener(OnEventRemovedListener<E> listener);
+
+    /**
+     * @param listener An object that wait for the removal of an event
+     */
+    void unsubscribeOnEventRemovedListener(OnEventRemovedListener<E> listener);
+
+    /**
+     * @param listener An object that wait for the trigger of an event
+     */
+    void subscribeOnEventTriggeredListener(OnEventTriggeredListener<E> listener);
+
+    /**
+     * @param listener An object that wait for the trigger of an event
+     */
+    void unsubscribeOnEventTriggeredListener(OnEventTriggeredListener<E> listener);
 
 }

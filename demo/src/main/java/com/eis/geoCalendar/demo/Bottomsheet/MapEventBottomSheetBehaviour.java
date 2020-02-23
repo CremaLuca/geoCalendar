@@ -169,4 +169,24 @@ public class MapEventBottomSheetBehaviour extends AbstractMapEventBottomSheetBeh
     public int getFullLayoutHeight() {
         return height;
     }
+
+    /**
+     * @param visible If set {@code True} will make the view visible, otherwise invisible
+     */
+    public void setActionViewVisible(boolean visible) {
+        if (visible)
+            actionView.setVisibility(View.VISIBLE);
+        else
+            actionView.setVisibility(View.INVISIBLE);
+    }
+
+    /**
+     * @param visible If set {@code True} will make the view visible, otherwise invisible
+     */
+    public void setRemoveViewVisible(boolean visible) {
+        if (visible)
+            removeView.setVisibility(View.VISIBLE);
+        else
+            removeView.setVisibility(View.INVISIBLE);
+    }
 }

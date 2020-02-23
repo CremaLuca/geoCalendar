@@ -69,4 +69,14 @@ public abstract class AbstractMapEventBottomSheetBehaviour //extends BottomSheet
      */
     public abstract int getFullLayoutHeight();
 
+    /**
+     * @param visible If set {@code True} will make the view visible, otherwise invisible
+     */
+    public abstract void setRemoveViewVisible(boolean visible);
+
+    /**
+     * @param visible If set {@code True} will make the view visible, otherwise invisible
+     */
+    public abstract void setActionViewVisible(boolean visible);
+
 }

@@ -1,9 +1,7 @@
 package com.eis.geoCalendar.demo.Behaviour;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
@@ -14,7 +12,6 @@ import com.eis.geoCalendar.demo.Dialogs.AbstractAddEventDialog;
 import com.eis.geoCalendar.demo.Dialogs.AbstractRemoveEventDialog;
 import com.eis.geoCalendar.demo.Localization.GoToGoogleMapsNavigator;
 import com.eis.geoCalendar.events.Event;
-import com.eis.geoCalendar.events.EventManager;
 import com.eis.geoCalendar.gps.GPSPosition;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -23,28 +20,40 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import static android.view.View.INVISIBLE;
 
 /**
- * Class created to divide the code that manages the logic of interaction with the user from the
- * activities, fragments, ecc.. code
+ * Class created to manage Events on a GoogleMap and divide the code that manages the logic of
+ * interaction with the user from the activities, fragments, ecc.. code
  * <p>
  * All that is needed to use this class is just to create a SupportMapFragment from a map activity
  * anc call getMapAsync(eventMapBehaviour)
  *
+ * Subscription of Event related Listeners works follwing the Observer Design pattern, this class
+ * will notify listeners when the user creates/removes/triggers events using the map
+ *
  * @param <E> Type of event
  */
 public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour {
-    private GoogleMap mMap;
+    protected GoogleMap mMap;
     private FragmentManager supportFragmentManager;
     private Context appContext;
     private LocationRetriever locationRetriever;
-    private EventManager<Event<String>> eventManager;
-    private ArrayList<Event<String>> currentEvents;
+
+
+    // private Map<Marker, Event<String>> currentEvents;
     private AbstractAddEventDialog addEventDialog;
     private AbstractRemoveEventDialog removeEventDialog;
-    private AbstractMapEventBottomSheetBehaviour bottomSheetBehaviour;
+    protected AbstractMapEventBottomSheetBehaviour bottomSheetBehaviour;
     private View goToNavigatorView;
     private GoToGoogleMapsNavigator goToGoogleMapsNavigator;
+
+    private List<OnEventCreatedListener> onEventCreatedListeners;
+    private List<OnEventRemovedListener> onEventRemovedListeners;
+    private List<OnEventTriggeredListener> onEventTriggeredListeners;
+    private OnMapInitializedListener onMapInitializedListener;
 
     private Marker currentFocusMarker;
 
@@ -55,28 +64,15 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     /**
      * Constructor that creates a fully operative EventMapBehaviour object
      *
-     * @param context      Application's Context
-     * @param eventManager An instance of an object that implements EventManager
-     */
-    public EventMapBehaviour(@NonNull Context context, @NonNull EventManager<Event<String>> eventManager) {
-        this.eventManager = eventManager;
-        this.appContext = context;
-    }
-
-    /**
-     * Constructor that creates an EventMapBehaviour object without event managing (only UI and map)
+     * To link this object to an existing map it's necessary to call mapFragment.getMapAsync(),
+     * passing an instance of this class, this will trigger the creation of the map view
      *
-     * @param context Application's Context
+     * Note that operations accessing the map can be done once that has been built (obv) and it has
+     * been initialized, set an OnMapInitializedListener to get notified of the complete initialization
+     * of the map
      */
-    public EventMapBehaviour(@NonNull Context context) {
-        this.appContext = context;
-    }
-
-    /**
-     * @param eventManager An instance of an object that implements EventManager
-     */
-    public void setEventManager(@NonNull EventManager<Event<String>> eventManager) {
-        this.eventManager = eventManager;
+    public EventMapBehaviour() {
+        //currentEvents = new ArrayMap<>();
     }
 
     /**
@@ -124,10 +120,10 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
      *                          application at the current location on the maps,
      */
     @Override
-    public void setGoToNavigatorView(View goToNavigatorView) {
+    public void setGoToNavigatorView(@NonNull View goToNavigatorView) {
         this.goToNavigatorView = goToNavigatorView;
         this.goToNavigatorView.setOnClickListener(this);
-        this.goToNavigatorView.setVisibility(View.INVISIBLE);
+        this.goToNavigatorView.setVisibility(INVISIBLE);
     }
 
     /**
@@ -139,12 +135,24 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     }
 
     /**
+     * Operations on the map can be performed only once the map has been initialized, so this listener
+     * will be notified when this happens
+     *
+     * @param onMapInitializedListener A listener that will be called when the map has been fully initialized
+     */
+    public void setOnMapInitializedListener(OnMapInitializedListener onMapInitializedListener) {
+        this.onMapInitializedListener = onMapInitializedListener;
+    }
+
+    /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
      * <p>
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
+     *
+     * Once this method is finished it will notice the onMapInitializedListener that the map is ready
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -159,24 +167,15 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMapClickListener(this);
 
-        //If the Bottom Sheet has been set the map mustn't put elements in its field of action
-        if (bottomSheetBehaviour != null) {
-            mMap.setPadding(0, 0, 0, bottomSheetBehaviour.getFullLayoutHeight());
-            Log.d("Sheet height", "Sheet height" + bottomSheetBehaviour.getFullLayoutHeight());
-        }
         //Retrieve current position
 
         locationRetriever.getCurrentLocation();
 
-        if (eventManager != null) {
-            currentEvents = eventManager.getAllEvents();
-            addEventsToMap(currentEvents);
-        }
+        if (onMapInitializedListener != null)
+            onMapInitializedListener.onMapInitialized();
     }
 
     /**
-     *
-     *
      * @param position The current available Gps position
      */
     @Override
@@ -187,23 +186,47 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     /**
      * Moves the map's focus to the given position
      *
-     * @param data The gps position where the map will be focused
+     * @throws NullPointerException if the method is called before map's initialization
+     * @param data  The gps position where the map will be focused
      */
-    private void moveMap(LatLng data) {
+    public void moveMap(LatLng data) {
         mMap.moveCamera(CameraUpdateFactory.zoomTo(mMap.getMaxZoomLevel()));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(data));
     }
 
     /**
+     * Sets padding on the map.
+     * This method allows you to define a visible region on the map, to signal to the map that portions
+     * of the map around the edges may be obscured, by setting padding on each of the four edges of the map.
+     * Map functions will be adapted to the padding. For example, the zoom controls, compass, copyright notices
+     * and Google logo will be moved to fit inside the defined region, camera movements will be relative
+     * to the center of the visible region, etc.
+     *
+     * @throws NullPointerException if the method is called before map's initialization
+     * @param left      The number of pixels of padding to be added on the left of the map. (>= 0)
+     * @param top       The number of pixels of padding to be added on the top of the map. (>= 0)
+     * @param right     The number of pixels of padding to be added on the right of the map. (>= 0)
+     * @param bottom    The number of pixels of padding to be added on the bottom of the map. (>= 0)
+     */
+    public void setMapPadding(int left, int top, int right, int bottom) {
+        mMap.setPadding(left, top, right, bottom);
+    }
+
+    /**
+     * These events are defined elsewhere, so no need to notify listeners
+     *
      * @param events A bunch of events to position in the map (both description and Position must be defined)
      */
-    private void addEventsToMap(ArrayList<Event<String>> events) {
+    public void addEventsToMap(List<E> events) {
         for (Event<String> event : events) {
-            mMap.addMarker(new MarkerOptions().position(new LatLng(event.getPosition().getLatitude(),
+            Marker created = mMap.addMarker(new MarkerOptions().position(new LatLng(event.getPosition().getLatitude(),
                     event.getPosition().getLongitude()))
                     .title(event.getContent()));
+            //currentEvents.put(created, event);
+            created.setTag(event);
         }
     }
+
 
     /**
      * Called when user clicks (taps) on the map for a prolonged time
@@ -213,9 +236,8 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
      */
     @Override
     public void onMapLongClick(LatLng latLng) {
-        Toast.makeText(appContext, "Clicked at " + latLng.toString(), Toast.LENGTH_SHORT).show();
-        addEventDialog.show(supportFragmentManager, CREATE_EVENT_DIALOG_TAG);
         addEventDialog.setEventPosition(latLng);
+        addEventDialog.show(supportFragmentManager, CREATE_EVENT_DIALOG_TAG);
     }
 
     /**
@@ -259,7 +281,7 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
             bottomSheetBehaviour.hide();
 
         if (goToNavigatorView != null)
-            goToNavigatorView.setVisibility(View.INVISIBLE);
+            goToNavigatorView.setVisibility(INVISIBLE);
 
         currentFocusMarker = null;
     }
@@ -273,13 +295,15 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     @Override
     public void onEventReturn(LatLng pos, String description) {
         GPSPosition eventPos = new GPSPosition(pos.latitude, pos.longitude);
-        Event<String> event = new GenericEvent<>(eventPos, description);
-        if (eventManager != null)
-            eventManager.addEvent(event);
+        Event event = new GenericEvent<>(eventPos, description);
+        if (onEventCreatedListeners != null && !onEventCreatedListeners.isEmpty())
+            for (OnEventCreatedListener listener : onEventCreatedListeners)
+                listener.onEventCreated(event);
 
         Marker created = mMap.addMarker(new MarkerOptions().position(pos).title(description)); //automatically cuts title if too long
         created.setTag(event);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
+        moveMap(pos);
+        //currentEvents.put(created, event);
     }
 
     /**
@@ -299,7 +323,7 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
      *
      * @param marker The marker that has been selected for confirming deletion
      */
-    private void callRemoveEventDialog(Marker marker) {
+    protected void callRemoveEventDialog(Marker marker) {
         if (removeEventDialog != null) {
             removeEventDialog.setMarker(marker);
             removeEventDialog.show(supportFragmentManager, REMOVE_EVENT_DIALOG_TAG);
@@ -307,23 +331,26 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     }
 
     /**
-     * Called by the RemoveEventDialog if the user confirms to delete the event
-     * Removes the Located Event mark from the map
+     * Called by the RemoveEventDialog or the bottom sheet if the user confirms to delete the event
+     * Removes the Event mark from the map
      * Makes forget the previously set currentFocusMarker
+     * Calls all the onEventRemovedListeners
      *
      * @param marker The marker to be removed
      */
     @Override
     public void removeMark(Marker marker) {
         currentFocusMarker = null;
-        marker.remove();
-        GPSPosition position = new GPSPosition(marker.getPosition().latitude, marker.getPosition().longitude);
-        Event<String> event = new GenericEvent<>(position, "");
-        if (eventManager != null)
-            eventManager.removeEvent(event);
+
+        if (onEventRemovedListeners != null && !onEventRemovedListeners.isEmpty())
+            for (OnEventRemovedListener listener : onEventRemovedListeners)
+                listener.onEventRemoved((Event) marker.getTag());
 
         if (bottomSheetBehaviour != null)
             bottomSheetBehaviour.hide();
+        if (goToNavigatorView != null)
+            goToNavigatorView.setVisibility(INVISIBLE);
+        marker.remove();
     }
 
     /**
@@ -345,6 +372,11 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     public void OnActionViewClick(View v) {
         //Note: This is where an action on the event can be performed
         // currentFocusMarker is the current focused marker (if not null)
+        if (currentFocusMarker != null)
+            if (onEventTriggeredListeners != null && !onEventTriggeredListeners.isEmpty())
+                for (OnEventTriggeredListener listener : onEventTriggeredListeners)
+                    listener.onEventTriggered((Event) currentFocusMarker.getTag());
+
         if (bottomSheetBehaviour != null)
             bottomSheetBehaviour.hide();
     }
@@ -360,7 +392,7 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     }
 
     /**
-     * If a {@code GoToGoogleMapsNavigator}  was set, this method will use it to open the google maps
+     * If a {@code GoToGoogleMapsNavigator} was set, this method will use it to open the google maps
      * application at the current map's central position
      *
      * @param v The View object that the user clicked to open the google maps application at the current location on the map
@@ -369,5 +401,72 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     public void onClick(View v) {
         if (goToGoogleMapsNavigator != null)
             goToGoogleMapsNavigator.open(mMap.getCameraPosition().target);
+    }
+
+
+    /**
+     * IMPLEMENTATION OF THE OBSERVER DESIGN PATTERN FOR EVENT RELATED ACTIONS
+     */
+
+    /**
+     * @param listener An object that wait for the creation of an event
+     */
+    @Override
+    public void subscribeOnEventCreatedListener(@NonNull OnEventCreatedListener listener) {
+        if (onEventCreatedListeners == null)
+            onEventCreatedListeners = new ArrayList<>();
+        onEventCreatedListeners.add(listener);
+    }
+
+    /**
+     *
+     * @param listener An object that wait for the removal of an event
+     */
+    @Override
+    public void subscribeOnEventRemovedListener(OnEventRemovedListener listener) {
+        if (onEventRemovedListeners == null)
+            onEventRemovedListeners = new ArrayList<>();
+        onEventRemovedListeners.add(listener);
+    }
+
+    /**
+     *
+     * @param listener An object that wait for the trigger of an event
+     */
+    @Override
+    public void subscribeOnEventTriggeredListener(OnEventTriggeredListener listener) {
+        if (onEventTriggeredListeners == null)
+            onEventTriggeredListeners = new ArrayList<>();
+        onEventTriggeredListeners.add(listener);
+    }
+
+    /**
+     *
+     * @param listener An object that wait for the creation of an event
+     */
+    @Override
+    public void unsubscribeOnEventCreatedListener(OnEventCreatedListener listener) {
+        if (onEventCreatedListeners != null)
+            onEventCreatedListeners.remove(listener);
+    }
+
+    /**
+     *
+     * @param listener An object that wait for the removal of an event
+     */
+    @Override
+    public void unsubscribeOnEventRemovedListener(OnEventRemovedListener listener) {
+        if (onEventRemovedListeners != null)
+            onEventRemovedListeners.remove(listener);
+    }
+
+    /**
+     *
+     * @param listener An object that wait for the trigger of an event
+     */
+    @Override
+    public void unsubscribeOnEventTriggeredListener(OnEventTriggeredListener listener) {
+        if (onEventTriggeredListeners != null)
+            onEventTriggeredListeners.remove(listener);
     }
 }

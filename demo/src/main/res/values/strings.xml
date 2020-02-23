@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Demo</string>
+    <string name="app_name">GeoCalendar_Demo</string>
     <string name="title_activity_maps">Map</string>
     <string name="CreateEventDialogTitle">New Event</string>
     <string name="RemoveEventDialogTitle">Remove Event</string>
@@ -20,5 +20,21 @@
     <string name="action_copy">Copy</string>
     <string name="action_print">Print</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">com.eis.geocalendar</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
+    <string name="drawer_opened">drawer_opened</string>
+    <string name="drawer_closed">drawer_closed</string>
 
 </resources>

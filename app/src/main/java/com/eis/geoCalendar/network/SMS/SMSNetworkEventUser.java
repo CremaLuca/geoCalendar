@@ -5,6 +5,7 @@ import com.eis.smslibrary.SMSPeer;
 
 /**
  * Simple class implementing the NetworkEventUser interface, that represents a user of an SMS Network
+ * @author Turcato
  */
 public class SMSNetworkEventUser implements NetworkEventUser<SMSPeer> {
     private SMSPeer myPeer;

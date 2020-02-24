@@ -3,7 +3,7 @@
     <item
         android:id="@+id/addressBook_item"
         android:icon="@drawable/ic_contacts"
-        android:title="Contacts" />
+        android:title="@string/action_contacts" />
     <item
         android:id="@+id/settings_item"
         android:icon="@drawable/ic_menu_manage"

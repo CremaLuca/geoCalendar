@@ -69,7 +69,7 @@ public class PickAddressBookContacts extends AppCompatActivity {
 
                     //Put the number in the scrollView
                     LinearLayout linearLayout = (LinearLayout) this.findViewById(R.id.linLayout);
-                    //Create a new TextView with doctor data
+                    //Create a new TextView with contact number
                     TextView contactName = new TextView(this);
                     contactName.setText(number);
                     //Adding textView to LinearLayout

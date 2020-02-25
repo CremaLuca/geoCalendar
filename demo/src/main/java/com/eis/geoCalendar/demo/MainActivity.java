@@ -157,7 +157,10 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
             mActionBarDrawerToggle.setDrawerSlideAnimationEnabled(true);
         }
 
-        //try to open address book from the menu
+        /*
+         * This code is to open the device's address boook whem clicking on menu item
+         * @author Alessandra Tonin
+         */
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -252,4 +255,5 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
         //TODO retrieve correct height of the toolbar
         networkEventMapBehaviour.setMapPadding(0, 130, 0, 0);
     }
+
 }

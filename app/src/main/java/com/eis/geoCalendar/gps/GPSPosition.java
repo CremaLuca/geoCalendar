@@ -13,7 +13,8 @@ import com.google.android.gms.maps.model.LatLng;
  *
  * @author someone from group 4
  * @author Giorgia Bortoletti
- * @author Niccolò Turcato (just some tweaking)
+ * @author Niccolò Turcato (some tweaking, including stealing code from De Zen)
+ * @author Riccardo De Zen (his code for GPSPosition -> String, String -> GPSPosition was brutally stolen)
  */
 public class GPSPosition {
     private Location mLocation = new Location(GPS_POSITION);

@@ -42,6 +42,7 @@ public class SMSStringEventNetworkManagerAdapter implements NetworkManager<GPSPo
     private SMSStringEventNetworkManagerAdapter(@NonNull Context appContext, @NonNull SMSNetworkEventUser myself) {
         smsNetworkManager = new SMSNetworkManager();
         smsNetworkManager.setup(appContext.getApplicationContext());
+        this.myself = myself;
     }
 
     /**

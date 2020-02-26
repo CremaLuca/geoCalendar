@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
         }
 
         /*
-         * This code is to open the device's address boook whem clicking on menu item
+         * This code is to open the device's address book when clicking on menu item
          * @author Alessandra Tonin
          */
         navigationView = (NavigationView) findViewById(R.id.nav_view);

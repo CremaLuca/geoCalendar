@@ -37,6 +37,6 @@
     <string name="menu_send">Send</string>
     <string name="drawer_opened">drawer_opened</string>
     <string name="drawer_closed">drawer_closed</string>
-    <string name="contacts_toolbar">Contacts</string>
+    <string name="contacts_toolbar">Friends\' list</string>
 
 </resources>

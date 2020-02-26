@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
  * @author Luca Crema
  * @since 08/01/2020
  */
-public interface RemoveEventListener<E extends NetworkEvent> {
+public interface NetRemoveEventListener<E extends NetworkEvent> {
 
     /**
      * Callback for event correctly removed from the network.

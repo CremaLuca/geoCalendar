@@ -12,18 +12,15 @@ import static org.mockito.Mockito.mock;
 public class SMSStringEventTest {
     private static final String TEST_NUMBER = "+390000111222";
     private static final String TEST_DESCRIPTION = "Name: description";
-    private static final double LAT = 13;
-    private static final double LON = 14;
+    private static final SMSPeer testPeer = new SMSPeer(TEST_NUMBER);
 
     private GPSPosition testPosition;
     private SMSStringEvent testEvent;
     private SMSNetworkEventUser testUser;
-    private SMSPeer testPeer;
 
 
     @Before
     public void setUp() {
-        testPeer = new SMSPeer(TEST_NUMBER);
         testUser = new SMSNetworkEventUser(testPeer);
         testPosition = mock(GPSPosition.class);
         //Doesn't need to mock methods

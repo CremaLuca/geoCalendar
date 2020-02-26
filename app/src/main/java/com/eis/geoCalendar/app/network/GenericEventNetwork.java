@@ -1,10 +1,13 @@
 package com.eis.geoCalendar.app.network;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.eis.communication.Peer;
 import com.eis.communication.network.FailReason;
-import com.eis.communication.network.GetResourceListener;
-import com.eis.communication.network.RemoveResourceListener;
-import com.eis.communication.network.SetResourceListener;
+import com.eis.communication.network.listeners.GetResourceListener;
+import com.eis.communication.network.listeners.RemoveResourceListener;
+import com.eis.communication.network.listeners.SetResourceListener;
 import com.eis.geoCalendar.gps.GPSPosition;
 import com.eis.geoCalendar.network.EventNetwork;
 import com.eis.geoCalendar.network.EventNetworkManager;
@@ -15,9 +18,6 @@ import com.eis.geoCalendar.network.NetworkEvent;
 
 import java.util.ArrayList;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 /**
  * Restrictions: this class only uses {@link FailReason} to operate with the network.
  *
@@ -26,19 +26,19 @@ import androidx.annotation.Nullable;
  * @author Luca Crema
  * @since 25/12/2019
  */
-public class GenericEventNetwork<E extends NetworkEvent, P extends Peer> implements EventNetwork<E> {
+public class GenericEventNetwork<E extends NetworkEvent, P extends Peer, F extends FailReason> implements EventNetwork<E> {
 
     /**
      * Decimals to use when approximating a position when calculating its "network position"
      */
     protected static final int GPS_DECIMAL_APPROX_POSITIONS = 3;
 
-    private EventNetworkManager<E, P> networkManager;
+    private EventNetworkManager<E, P, F> networkManager;
 
     /**
      * @param networkManager A NetworkManager for events. The user must belong to an existing network already.
      */
-    public GenericEventNetwork(EventNetworkManager<E, P> networkManager) {
+    public GenericEventNetwork(EventNetworkManager<E, P, F> networkManager) {
         this.networkManager = networkManager;
     }
 
@@ -55,7 +55,7 @@ public class GenericEventNetwork<E extends NetworkEvent, P extends Peer> impleme
         //Known problem of this method: If the event list gets updated between our get and our set the update in the middle will be discarded.
         //Also specifications for inline listeners might not be the very best thing in the world, but they make the code clearer.
 
-        networkManager.getResource(approximateGPSPosition(event.getPosition()), new GetResourceListener<GPSPosition, ArrayList<E>, FailReason>() {
+        networkManager.getResource(approximateGPSPosition(event.getPosition()), new GetResourceListener<GPSPosition, ArrayList<E>, F>() {
             /**
              * Callback for received list of events.
              *
@@ -65,7 +65,7 @@ public class GenericEventNetwork<E extends NetworkEvent, P extends Peer> impleme
             @Override
             public void onGetResource(GPSPosition requestedPosition, ArrayList<E> alreadyPresentEvents) {
                 alreadyPresentEvents.add(event);
-                networkManager.setResource(approximateGPSPosition(event.getPosition()), alreadyPresentEvents, new SetResourceListener<GPSPosition, ArrayList<E>, FailReason>() {
+                networkManager.setResource(approximateGPSPosition(event.getPosition()), alreadyPresentEvents, new SetResourceListener<GPSPosition, ArrayList<E>, F>() {
                     //This listener is used to convert from array of events to a single event. The user doesn't need to handle the ArrayList of events, he just needs
                     // to make sure the event he added is now stored correctly or it's not.
                     @Override
@@ -75,7 +75,7 @@ public class GenericEventNetwork<E extends NetworkEvent, P extends Peer> impleme
                     }
 
                     @Override
-                    public void onResourceSetFail(GPSPosition key, ArrayList<E> value, FailReason reason) {
+                    public void onResourceSetFail(GPSPosition key, ArrayList<E> value, F reason) {
                         if (storeListener != null)
                             storeListener.onEventStoreFail(event, reason);
                     }
@@ -127,12 +127,12 @@ public class GenericEventNetwork<E extends NetworkEvent, P extends Peer> impleme
     public void removeEvent(final @NonNull E event, final @Nullable NetRemoveEventListener<E> removeListener) {
         //This method has to get the current list of events for the position, removes one and then updates the key value.
         //If the array is empty it removes the key-value pair
-        networkManager.getResource(approximateGPSPosition(event.getPosition()), new GetResourceListener<GPSPosition, ArrayList<E>, FailReason>() {
+        networkManager.getResource(approximateGPSPosition(event.getPosition()), new GetResourceListener<GPSPosition, ArrayList<E>, F>() {
             @Override
             public void onGetResource(GPSPosition key, ArrayList<E> currentEventList) {
                 currentEventList.remove(event);
                 if (currentEventList.isEmpty())
-                    networkManager.removeResource(key, new RemoveResourceListener<GPSPosition, FailReason>() {
+                    networkManager.removeResource(key, new RemoveResourceListener<GPSPosition, F>() {
                         @Override
                         public void onResourceRemoved(GPSPosition key) {
                             if (removeListener != null)
@@ -146,7 +146,7 @@ public class GenericEventNetwork<E extends NetworkEvent, P extends Peer> impleme
                         }
                     });
                 else
-                    networkManager.setResource(key, currentEventList, new SetResourceListener<GPSPosition, ArrayList<E>, FailReason>() {
+                    networkManager.setResource(key, currentEventList, new SetResourceListener<GPSPosition, ArrayList<E>, F>() {
                         /**
                          * The resource value has been updated, we're ready to call the callback
                          */
@@ -160,7 +160,7 @@ public class GenericEventNetwork<E extends NetworkEvent, P extends Peer> impleme
                          * Fail, we couldn't update the list.
                          */
                         @Override
-                        public void onResourceSetFail(GPSPosition key, ArrayList<E> value, FailReason reason) {
+                        public void onResourceSetFail(GPSPosition key, ArrayList<E> value, F reason) {
                             if (removeListener != null)
                                 removeListener.onEventNotRemoved(event, reason);
                         }
@@ -225,7 +225,7 @@ public class GenericEventNetwork<E extends NetworkEvent, P extends Peer> impleme
      * @author Luca Crema
      * @since 28/12/2019
      */
-    class GetEventsInternalListener implements GetResourceListener<GPSPosition, ArrayList<E>, FailReason> {
+    class GetEventsInternalListener<F extends FailReason> implements GetResourceListener<GPSPosition, ArrayList<E>, F> {
 
         private GPSPosition initialPosition;
         private ArrayList<GPSPosition> positionsQueried;

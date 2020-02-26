@@ -42,8 +42,9 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
-    implementation 'com.github.d-u-d-e:network-dictionary:interfaces-v1.1'
+    //implementation 'com.github.d-u-d-e:network-dictionary:interfaces-v1.1'
     implementation 'androidx.room:room-runtime:2.2.3'
+    implementation 'com.github.EIS0:network-dictionary:v0.2'
 
     testImplementation 'junit:junit:4.13'
     testImplementation 'org.mockito:mockito-core:2.28.2'

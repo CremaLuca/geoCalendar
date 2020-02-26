@@ -10,6 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.graphics.drawable.DrawerArrowDrawable;
@@ -28,11 +30,11 @@ import com.eis.geoCalendar.demo.Bottomsheet.MapEventBottomSheetBehaviour;
 import com.eis.geoCalendar.demo.Dialogs.AddEventDialog;
 import com.eis.geoCalendar.demo.Dialogs.RemoveEventDialog;
 import com.eis.geoCalendar.demo.Localization.LocationManager;
-import com.eis.geoCalendar.demo.Resources.SMSNetworkEventUser;
 import com.eis.geoCalendar.events.Event;
 import com.eis.geoCalendar.gps.GPSPosition;
 import com.eis.geoCalendar.network.NetworkEvent;
 import com.eis.geoCalendar.network.NetworkEventUser;
+import com.eis.geoCalendar.network.SMS.SMSNetworkEventUser;
 import com.eis.smslibrary.SMSPeer;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -57,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
 
     private Toolbar toolbar;
     private ActionBarDrawerToggle actionBarDrawerToggle;
-    private DrawerLayout drawerLayout;
+    private DrawerLayout mDrawerLayout;
 
 
     @Override
@@ -68,9 +70,6 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
         setContentView(R.layout.main_layout);
 
         requestPermissions();
-
-        //  layoutBottomSheet = findViewById(R.id.bottom_sheet);
-        //  sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -85,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
         Button bottomSheetActionButton = findViewById(R.id.bottom_sheet_action_button);
         Button bottomSheetRemoveButton = findViewById(R.id.bottom_sheet_remove_button);
         TextView textView = findViewById(R.id.bottom_sheet_textView);
+
         bottomSheetBehavior.setActionView(bottomSheetActionButton);
         bottomSheetBehavior.setRemoveView(bottomSheetRemoveButton);
         bottomSheetBehavior.setTextView(textView);
@@ -92,28 +92,10 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
 
         locationManager = new LocationManager(getApplicationContext());
 
-
-/*
-        //Creating the "Behaviour Manager"
-        eventMapBehaviour = new EventMapBehaviour<>();
-        eventMapBehaviour.setAddEventDialog(new AddEventDialog());
-        eventMapBehaviour.setRemoveEventDialog(new RemoveEventDialog());
-        eventMapBehaviour.setLocationRetriever(locationManager);
-        eventMapBehaviour.setSupportFragmentManager(getSupportFragmentManager());
-        eventMapBehaviour.setBottomSheetBehaviour(bottomSheetBehavior);
-        eventMapBehaviour.setGoToNavigatorView(goToNavigatorButton);
-        eventMapBehaviour.setGoogleMapsAccess(locationManager);
-
-        // This activity is subscribed as an Observer
-
-        eventMapBehaviour.subscribeOnEventCreatedListener(this);
-        eventMapBehaviour.subscribeOnEventRemovedListener(this);
-        eventMapBehaviour.subscribeOnEventTriggeredListener(this);
-*/
-
+        //TODO: get the user's number
         SMSPeer myself = new SMSPeer("+390425667888");
-        BitmapFactory.Options userIconOptions = new BitmapFactory.Options();
 
+        BitmapFactory.Options userIconOptions = new BitmapFactory.Options();
         Bitmap userIcon = BitmapFactory.decodeResource(getResources(), R.drawable.user_marker_small, userIconOptions);
 
 
@@ -127,7 +109,6 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
         networkEventMapBehaviour.setGoogleMapsAccess(locationManager);
 
         // This activity is subscribed as an Observer
-
         networkEventMapBehaviour.subscribeOnEventCreatedListener(this);
         networkEventMapBehaviour.subscribeOnEventRemovedListener(this);
         networkEventMapBehaviour.subscribeOnEventTriggeredListener(this);
@@ -139,19 +120,34 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
         //mapFragment.getMapAsync(eventMapBehaviour);
         mapFragment.getMapAsync(networkEventMapBehaviour);
 
-        View mapView = findViewById(R.id.mapView);
+        setDrawerLayout(setToolbar(R.id.toolbar));
+    }
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-
-        DrawerLayout mDrawerLayout = findViewById(R.id.main_layout);
+    /**
+     * Method that sets up the application's drawer
+     *
+     * @param appToolbar The application's toolbar object
+     */
+    private void setDrawerLayout(@NonNull Toolbar appToolbar) {
+        mDrawerLayout = findViewById(R.id.main_layout);
         if (mDrawerLayout != null) {
-            ActionBarDrawerToggle mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.drawer_opened, R.string.drawer_closed);
+            ActionBarDrawerToggle mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, appToolbar, R.string.drawer_opened, R.string.drawer_closed);
             mActionBarDrawerToggle.setDrawerArrowDrawable(new DrawerArrowDrawable(getApplicationContext()));
             mActionBarDrawerToggle.setDrawerIndicatorEnabled(true);
             mActionBarDrawerToggle.setDrawerSlideAnimationEnabled(true);
         }
+    }
+
+    /**
+     * Method that sets up the application's toolbar
+     *
+     * @param toolbarId The id of the toolbar View
+     * @return The application's toolbar, properly set up
+     */
+    private Toolbar setToolbar(@IdRes int toolbarId) {
+        toolbar = findViewById(toolbarId);
+        setSupportActionBar(toolbar);
+        return toolbar;
     }
 
     private void addEvents() {

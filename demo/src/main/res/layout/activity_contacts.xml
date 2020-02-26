@@ -8,30 +8,32 @@
 
     <ImageButton
         android:id="@+id/addContactButton"
-        android:layout_width="89dp"
-        android:layout_height="47dp"
-        android:background="@color/colorAccent"
+        android:layout_width="65dp"
+        android:layout_height="64dp"
+        android:background="@drawable/roundbutton"
+        android:backgroundTint="@color/colorAccent"
         android:clickable="true"
         android:onClick="openAddressBook"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.911"
+        app:layout_constraintHorizontal_bias="0.534"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.976"
+        app:layout_constraintVertical_bias="0.978"
         app:srcCompat="@drawable/ic_add" />
 
     <ScrollView
         android:id="@+id/scrollContacts"
-        android:layout_width="372dp"
-        android:layout_height="560dp"
-        android:textAlignment="viewStart"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="570dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/addContactButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.481"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.417">
+        app:layout_constraintTop_toBottomOf="@+id/appBar">
 
         <LinearLayout
             android:id="@+id/scrollLinLayout"
@@ -45,17 +47,17 @@
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/appBar"
-        android:layout_width="409dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
-        app:layout_constraintBottom_toTopOf="@+id/scrollContacts"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:title="@string/contacts_toolbar"
-        app:titleMargin="8dp" />
+        app:layout_constraintVertical_bias="0.001"
+        app:title="@string/contacts_toolbar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

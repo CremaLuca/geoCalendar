@@ -13,25 +13,35 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * This class handles a friend's list, picking up contacts from the device's address book.
+ *
+ * @author Tonin Alessandra
+ */
+
 public class ContactsActivity extends AppCompatActivity {
 
+    private final String EMPTY_STRING = "";
+    private final String SPACE = " ";
+    private final String HAS_PHONE = "1";
+    private final String REGEX = "[-() ]";
+    private final String NO_NUMBER = "This contact has no phone number";
     private static final int PICK_CONTACT = 1;
-    private ScrollView phoneNumberField;
+
     private LinearLayout scrollLinLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
-        phoneNumberField = (ScrollView) findViewById(R.id.scrollContacts);
-        scrollLinLayout = (LinearLayout) findViewById(R.id.scrollLinLayout);
+        scrollLinLayout = findViewById(R.id.scrollLinLayout);
     }
 
     /**
      * Method to open the system address book
      *
      * @param view The view calling the method
-     * @author Alessandra Tonin
      */
     public void openAddressBook(View view) {
         Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
@@ -39,12 +49,11 @@ public class ContactsActivity extends AppCompatActivity {
     }
 
     /**
-     * Method to handle the picked contact
+     * Method to handle the picked contact: extracts the name and the number of the contact, and displays them in a TextView
      *
      * @param requestCode The code of the request
      * @param resultCode  The result of  the request
      * @param data        The data of the result
-     * @author Alessandra Tonin
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -52,28 +61,31 @@ public class ContactsActivity extends AppCompatActivity {
         if (requestCode == PICK_CONTACT) {
             if (resultCode == RESULT_OK) {
                 Uri contactData = data.getData();
-                String number = "";
+                String number = EMPTY_STRING;
                 Cursor cursor = getContentResolver().query(contactData, null, null, null, null);
                 cursor.moveToFirst();
                 String hasPhone = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.HAS_PHONE_NUMBER));
                 String name = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
                 String contactId = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
-                if (hasPhone.equals("1")) {
+                if (hasPhone.equals(HAS_PHONE)) {
                     Cursor phones = getContentResolver().query
                             (ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
                                     ContactsContract.CommonDataKinds.Phone.CONTACT_ID
                                             + " = " + contactId, null, null);
                     while (phones.moveToNext()) {
                         number = phones.getString(phones.getColumnIndex
-                                (ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("[-() ]", "");
+                                (ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll(REGEX, EMPTY_STRING);
                     }
                     phones.close();
 
+                    String contactInfo = name + SPACE + number;
+
+                    //add a TextView to the LinearLayout
                     TextView contact = new TextView(this);
-                    contact.setText(name + " " + number);
+                    contact.setText(contactInfo);
                     scrollLinLayout.addView(contact);
                 } else {
-                    Toast.makeText(getApplicationContext(), "This contact has no phone number", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), NO_NUMBER, Toast.LENGTH_LONG).show();
                 }
                 cursor.close();
             }

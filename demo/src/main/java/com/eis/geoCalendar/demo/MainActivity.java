@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
         }
 
         /*
-         * This code is to open the device's address book when clicking on menu item
+         * This code is to open a new activity when clicking on menu items
          * @author Alessandra Tonin
          */
         navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -168,8 +168,8 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
                 int id = menuItem.getItemId();
                 switch (id) {
                     case R.id.addressBook_item:
-                        Intent i = new Intent(MainActivity.this, ContactsActivity.class);
-                        startActivity(i);
+                        Intent openAddressBook = new Intent(MainActivity.this, ContactsActivity.class);
+                        startActivity(openAddressBook);
                         break;
                     case R.id.settings_item:
                         //Do some thing here

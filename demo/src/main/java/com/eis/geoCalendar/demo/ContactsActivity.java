@@ -138,4 +138,15 @@ public class ContactsActivity extends AppCompatActivity {
         editor.putString(key, value);
         editor.apply();
     }
+
+    /**
+     * This method removes a friend from the list
+     *
+     * @param key The number to be removed from the list
+     */
+    public void removeFriend(String key){
+        SharedPreferences.Editor editor = ContactsActivity.this.getPreferences(Context.MODE_PRIVATE).edit();
+        editor.remove(key);
+        editor.apply();
+    }
 }

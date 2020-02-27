@@ -13,6 +13,8 @@ import java.util.List;
  * Note that this interface defines only network-related methods, a class implementing this Interface
  * must also implement {@link com.eis.geoCalendar.demo.Behaviour.MapBehaviour} and
  * {@link com.eis.geoCalendar.demo.Behaviour.MapBehaviourCallbacks}
+ *
+ * @author Turcato
  */
 public interface NetworkMapBehaviour<E extends NetworkEvent, U extends NetworkEventUser> {
 

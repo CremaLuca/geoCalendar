@@ -25,10 +25,10 @@ import com.google.android.gms.tasks.Task;
 import static com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY;
 
 /**
- * @author Turcato
- * <p>
  * NOTE: this is here temporarely until something else is ready
  * NOTE: change log.d to the proper output if this goes to production
+ *
+ * @author Turcato
  */
 public class LocationManager implements LocationRetriever, OnCompleteListener<Location>, GoToGoogleMapsNavigator {
     private static final String[] PERMISSIONS = {

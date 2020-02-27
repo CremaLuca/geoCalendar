@@ -37,6 +37,7 @@ import static android.view.View.INVISIBLE;
  * Subscription of Event related Listeners works following the Observer Design pattern, this class
  * will notify listeners when the user creates/removes/triggers events using the map
  *
+ * @author Turcato
  */
 public class EventMapBehaviour implements MapBehaviour<Event<String>>, MapBehaviourCallbacks {
     protected GoogleMap mMap;

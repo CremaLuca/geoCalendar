@@ -31,6 +31,8 @@ import java.util.List;
  * <p>
  * If needed, the class {@link com.eis.geoCalendar.demo.Behaviour.NetworkEventMapBehaviour} can be set
  * to package-private and this wrapper can be used outside of the package
+ *
+ * @author Turcato
  */
 public class NetworkEventMapBehaviourWrapper implements MapBehaviour<Event<String>>, NetworkMapBehaviour {
     private NetworkEventMapBehaviour instance;

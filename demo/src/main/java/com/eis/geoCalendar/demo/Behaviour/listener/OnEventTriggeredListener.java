@@ -7,6 +7,8 @@ import com.eis.geoCalendar.events.Event;
  * by the UI map
  *
  * @param <E> Type of event
+ *
+ * @author Turcato
  */
 public interface OnEventTriggeredListener<E extends Event> {
 

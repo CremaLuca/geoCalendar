@@ -46,6 +46,13 @@ import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Current Main activity for a Demo of the geoCalendar that uses an SMS network
+ * <p>
+ * TODO: complete with retrieving of Network events
+ *
+ * @author Turcato
+ */
 public class MainActivity extends AppCompatActivity implements OnEventCreatedListener, OnEventRemovedListener,
         OnEventTriggeredListener, OnMapInitializedListener {
 

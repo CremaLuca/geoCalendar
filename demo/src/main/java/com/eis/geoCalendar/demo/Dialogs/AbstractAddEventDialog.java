@@ -6,9 +6,10 @@ import com.eis.geoCalendar.demo.Behaviour.listener.ResultEventListener;
 import com.google.android.gms.maps.model.LatLng;
 
 /**
- * @author Turcato
  * This class defines a behaviour that a DialogFragment has to implement to define to be used
  * for interacting with the user for adding an Event through MapBehaviour objects
+ *
+ * @author Turcato
  */
 public abstract class AbstractAddEventDialog extends DialogFragment {
 

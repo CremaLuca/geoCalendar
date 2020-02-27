@@ -13,6 +13,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 /**
  * Interface that defines the callbacks a class needs to implement to be a complete MapBehaviour obj
  * Used alongside {@link com.eis.geoCalendar.demo.Behaviour.MapBehaviour}
+ *
+ * @author Turcato
  */
 public interface MapBehaviourCallbacks extends OnMapReadyCallback,
         GoogleMap.OnMapLongClickListener, GoogleMap.OnInfoWindowLongClickListener,

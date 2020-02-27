@@ -27,6 +27,8 @@ import java.util.List;
  * <p>
  * Subscription of Event related Listeners works following the Observer Design pattern
  * https://refactoring.guru/design-patterns/observer
+ *
+ * @author Turcato
  */
 public interface MapBehaviour<E extends Event> {
 

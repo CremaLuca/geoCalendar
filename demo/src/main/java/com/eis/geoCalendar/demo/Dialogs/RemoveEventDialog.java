@@ -12,9 +12,9 @@ import com.eis.geoCalendar.demo.R;
 import com.google.android.gms.maps.model.Marker;
 
 /**
- * @author Kumar
- * <p>
  * This class defines a DialogFragment to remove a Located Event mark
+ *
+ * @author Kumar
  */
 public class RemoveEventDialog extends AbstractRemoveEventDialog {
     private Marker marker;

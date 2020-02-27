@@ -27,6 +27,8 @@ import java.util.List;
  * <p>
  * If needed, the class {@link com.eis.geoCalendar.demo.Behaviour.EventMapBehaviour} can be set
  * to package-private and this wrapper can be used outside of the package
+ *
+ * @author Turcato
  */
 public class EventMapBehaviourWrapper implements MapBehaviour<Event<String>> {
     private EventMapBehaviour instance;

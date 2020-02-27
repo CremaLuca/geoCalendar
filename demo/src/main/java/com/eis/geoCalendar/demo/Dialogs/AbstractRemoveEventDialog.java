@@ -2,7 +2,7 @@ package com.eis.geoCalendar.demo.Dialogs;
 
 import androidx.fragment.app.DialogFragment;
 
-import com.eis.geoCalendar.demo.Behaviour.RemoveEventListener;
+import com.eis.geoCalendar.demo.Behaviour.listener.RemoveEventListener;
 import com.google.android.gms.maps.model.Marker;
 
 /**

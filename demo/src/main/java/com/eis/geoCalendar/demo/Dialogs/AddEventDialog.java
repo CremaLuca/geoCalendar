@@ -9,7 +9,7 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 
-import com.eis.geoCalendar.demo.Behaviour.ResultEventListener;
+import com.eis.geoCalendar.demo.Behaviour.listener.ResultEventListener;
 import com.eis.geoCalendar.demo.R;
 import com.google.android.gms.maps.model.LatLng;
 

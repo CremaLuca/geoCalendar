@@ -1,4 +1,4 @@
-package com.eis.geoCalendar.demo.Behaviour;
+package com.eis.geoCalendar.demo.Behaviour.listener;
 
 import com.eis.geoCalendar.events.Event;
 

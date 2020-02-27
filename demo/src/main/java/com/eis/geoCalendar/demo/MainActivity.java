@@ -20,24 +20,28 @@ import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.eis.geoCalendar.app.network.GenericNetworkEvent;
+import com.eis.geoCalendar.database.EventDatabasePool;
 import com.eis.geoCalendar.demo.Behaviour.EventMapBehaviour;
 import com.eis.geoCalendar.demo.Behaviour.NetworkEventMapBehaviour;
-import com.eis.geoCalendar.demo.Behaviour.OnEventCreatedListener;
-import com.eis.geoCalendar.demo.Behaviour.OnEventRemovedListener;
-import com.eis.geoCalendar.demo.Behaviour.OnEventTriggeredListener;
-import com.eis.geoCalendar.demo.Behaviour.OnMapInitializedListener;
+import com.eis.geoCalendar.demo.Behaviour.listener.OnEventCreatedListener;
+import com.eis.geoCalendar.demo.Behaviour.listener.OnEventRemovedListener;
+import com.eis.geoCalendar.demo.Behaviour.listener.OnEventTriggeredListener;
+import com.eis.geoCalendar.demo.Behaviour.listener.OnMapInitializedListener;
 import com.eis.geoCalendar.demo.Bottomsheet.MapEventBottomSheetBehaviour;
 import com.eis.geoCalendar.demo.Dialogs.AddEventDialog;
 import com.eis.geoCalendar.demo.Dialogs.RemoveEventDialog;
 import com.eis.geoCalendar.demo.Localization.LocationManager;
 import com.eis.geoCalendar.events.Event;
+import com.eis.geoCalendar.events.EventDatabase;
 import com.eis.geoCalendar.gps.GPSPosition;
 import com.eis.geoCalendar.network.NetworkEvent;
 import com.eis.geoCalendar.network.NetworkEventUser;
 import com.eis.geoCalendar.network.SMS.SMSNetworkEventUser;
+import com.eis.geoCalendar.network.SMS.SMSStringEvent;
 import com.eis.smslibrary.SMSPeer;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +64,9 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
     private Toolbar toolbar;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private DrawerLayout mDrawerLayout;
+
+    private EventDatabase<SMSStringEvent> database;
+    private static final String DB_NAME = "Event_map_database";
 
 
     @Override
@@ -223,5 +230,11 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
     public void onMapInitialized() {
         //TODO retrieve correct height of the toolbar
         networkEventMapBehaviour.setMapPadding(0, 130, 0, 0);
+
+        database = EventDatabasePool.getInstance(getApplicationContext(), TypeToken.get(SMSStringEvent.class), DB_NAME);
+
+        //GenericEventNetwork<SMSStringEvent, SMSPeer> genericEventNetwork = new GenericEventNetwork()
+
+
     }
 }

@@ -13,12 +13,14 @@ import com.google.android.gms.maps.model.LatLng;
  *
  * @author someone from group 4
  * @author Giorgia Bortoletti
- * @author Niccolò Turcato (just some tweaking)
+ * @author Niccolò Turcato (some tweaking, including stealing code from De Zen)
+ * @author Riccardo De Zen (his code for GPSPosition -> String, String -> GPSPosition was brutally stolen)
  */
 public class GPSPosition {
     private Location mLocation = new Location(GPS_POSITION);
 
     private static final String GPS_POSITION = "GPSPosition";
+    private static final String POSITION_SPLIT_SEQUENCE = "ç";
 
     /**
      * Default constructor
@@ -58,6 +60,27 @@ public class GPSPosition {
         mLocation = new Location(GPS_POSITION); //provider name is unnecessary
         mLocation.setLatitude(location.latitude);
         mLocation.setLongitude(location.longitude);
+    }
+
+    /**
+     * Constructor taking a {@link String} as a parameter. The {@code String} should be formatted
+     * as {@link GPSPosition#toString()} does.
+     *
+     * @param locationString The Non-null properly formatted {@link String}.
+     * @throws ArrayIndexOutOfBoundsException If {@code locationString} is not divided in at
+     *                                        least two parts by
+     *                                        {@link GPSPosition#POSITION_SPLIT_SEQUENCE}.
+     * @throws NumberFormatException          If {@code locationString} is not divided into parts
+     *                                        that
+     *                                        are parsable as Double values.
+     */
+    public GPSPosition(@NonNull String locationString) throws
+            ArrayIndexOutOfBoundsException,
+            NumberFormatException {
+        this(
+                Double.parseDouble(locationString.split(POSITION_SPLIT_SEQUENCE)[0]),
+                Double.parseDouble(locationString.split(POSITION_SPLIT_SEQUENCE)[1])
+        );
     }
 
     /**
@@ -116,5 +139,19 @@ public class GPSPosition {
     @Override
     public boolean equals(@Nullable Object obj) {
         return equals(obj, 0);
+    }
+
+    /**
+     * Returns a {@link String} representation of this {@link GPSPosition}. This {@code String} is
+     * considered valid when provided to {@link GPSPosition#GPSPosition(String)}.
+     * More precisely, the String will be in the format:
+     * [latitude]{@link GPSPosition#POSITION_SPLIT_SEQUENCE}[longitude]
+     *
+     * @return A {@link String} representing this {@link GPSPosition}.
+     */
+    @NonNull
+    @Override
+    public String toString() {
+        return getLatitude() + POSITION_SPLIT_SEQUENCE + getLongitude();
     }
 }

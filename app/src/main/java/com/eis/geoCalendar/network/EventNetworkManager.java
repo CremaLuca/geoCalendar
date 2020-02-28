@@ -16,5 +16,5 @@ import java.util.ArrayList;
  * @author Luca Crema
  * @since 28/12/2019
  */
-public interface EventNetworkManager<E extends NetworkEvent, P extends Peer> extends NetworkManager<GPSPosition, ArrayList<E>, P, FailReason> {
+public interface EventNetworkManager<E extends NetworkEvent, P extends Peer, F extends FailReason> extends NetworkManager<GPSPosition, ArrayList<E>, P, F> {
 }

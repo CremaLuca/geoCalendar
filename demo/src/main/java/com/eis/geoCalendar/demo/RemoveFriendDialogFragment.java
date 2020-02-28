@@ -10,50 +10,69 @@ import androidx.fragment.app.DialogFragment;
 
 /**
  * This class handles the creation of a dialog when clicking on an item of the friends' list.
+ * It is used to delete a contact from this list.
  *
  * @author Tonin Alessandra
  */
 public class RemoveFriendDialogFragment extends DialogFragment {
 
+    private final static String CLASS_EXCEPTION = "ContactsActivity must implement NoticeDialogListener";
+
+    /**
+     * The activity that creates an instance of this dialog fragment must
+     * implement this interface in order to receive event callbacks.
+     */
     public interface RemoveFriendDialogListener {
+        /**
+         * Callback when the positive button of the dialog is clicked.
+         *
+         * @param dialog The dialog containing the clicked button.
+         */
         void onDialogPositiveClick(DialogFragment dialog);
 
+        /**
+         * Callback when the negative button of the dialog is clicked.
+         *
+         * @param dialog The dialog containing the clicked button.
+         */
         void onDialogNegativeClick(DialogFragment dialog);
     }
 
-    RemoveFriendDialogListener listener;
+    private RemoveFriendDialogListener removeListener;
 
-    // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
+    // Instantiates the RemoveFriendDialogListener
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         // Verify that the host activity implements the callback interface
         try {
-            // Instantiate the NoticeDialogListener so we can send events to the host
-            listener = (RemoveFriendDialogListener) context;
+            removeListener = (RemoveFriendDialogListener) context;
         } catch (ClassCastException e) {
-            // The activity doesn't implement the interface, throw exception
-            throw new ClassCastException("ContactsActivity must implement NoticeDialogListener");
+            throw new ClassCastException(CLASS_EXCEPTION);
         }
     }
 
-
+    /**
+     * Builds an AlertDialog object and sets up the button click handlers.
+     *
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
+     * @return The AlertDialog object created.
+     */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(R.string.dialog_remove_friend)
+        builder.setTitle(R.string.REMOVE_FRIEND)
+                .setMessage(R.string.dialog_remove_friend)
                 .setPositiveButton(R.string.REMOVE, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        listener.onDialogPositiveClick(RemoveFriendDialogFragment.this);
+                        removeListener.onDialogPositiveClick(RemoveFriendDialogFragment.this);
                     }
                 })
                 .setNegativeButton(R.string.CANCEL, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        listener.onDialogNegativeClick(RemoveFriendDialogFragment.this);
+                        removeListener.onDialogNegativeClick(RemoveFriendDialogFragment.this);
                     }
                 });
-        // Create the AlertDialog object and return it
         return builder.create();
     }
 }

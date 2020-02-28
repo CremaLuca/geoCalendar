@@ -165,15 +165,14 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
-                int id = menuItem.getItemId();
-                switch (id) {
+                int itemId = menuItem.getItemId();
+                switch (itemId) {
                     case R.id.addressBook_item:
                         Intent openAddressBook = new Intent(MainActivity.this, ContactsActivity.class);
                         startActivity(openAddressBook);
                         break;
                     case R.id.settings_item:
                         //Do some thing here
-                        // add navigation drawer item onclick method here
                         break;
                 }
                 return false;

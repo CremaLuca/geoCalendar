@@ -38,5 +38,6 @@
     <string name="drawer_opened">drawer_opened</string>
     <string name="drawer_closed">drawer_closed</string>
     <string name="contacts_toolbar">Friends\' list</string>
+    <string name="dialog_remove_friend">Do you want to remove this contact from the friend\'s list?</string>
 
 </resources>

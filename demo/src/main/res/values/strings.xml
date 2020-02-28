@@ -27,6 +27,7 @@
     <string name="nav_header_subtitle">com.eis.geocalendar</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+    <string name="action_contacts">Contacts</string>
 
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
@@ -36,5 +37,8 @@
     <string name="menu_send">Send</string>
     <string name="drawer_opened">drawer_opened</string>
     <string name="drawer_closed">drawer_closed</string>
+    <string name="contacts_toolbar">Friends\' list</string>
+    <string name="dialog_remove_friend">Do you want to remove this contact from the friend\'s list?</string>
+    <string name="REMOVE_FRIEND">REMOVE FRIEND?</string>
 
 </resources>

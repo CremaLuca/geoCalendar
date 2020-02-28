@@ -1,10 +1,8 @@
 package com.eis.geoCalendar.demo;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -38,7 +36,6 @@ import com.eis.geoCalendar.network.NetworkEventUser;
 import com.eis.smslibrary.SMSPeer;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +58,6 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
     private Toolbar toolbar;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
 
 
     @Override
@@ -157,27 +153,6 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
             mActionBarDrawerToggle.setDrawerSlideAnimationEnabled(true);
         }
 
-        /*
-         * This code is to open a new activity when clicking on menu items
-         * @author Alessandra Tonin
-         */
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
-                int itemId = menuItem.getItemId();
-                switch (itemId) {
-                    case R.id.addressBook_item:
-                        Intent openAddressBook = new Intent(MainActivity.this, ContactsActivity.class);
-                        startActivity(openAddressBook);
-                        break;
-                    case R.id.settings_item:
-                        //Do some thing here
-                        break;
-                }
-                return false;
-            }
-        });
     }
 
     private void addEvents() {

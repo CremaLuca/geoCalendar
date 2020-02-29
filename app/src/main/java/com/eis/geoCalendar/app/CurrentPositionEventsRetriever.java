@@ -10,7 +10,6 @@ import com.eis.geoCalendar.gps.GPSPosition;
 import com.eis.geoCalendar.gps.GPSPositionSource;
 import com.eis.geoCalendar.gps.PositionSourceListener;
 import com.eis.geoCalendar.network.NetworkEvent;
-import com.google.android.gms.location.LocationServices;
 
 /**
  * This class handles the retrieving of the events near to the user's position.
@@ -53,6 +52,9 @@ public class CurrentPositionEventsRetriever<E extends NetworkEvent> {
 
     /**
      * Overrides current update time.
+     * This change will be effective at the next startEventRetrieval() call.
+     * <p>
+     * The default update time is 5000 in millis.
      *
      * @param updateTime The new update time
      */
@@ -74,7 +76,7 @@ public class CurrentPositionEventsRetriever<E extends NetworkEvent> {
 
 
     /**
-     * Stops retrieving events.
+     * Removes the positionSourceListener.
      */
     public void stopEventRetrieval() {
         positionSource.removePositionSourceListener();

@@ -1,4 +1,4 @@
-package com.eis.geoCalendar.demo;
+package com.eis.geoCalendar.demo.Friends;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -8,6 +8,8 @@ import android.os.Bundle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
+import com.eis.geoCalendar.demo.R;
+
 /**
  * This class handles the creation of a dialog when clicking on an item of the friends' list.
  * It is used to delete a contact from this list.
@@ -16,7 +18,7 @@ import androidx.fragment.app.DialogFragment;
  */
 public class RemoveFriendDialogFragment extends DialogFragment {
 
-    private final static String CLASS_EXCEPTION = "ContactsActivity must implement NoticeDialogListener";
+    private final static String CLASS_EXCEPTION = "ContactsActivity must implement RemoveFriendDialogListener";
 
     /**
      * The activity that creates an instance of this dialog fragment must

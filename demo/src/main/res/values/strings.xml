@@ -41,4 +41,6 @@
     <string name="dialog_remove_friend">Do you want to remove this contact from the friend\'s list?</string>
     <string name="REMOVE_FRIEND">REMOVE FRIEND?</string>
 
+    <string name="ContactsActivityPreferences">geocalendar.ContactsActivityPreferences</string>
+
 </resources>

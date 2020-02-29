@@ -29,6 +29,7 @@ import com.eis.geoCalendar.demo.Behaviour.OnMapInitializedListener;
 import com.eis.geoCalendar.demo.Bottomsheet.MapEventBottomSheetBehaviour;
 import com.eis.geoCalendar.demo.Dialogs.AddEventDialog;
 import com.eis.geoCalendar.demo.Dialogs.RemoveEventDialog;
+import com.eis.geoCalendar.demo.Friends.FriendsListManager;
 import com.eis.geoCalendar.demo.Localization.LocationManager;
 import com.eis.geoCalendar.demo.Resources.SMSNetworkEventUser;
 import com.eis.geoCalendar.events.Event;
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
     NetworkEventMapBehaviour networkEventMapBehaviour;
 
     private final static int APP_PERMISSION_REQUEST_CODE = 1;
+    private final static int APP_CONTACTS_PERMISSION_REQUEST_CODE = 2;
     private static int i = 0;
 
     List<NetworkEventUser> users;
@@ -178,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
                 return false;
             }
         });
+
     }
 
     private void addEvents() {
@@ -244,6 +247,8 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
      */
     public void requestPermissions() {
         ActivityCompat.requestPermissions(this, LocationManager.getPermissions(), APP_PERMISSION_REQUEST_CODE);
+        ActivityCompat.requestPermissions(this, FriendsListManager.getPermissions(), APP_CONTACTS_PERMISSION_REQUEST_CODE);
+
     }
 
     /**

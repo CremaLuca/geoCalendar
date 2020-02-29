@@ -15,11 +15,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.eis.geoCalendar.demo.Friends.FriendsListManager;
+import com.eis.geoCalendar.demo.Friends.RemoveFriendDialogFragment;
+
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class handles a friend's list, picking up contacts from the device's address book and saving them into app's sharedPreferences file.
+ * This class handles a friend's list, picking up contacts from the device's address book and saving them into
+ * ContactsActivity's sharedPreferences file.
  * Contacts can be deleted from this list by clicking them.
  * <p>
  * Contacts will be displayed as a String in a TextView, inside a LinearLayout of a ScrollView.
@@ -41,8 +45,14 @@ public class ContactsActivity extends FragmentActivity implements RemoveFriendDi
     private static final int PICK_CONTACT = 1;
     private static final String REMOVE_DIALOG_FRAGMENT_TAG = "RemoveDialogFragment";
 
+    private final String PREFIX = "friend";
+    private final static int BEGIN_INDEX = 0;
+    private final static int END_INDEX = 6;
+
+
     private LinearLayout scrollLinLayout;
     private String numberToRemove;
+    private FriendsListManager friendsListManager;
 
 
     @Override
@@ -50,6 +60,8 @@ public class ContactsActivity extends FragmentActivity implements RemoveFriendDi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
         scrollLinLayout = findViewById(R.id.scrollLinLayout);
+
+        friendsListManager = new FriendsListManager(this);
 
         //this method takes friends' list saved in preferences and visualizes it in this activity
         loadContacts();
@@ -99,18 +111,18 @@ public class ContactsActivity extends FragmentActivity implements RemoveFriendDi
                     final String currentNumber = number;
 
                     //save new friend in preferences, only if it is not yet saved, and display it in the current activity
-                    if (ContactsActivity.this.getPreferences(Context.MODE_PRIVATE).getString(number, null) == null) {
-                        savePreferences(number, name);
+                    if (friendsListManager.saveFriend(number, name)) {
 
                         //add a TextView to the LinearLayout
                         TextView contact = new TextView(this);
                         contact.setText(contactInfo);
 
                         //set an onClickListener for each friend
-                        contact.setOnClickListener(new View.OnClickListener() {
+                        contact.setOnLongClickListener(new View.OnLongClickListener() {
                             @Override
-                            public void onClick(View view) {
+                            public boolean onLongClick(View view) {
                                 showRemoveFriendDialog(currentNumber);
+                                return true;
                             }
                         });
 
@@ -127,51 +139,25 @@ public class ContactsActivity extends FragmentActivity implements RemoveFriendDi
 
     /**
      * This method retrieves friends' list saved in preferences and displays it.
-     * N.B.: this works fine if sharedPreferences is used only to save this list, as it is in this case.
      */
     private void loadContacts() {
-        SharedPreferences sharedPref = ContactsActivity.this.getPreferences(Context.MODE_PRIVATE);
-        Map<String, ?> storedFriends = sharedPref.getAll();
-        HashMap<String, String> storedFriendsHashMap = (HashMap<String, String>) storedFriends;
+        HashMap<String, String> storedFriendsHashMap = friendsListManager.loadFriends();
         // Iterate all key/value pairs
         for (final Map.Entry<String, String> friend : storedFriendsHashMap.entrySet()) {
-            String contactInfo = friend.getValue() + SPACE + friend.getKey();
-            TextView contact = new TextView(this);
-            contact.setText(contactInfo);
-            contact.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    showRemoveFriendDialog(friend.getKey());
-                }
-            });
-            scrollLinLayout.addView(contact);
+            if (friend.getKey().substring(BEGIN_INDEX, END_INDEX).equals(PREFIX)) {
+                String contactInfo = friend.getValue() + SPACE + friend.getKey().substring(END_INDEX);
+                TextView contact = new TextView(this);
+                contact.setText(contactInfo);
+                contact.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        showRemoveFriendDialog(friend.getKey().substring(END_INDEX));
+                        return true;
+                    }
+                });
+                scrollLinLayout.addView(contact);
+            }
         }
-
-    }
-
-    /**
-     * Saves friends' list on sharedPreferences file a a key-value pair.
-     * Key is the parsed phone number, value is the contact's name on device's address book.
-     *
-     * @param key   The number of the new friend.
-     * @param value The name of the new friend.
-     */
-    private void savePreferences(String key, String value) {
-        SharedPreferences sharedPref = ContactsActivity.this.getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(key, value);
-        editor.apply();
-    }
-
-    /**
-     * Removes a friend from the list, deleting it from the sharedPreferences file.
-     *
-     * @param key The number to be removed from the list.
-     */
-    public void removeFriend(String key) {
-        SharedPreferences.Editor editor = ContactsActivity.this.getPreferences(Context.MODE_PRIVATE).edit();
-        editor.remove(key);
-        editor.apply();
     }
 
     /**
@@ -193,7 +179,7 @@ public class ContactsActivity extends FragmentActivity implements RemoveFriendDi
      */
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
-        removeFriend(numberToRemove);
+        friendsListManager.removeFriend(numberToRemove);
         scrollLinLayout.removeAllViews();
         loadContacts();
     }
@@ -209,3 +195,4 @@ public class ContactsActivity extends FragmentActivity implements RemoveFriendDi
         dialog.dismiss();
     }
 }
+

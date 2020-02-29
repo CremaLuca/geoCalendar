@@ -118,10 +118,11 @@ public class ContactsActivity extends FragmentActivity implements RemoveFriendDi
                         contact.setText(contactInfo);
 
                         //set an onClickListener for each friend
-                        contact.setOnClickListener(new View.OnClickListener() {
+                        contact.setOnLongClickListener(new View.OnLongClickListener() {
                             @Override
-                            public void onClick(View view) {
+                            public boolean onLongClick(View view) {
                                 showRemoveFriendDialog(currentNumber);
+                                return true;
                             }
                         });
 
@@ -147,10 +148,11 @@ public class ContactsActivity extends FragmentActivity implements RemoveFriendDi
                 String contactInfo = friend.getValue() + SPACE + friend.getKey().substring(END_INDEX);
                 TextView contact = new TextView(this);
                 contact.setText(contactInfo);
-                contact.setOnClickListener(new View.OnClickListener() {
+                contact.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
-                    public void onClick(View view) {
+                    public boolean onLongClick(View view) {
                         showRemoveFriendDialog(friend.getKey().substring(END_INDEX));
+                        return true;
                     }
                 });
                 scrollLinLayout.addView(contact);

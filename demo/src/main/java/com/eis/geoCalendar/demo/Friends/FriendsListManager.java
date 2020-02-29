@@ -66,7 +66,7 @@ public class FriendsListManager {
      * Gets all friends actually saved on the ContactsActivity's sharedPreferences file.
      *
      * @return An HashMap<String, String> containing all key-value pairs. They will be filtered when needed
-     *        (In this case, when calling {@code loadContacts()} from {@link com.eis.geoCalendar.demo.ContactsActivity}).
+     * (In this case, when calling {@code loadContacts()} from {@link com.eis.geoCalendar.demo.ContactsActivity}).
      */
     public HashMap<String, String> loadFriends() {
         Map<String, ?> storedFriends = sharedPref.getAll();

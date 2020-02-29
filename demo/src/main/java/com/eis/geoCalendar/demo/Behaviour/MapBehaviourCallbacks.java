@@ -12,7 +12,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 
 /**
  * Interface that defines the callbacks a class needs to implement to be a complete MapBehaviour obj
- * Used alongside {@link com.eis.geoCalendar.demo.Behaviour.MapBehaviour}
+ * Used alongside {@link MapBehaviour}
  *
  * @author Turcato
  */

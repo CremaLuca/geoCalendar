@@ -53,6 +53,7 @@ public class CurrentPositionEventsRetriever<E extends NetworkEvent> {
 
     /**
      * Overrides current update time.
+     * This change will be effective at the next startEventRetrieval() call.
      *
      * @param updateTime The new update time
      */
@@ -74,7 +75,7 @@ public class CurrentPositionEventsRetriever<E extends NetworkEvent> {
 
 
     /**
-     * Stops retrieving events.
+     * Removes the positionSourceListener.
      */
     public void stopEventRetrieval() {
         positionSource.removePositionSourceListener();

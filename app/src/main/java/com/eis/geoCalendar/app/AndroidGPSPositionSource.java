@@ -38,7 +38,6 @@ public class AndroidGPSPositionSource extends LocationCallback implements GPSPos
         this.locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult result) {
-                //TODO: Make sure this method returns the last location
                 positionSourceListener.onPositionRetrieved(new GPSPosition(result.getLastLocation()));
             }
         };
@@ -68,7 +67,9 @@ public class AndroidGPSPositionSource extends LocationCallback implements GPSPos
     }
 
     /**
-     * Subscribes the locationCallback to be called upon location update.
+     * Subscribes the PositionSourceListener to be called upon location update.
+     * N.B.: this method will fail if a PositionSourceListener wasn't set, since LocationCallback
+     * will be calling positionSourceListener.onPositionRetrieved on a null positionSourceListener
      */
     private void requestLocationUpdate() {
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
@@ -82,6 +83,8 @@ public class AndroidGPSPositionSource extends LocationCallback implements GPSPos
     }
 
 }
+
+
 
 
 

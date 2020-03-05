@@ -66,7 +66,6 @@ public class MapsActivity extends FragmentActivity {
         EventBottomSheetDialogFragment eventBottomSheetDialogFragment = new EventBottomSheetDialogFragment();
 
 
-
     }
 
     /***

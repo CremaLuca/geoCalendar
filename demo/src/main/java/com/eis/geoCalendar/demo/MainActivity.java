@@ -1,6 +1,7 @@
 package com.eis.geoCalendar.demo;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -42,6 +43,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements OnEventCreatedListener, OnEventRemovedListener,
@@ -54,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
     NetworkEventMapBehaviour networkEventMapBehaviour;
 
     private final static int APP_PERMISSION_REQUEST_CODE = 1;
-    private final static int APP_CONTACTS_PERMISSION_REQUEST_CODE = 2;
     private static int i = 0;
 
     List<NetworkEventUser> users;
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
+    private SupportMapFragment mapFragment;
 
 
     @Override
@@ -78,8 +80,7 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
         //  layoutBottomSheet = findViewById(R.id.bottom_sheet);
         //  sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
         View goToNavigatorButton = findViewById(R.id.go_to_navigator_imageButton);
 
@@ -98,8 +99,7 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
 
         locationManager = new LocationManager(getApplicationContext());
 
-
-/*
+        /*
         //Creating the "Behaviour Manager"
         eventMapBehaviour = new EventMapBehaviour<>();
         eventMapBehaviour.setAddEventDialog(new AddEventDialog());
@@ -142,8 +142,6 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
         networkEventMapBehaviour.allowMapRemovalNetworkEvents(false);
 
         //My job here is done
-        //mapFragment.getMapAsync(eventMapBehaviour);
-        mapFragment.getMapAsync(networkEventMapBehaviour);
 
         View mapView = findViewById(R.id.mapView);
 
@@ -246,9 +244,11 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
      * Requests Android permissions if not granted
      */
     public void requestPermissions() {
-        ActivityCompat.requestPermissions(this, LocationManager.getPermissions(), APP_PERMISSION_REQUEST_CODE);
-        ActivityCompat.requestPermissions(this, FriendsListManager.getPermissions(), APP_CONTACTS_PERMISSION_REQUEST_CODE);
-
+        String[] locationPermission = LocationManager.getPermissions();
+        String[] contactPermissions = FriendsListManager.getPermissions();
+        String[] allPermissions = Arrays.copyOf(locationPermission, locationPermission.length + contactPermissions.length);
+        System.arraycopy(contactPermissions, 0, allPermissions, locationPermission.length, contactPermissions.length);
+        ActivityCompat.requestPermissions(this, allPermissions, APP_PERMISSION_REQUEST_CODE);
     }
 
     /**
@@ -256,8 +256,29 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
      */
     @Override
     public void onMapInitialized() {
-        //TODO retrieve correct height of the toolbar
-        networkEventMapBehaviour.setMapPadding(0, 130, 0, 0);
+        int toolbarHeight = findViewById(R.id.toolbar).getHeight();
+        networkEventMapBehaviour.setMapPadding(0, toolbarHeight, 0, 0);
+    }
+
+    /**
+     * Callback for permissions' request. If they are granted, unlock all GoogleMaps features.
+     *
+     * @param requestCode  The same code used on permissions request.
+     * @param permissions  The list of requested permissions.
+     * @param grantResults The results of each permission's request.
+     * @author Alessandra Tonin
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case APP_PERMISSION_REQUEST_CODE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mapFragment.getMapAsync(networkEventMapBehaviour);
+                } else {
+                    requestPermissions();
+                }
+            }
+        }
     }
 
 }

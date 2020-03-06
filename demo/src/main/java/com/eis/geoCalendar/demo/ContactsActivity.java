@@ -3,9 +3,7 @@ package com.eis.geoCalendar.demo;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -36,6 +34,7 @@ import java.util.Map;
 
 public class ContactsActivity extends FragmentActivity implements RemoveFriendDialogFragment.RemoveFriendDialogListener {
 
+    private final float DEFAULT_FONTSIZE = 20;
     private final String EMPTY_STRING = "";
     private final String SPACE = " ";
     private final String EQUALS = " = ";
@@ -116,6 +115,7 @@ public class ContactsActivity extends FragmentActivity implements RemoveFriendDi
                         //add a TextView to the LinearLayout
                         TextView contact = new TextView(this);
                         contact.setText(contactInfo);
+                        contact.setTextSize(DEFAULT_FONTSIZE);
 
                         //set an onClickListener for each friend
                         contact.setOnLongClickListener(new View.OnLongClickListener() {
@@ -148,6 +148,7 @@ public class ContactsActivity extends FragmentActivity implements RemoveFriendDi
                 String contactInfo = friend.getValue() + SPACE + friend.getKey().substring(END_INDEX);
                 TextView contact = new TextView(this);
                 contact.setText(contactInfo);
+                contact.setTextSize(DEFAULT_FONTSIZE);
                 contact.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View view) {

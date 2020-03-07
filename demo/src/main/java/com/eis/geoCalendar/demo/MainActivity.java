@@ -23,20 +23,20 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.eis.geoCalendar.app.network.GenericNetworkEvent;
 import com.eis.geoCalendar.demo.Behaviour.EventMapBehaviour;
 import com.eis.geoCalendar.demo.Behaviour.NetworkEventMapBehaviour;
-import com.eis.geoCalendar.demo.Behaviour.OnEventCreatedListener;
-import com.eis.geoCalendar.demo.Behaviour.OnEventRemovedListener;
-import com.eis.geoCalendar.demo.Behaviour.OnEventTriggeredListener;
-import com.eis.geoCalendar.demo.Behaviour.OnMapInitializedListener;
+import com.eis.geoCalendar.demo.Behaviour.listener.OnEventCreatedListener;
+import com.eis.geoCalendar.demo.Behaviour.listener.OnEventRemovedListener;
+import com.eis.geoCalendar.demo.Behaviour.listener.OnEventTriggeredListener;
+import com.eis.geoCalendar.demo.Behaviour.listener.OnMapInitializedListener;
 import com.eis.geoCalendar.demo.Bottomsheet.MapEventBottomSheetBehaviour;
 import com.eis.geoCalendar.demo.Dialogs.AddEventDialog;
 import com.eis.geoCalendar.demo.Dialogs.RemoveEventDialog;
 import com.eis.geoCalendar.demo.Friends.FriendsListManager;
 import com.eis.geoCalendar.demo.Localization.LocationManager;
-import com.eis.geoCalendar.demo.Resources.SMSNetworkEventUser;
 import com.eis.geoCalendar.events.Event;
 import com.eis.geoCalendar.gps.GPSPosition;
 import com.eis.geoCalendar.network.NetworkEvent;
 import com.eis.geoCalendar.network.NetworkEventUser;
+import com.eis.geoCalendar.network.SMS.SMSNetworkEventUser;
 import com.eis.smslibrary.SMSPeer;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -46,6 +46,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
+/**
+ * Class not completed
+ */
 public class MainActivity extends AppCompatActivity implements OnEventCreatedListener, OnEventRemovedListener,
         OnEventTriggeredListener, OnMapInitializedListener {
 

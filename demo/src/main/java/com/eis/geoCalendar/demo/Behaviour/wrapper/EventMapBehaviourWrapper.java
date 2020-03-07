@@ -34,7 +34,7 @@ public class EventMapBehaviourWrapper implements MapBehaviour<Event<String>> {
     private EventMapBehaviour instance;
 
     /**
-     * Builds a fully operative @link com.eis.geoCalendar.demo.Behaviour.wrapper.EventMapBehaviourWrapper} obj
+     * Builds a fully operative {@link com.eis.geoCalendar.demo.Behaviour.wrapper.EventMapBehaviourWrapper} obj
      */
     public EventMapBehaviourWrapper() {
         instance = new EventMapBehaviour();

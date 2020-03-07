@@ -13,7 +13,7 @@ public class SMSNetworkEventUser implements NetworkEventUser<SMSPeer> {
     /**
      * Public constructor that creates a fully operative SMSNetworkEventUser object
      *
-     * @param myPeer A valid SMSPeer
+     * @param myPeer A valid {@link SMSPeer}
      */
     public SMSNetworkEventUser(SMSPeer myPeer) {
         this.myPeer = myPeer;

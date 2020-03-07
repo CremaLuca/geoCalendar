@@ -6,12 +6,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 
+import com.eis.geoCalendar.demo.Behaviour.listener.OnEventCreatedListener;
+import com.eis.geoCalendar.demo.Behaviour.listener.OnEventRemovedListener;
+import com.eis.geoCalendar.demo.Behaviour.listener.OnEventTriggeredListener;
+import com.eis.geoCalendar.demo.Behaviour.listener.RemoveEventListener;
+import com.eis.geoCalendar.demo.Behaviour.listener.ResultEventListener;
 import com.eis.geoCalendar.demo.Dialogs.AbstractAddEventDialog;
 import com.eis.geoCalendar.demo.Dialogs.AbstractRemoveEventDialog;
 import com.eis.geoCalendar.demo.Localization.GoToGoogleMapsNavigator;
 import com.eis.geoCalendar.demo.Localization.OnLocationAvailableListener;
-import com.eis.geoCalendar.demo.Resources.SMSNetworkEventUser;
 import com.eis.geoCalendar.events.Event;
+import com.eis.geoCalendar.network.SMS.SMSNetworkEventUser;
 import com.eis.smslibrary.SMSPeer;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;

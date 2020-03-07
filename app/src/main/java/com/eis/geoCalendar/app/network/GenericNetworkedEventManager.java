@@ -7,8 +7,10 @@ import com.eis.geoCalendar.events.GetEventListener;
 import com.eis.geoCalendar.events.RemoveEventListener;
 import com.eis.geoCalendar.gps.GPSPosition;
 import com.eis.geoCalendar.network.EventNetwork;
+import com.eis.geoCalendar.network.NetGetEventListener;
+import com.eis.geoCalendar.network.NetRemoveEventListener;
+import com.eis.geoCalendar.network.NetStoreEventListener;
 import com.eis.geoCalendar.network.NetworkEvent;
-import com.eis.geoCalendar.network.StoreEventListener;
 
 import java.util.ArrayList;
 
@@ -35,7 +37,7 @@ public class GenericNetworkedEventManager<E extends NetworkEvent> implements Asy
 
     @Override
     public void getEventsInRange(@NonNull GPSPosition p, float range, final GetEventListener<E> getEventListener) {
-        eventNetwork.getEvents(p, range, new com.eis.geoCalendar.network.GetEventListener<E>() {
+        eventNetwork.getEvents(p, range, new NetGetEventListener<E>() {
             @Override
             public void onGetEvents(@NonNull GPSPosition requestedPosition, @NonNull ArrayList<E> events) {
                 getEventListener.onGetEvents(requestedPosition, events);
@@ -50,7 +52,7 @@ public class GenericNetworkedEventManager<E extends NetworkEvent> implements Asy
 
     @Override
     public void addEvent(@NonNull E event, @Nullable final AddEventListener<E> addEventListener) {
-        eventNetwork.storeEvent(event, new StoreEventListener<E>() {
+        eventNetwork.storeEvent(event, new NetStoreEventListener<E>() {
             @Override
             public void onEventStored(@NonNull E event) {
                 if (addEventListener != null)
@@ -67,7 +69,7 @@ public class GenericNetworkedEventManager<E extends NetworkEvent> implements Asy
 
     @Override
     public void removeEvent(@NonNull E event, @Nullable final RemoveEventListener<E> removeEventListener) {
-        eventNetwork.removeEvent(event, new com.eis.geoCalendar.network.RemoveEventListener<E>() {
+        eventNetwork.removeEvent(event, new NetRemoveEventListener<E>() {
             @Override
             public void onEventRemoved(@NonNull E event) {
                 if (removeEventListener != null)

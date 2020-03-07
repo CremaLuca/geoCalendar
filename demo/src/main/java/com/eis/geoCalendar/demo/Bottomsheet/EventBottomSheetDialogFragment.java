@@ -12,6 +12,11 @@ import androidx.annotation.Nullable;
 import com.eis.geoCalendar.demo.R;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+/**
+ * A simple non-persistent bottom sheet Fragment
+ *
+ * @author Turcato
+ */
 public class EventBottomSheetDialogFragment extends BottomSheetDialogFragment {
 
     @Nullable

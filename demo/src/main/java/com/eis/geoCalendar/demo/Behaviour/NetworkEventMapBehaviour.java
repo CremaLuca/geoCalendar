@@ -6,6 +6,7 @@ import android.util.ArrayMap;
 import androidx.annotation.NonNull;
 
 import com.eis.geoCalendar.app.network.GenericNetworkEvent;
+import com.eis.geoCalendar.demo.Behaviour.listener.OnEventCreatedListener;
 import com.eis.geoCalendar.gps.GPSPosition;
 import com.eis.geoCalendar.network.NetworkEvent;
 import com.eis.geoCalendar.network.NetworkEventUser;
@@ -34,7 +35,7 @@ import java.util.Map;
  *
  * @author Turcato
  */
-public class NetworkEventMapBehaviour extends EventMapBehaviour {
+public class NetworkEventMapBehaviour extends EventMapBehaviour implements NetworkMapBehaviour<NetworkEvent, NetworkEventUser> {
     private Map<Marker, NetworkEvent> currentEvents;
     private Map<NetworkEventUser, Float> usersColors;
     private NetworkEventUser myself;
@@ -98,6 +99,7 @@ public class NetworkEventMapBehaviour extends EventMapBehaviour {
      * @param users  The users of the given events, must be a complete list of all the users that
      *               appear in the list of events
      */
+    @Override
     public void addEventsToMap(@NonNull List<NetworkEventUser> users, @NonNull List<NetworkEvent> events) {
         for (NetworkEventUser user : users) {
             if (!usersColors.keySet().contains(user)) {
@@ -144,6 +146,7 @@ public class NetworkEventMapBehaviour extends EventMapBehaviour {
      * @param user   A networkUser
      * @param events A list of events from {@code user}
      */
+    @Override
     public void addEventsToMap(@NonNull NetworkEventUser user, @NonNull List<NetworkEvent> events) {
         List<NetworkEventUser> userList = new ArrayList<>();
         userList.add(user);
@@ -208,19 +211,6 @@ public class NetworkEventMapBehaviour extends EventMapBehaviour {
         else
             return mMap.addMarker(new MarkerOptions().position(pos).title(myEvent.getContent().toString()));
         //automatically cuts title if too long
-    }
-
-    @Override
-    public void subscribeOnEventCreatedListener(@NonNull OnEventCreatedListener listener) {
-        if (onEventCreatedListeners == null)
-            onEventCreatedListeners = new ArrayList<>();
-        onEventCreatedListeners.add(listener);
-    }
-
-    @Override
-    public void unsubscribeOnEventCreatedListener(OnEventCreatedListener listener) {
-        if (onEventCreatedListeners != null)
-            onEventCreatedListeners.remove(listener);
     }
 
     /**

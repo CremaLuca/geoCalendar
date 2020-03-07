@@ -3,15 +3,17 @@ package com.eis.geoCalendar.demo.Bottomsheet;
 import android.view.View;
 import android.widget.TextView;
 
+import com.eis.geoCalendar.demo.Bottomsheet.listener.OnActionViewClickListener;
+import com.eis.geoCalendar.demo.Bottomsheet.listener.OnRemoveViewClickListener;
+
 /**
- * Class Representing the Behaviour for a {@code MapEventBottomSheetBehaviour} object
+ * Interface Representing the Behaviour for a {@code MapEventBottomSheetBehaviour} object
  * <p>
- * By Default this Object is projected to have an Action Button and a Text
+ * By Default this Object is projected to have an Action View, a Remove View and a Text View
  *
  * @author Turcato
  */
-public abstract class AbstractMapEventBottomSheetBehaviour //extends BottomSheetBehavior
-        implements View.OnClickListener {
+public interface BottomSheetBehaviour extends View.OnClickListener {
 
     /**
      * @param actionView An action Button Contained in the BottomSheet layout that created this instance

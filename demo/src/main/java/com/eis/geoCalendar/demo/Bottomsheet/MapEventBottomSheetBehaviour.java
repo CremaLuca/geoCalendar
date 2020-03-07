@@ -6,6 +6,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.eis.geoCalendar.demo.Bottomsheet.listener.OnActionViewClickListener;
+import com.eis.geoCalendar.demo.Bottomsheet.listener.OnRemoveViewClickListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.util.Map;
@@ -16,9 +18,12 @@ import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_
 /**
  * Class built as an Object Pool, each View object can be used to create one and only Behaviour object
  *
+ * Allows to build and control a Bottom Sheet for a Map of events, by default it has an Action View,
+ * a Remove View and a Text View
+ *
  * @author Turcato
  */
-public class MapEventBottomSheetBehaviour extends AbstractMapEventBottomSheetBehaviour {
+public class MapEventBottomSheetBehaviour implements BottomSheetBehaviour {
     private static Map<View, MapEventBottomSheetBehaviour> instances = new ArrayMap<>();
 
     private BottomSheetBehavior bottomSheetBehavior;
@@ -48,8 +53,10 @@ public class MapEventBottomSheetBehaviour extends AbstractMapEventBottomSheetBeh
     }
 
     /**
-     * @param view      A design object that will behave as a persistent BottomSheet
+     * @param view      A design object that will behave as a persistent BottomSheet, must have the property
+     *                  layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
      * @param height    The height of the layout object used for the BottomSheet
+     *
      * @return the MapEventBottomSheetBehaviour associated with the view.
      */
     public static MapEventBottomSheetBehaviour from(@NonNull View view, int height) {
@@ -62,7 +69,8 @@ public class MapEventBottomSheetBehaviour extends AbstractMapEventBottomSheetBeh
     }
 
     /**
-     * @param view  A design object that will behave as a persistent BottomSheet
+     * @param view  A design object that will behave as a persistent BottomSheet, must have the property
+     *      *                  layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
      * @return The MapEventBottomSheetBehaviour associated with the view.
      */
     public static MapEventBottomSheetBehaviour from(@NonNull View view) {

@@ -2,13 +2,14 @@ package com.eis.geoCalendar.demo.Dialogs;
 
 import androidx.fragment.app.DialogFragment;
 
-import com.eis.geoCalendar.demo.Behaviour.RemoveEventListener;
+import com.eis.geoCalendar.demo.Behaviour.listener.RemoveEventListener;
 import com.google.android.gms.maps.model.Marker;
 
 /**
- * @author Turcato
  * This class defines a behaviour that a DialogFragment has to implement to define to be used
  * for interacting with the user for removing an Event through MapBehaviour objects
+ *
+ * @author Turcato
  */
 public abstract class AbstractRemoveEventDialog extends DialogFragment {
     /**

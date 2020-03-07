@@ -19,9 +19,9 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 
 /**
+ * Simple activity that includes a user's map
+ *
  * @author Turcato
- * <p>
- * GeoCalendar has a main activity formed by a GoogleMap
  */
 public class MapsActivity extends FragmentActivity {
 
@@ -50,7 +50,7 @@ public class MapsActivity extends FragmentActivity {
         locationManager = new LocationManager(getApplicationContext());
 
         //Creating the "Behaviour Manager"
-        eventMapBehaviour = new EventMapBehaviour<>();
+        eventMapBehaviour = new EventMapBehaviour();
         eventMapBehaviour.setAddEventDialog(new AddEventDialog());
         eventMapBehaviour.setRemoveEventDialog(new RemoveEventDialog());
         eventMapBehaviour.setLocationRetriever(locationManager);

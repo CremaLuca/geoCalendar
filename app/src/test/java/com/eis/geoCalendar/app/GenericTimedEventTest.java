@@ -11,7 +11,8 @@ public class GenericTimedEventTest {
 
     private static final String DEFAULT_CONTENT = "Test content";
     private static final DateTime DEFAULT_DATETIME = DateTime.now();
-    private static final GPSPosition DEFAULT_GPS_POSITION = new GPSPosition(33.12345675f, 15.22323232f);
+    private static final GPSPosition DEFAULT_GPS_POSITION =
+            new GPSPosition().updateLocation(33.12345675f, 15.22323232f);
 
     private GenericTimedEvent<String> testTimedEvent;
 

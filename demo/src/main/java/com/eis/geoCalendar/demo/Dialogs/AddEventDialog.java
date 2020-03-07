@@ -9,14 +9,14 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 
-import com.eis.geoCalendar.demo.Behaviour.ResultEventListener;
+import com.eis.geoCalendar.demo.Behaviour.listener.ResultEventListener;
 import com.eis.geoCalendar.demo.R;
 import com.google.android.gms.maps.model.LatLng;
 
 /**
- * @author Turcato
- * <p>
  * This class defines a DialogFragment to Create a Localized Event with Description defined by user
+ *
+ * @author Turcato
  */
 public class AddEventDialog extends AbstractAddEventDialog {
     private ResultEventListener resultListener;

@@ -1,13 +1,16 @@
 package com.eis.geoCalendar.demo.Behaviour;
 
-import android.content.Context;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 
 import com.eis.geoCalendar.app.GenericEvent;
-import com.eis.geoCalendar.demo.Bottomsheet.AbstractMapEventBottomSheetBehaviour;
+import com.eis.geoCalendar.demo.Behaviour.listener.OnEventCreatedListener;
+import com.eis.geoCalendar.demo.Behaviour.listener.OnEventRemovedListener;
+import com.eis.geoCalendar.demo.Behaviour.listener.OnEventTriggeredListener;
+import com.eis.geoCalendar.demo.Behaviour.listener.OnMapInitializedListener;
+import com.eis.geoCalendar.demo.Bottomsheet.BottomSheetBehaviour;
 import com.eis.geoCalendar.demo.Dialogs.AbstractAddEventDialog;
 import com.eis.geoCalendar.demo.Dialogs.AbstractRemoveEventDialog;
 import com.eis.geoCalendar.demo.Localization.GoToGoogleMapsNavigator;
@@ -31,22 +34,20 @@ import static android.view.View.INVISIBLE;
  * All that is needed to use this class is just to create a SupportMapFragment from a map activity
  * anc call getMapAsync(eventMapBehaviour)
  *
- * Subscription of Event related Listeners works follwing the Observer Design pattern, this class
+ * Subscription of Event related Listeners works following the Observer Design pattern, this class
  * will notify listeners when the user creates/removes/triggers events using the map
  *
- * @param <E> Type of event
+ * @author Turcato
  */
-public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour {
+public class EventMapBehaviour implements MapBehaviour<Event<String>>, MapBehaviourCallbacks {
     protected GoogleMap mMap;
     private FragmentManager supportFragmentManager;
-    private Context appContext;
     private LocationRetriever locationRetriever;
 
 
-    // private Map<Marker, Event<String>> currentEvents;
     private AbstractAddEventDialog addEventDialog;
     private AbstractRemoveEventDialog removeEventDialog;
-    protected AbstractMapEventBottomSheetBehaviour bottomSheetBehaviour;
+    protected BottomSheetBehaviour bottomSheetBehaviour;
     private View goToNavigatorView;
     private GoToGoogleMapsNavigator goToGoogleMapsNavigator;
 
@@ -59,7 +60,6 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
 
     private static final String CREATE_EVENT_DIALOG_TAG = "CREATE_EVENT_DIALOG_TAG";
     private static final String REMOVE_EVENT_DIALOG_TAG = "REMOVE_EVENT_DIALOG_TAG";
-    private static final String EVENT_DESCRIPTION_BOTTOMSHEET_DIALOG_TAG = "EVENT_DESCRIPTION_BOTTOMSHEET_DIALOG_TAG";
 
     /**
      * Constructor that creates a fully operative EventMapBehaviour object
@@ -67,12 +67,14 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
      * To link this object to an existing map it's necessary to call mapFragment.getMapAsync(),
      * passing an instance of this class, this will trigger the creation of the map view
      *
-     * Note that operations accessing the map can be done once that has been built (obv) and it has
-     * been initialized, set an OnMapInitializedListener to get notified of the complete initialization
+     * Note that operations accessing the map can be done once the EventMapBehaviour object has been built (obviously) and it has
+     * been initialized
+     *
+     * You can set an OnMapInitializedListener to get notified of the complete initialization
      * of the map
      */
     public EventMapBehaviour() {
-        //currentEvents = new ArrayMap<>();
+
     }
 
     /**
@@ -111,7 +113,9 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     }
 
     /**
-     * Note that for successfully open a google Maps instance a GoToGoogleMapsNavigator object must be set
+     * Note that for successfully open a google Maps instance a
+     * {@link com.eis.geoCalendar.demo.Localization.GoToGoogleMapsNavigator} object must be set
+     *
      * This Method will set the view as INVISIBLE, it will turn visible when the user clicks on a Marker,
      * and turn invisible again when another part of the map will be clicked
      *
@@ -140,6 +144,7 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
      *
      * @param onMapInitializedListener A listener that will be called when the map has been fully initialized
      */
+    @Override
     public void setOnMapInitializedListener(OnMapInitializedListener onMapInitializedListener) {
         this.onMapInitializedListener = onMapInitializedListener;
     }
@@ -168,7 +173,6 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
         mMap.setOnMapClickListener(this);
 
         //Retrieve current position
-
         locationRetriever.getCurrentLocation();
 
         if (onMapInitializedListener != null)
@@ -189,14 +193,14 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
      * @throws NullPointerException if the method is called before map's initialization
      * @param data  The gps position where the map will be focused
      */
-    public void moveMap(LatLng data) {
+    public void moveMap(LatLng data) throws NullPointerException {
         mMap.moveCamera(CameraUpdateFactory.zoomTo(mMap.getMaxZoomLevel()));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(data));
     }
 
     /**
      * Sets padding on the map.
-     * This method allows you to define a visible region on the map, to signal to the map that portions
+     * This method allows you to define a visible region on the map, to signal that portions
      * of the map around the edges may be obscured, by setting padding on each of the four edges of the map.
      * Map functions will be adapted to the padding. For example, the zoom controls, compass, copyright notices
      * and Google logo will be moved to fit inside the defined region, camera movements will be relative
@@ -215,14 +219,13 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     /**
      * These events are defined elsewhere, so no need to notify listeners
      *
-     * @param events A bunch of events to position in the map (both description and Position must be defined)
+     * @param events A bunch of events to position in the map (both description and position must be defined)
      */
-    public void addEventsToMap(List<E> events) {
+    public void addEventsToMap(List<Event<String>> events) {
         for (Event<String> event : events) {
             Marker created = mMap.addMarker(new MarkerOptions().position(new LatLng(event.getPosition().getLatitude(),
                     event.getPosition().getLongitude()))
                     .title(event.getContent()));
-            //currentEvents.put(created, event);
             created.setTag(event);
         }
     }
@@ -252,13 +255,13 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     @Override
     public boolean onMarkerClick(Marker marker) {
         currentFocusMarker = marker;
-        moveMap(marker.getPosition());
+        moveMap(currentFocusMarker.getPosition());
 
         if (goToNavigatorView != null)
             goToNavigatorView.setVisibility(View.VISIBLE);
 
         if (bottomSheetBehaviour != null) {
-            bottomSheetBehaviour.setDisplayedText(marker.getTitle());
+            bottomSheetBehaviour.setDisplayedText(currentFocusMarker.getTitle());
             if (bottomSheetBehaviour.isShown())
                 bottomSheetBehaviour.hide();
             else
@@ -287,7 +290,7 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     }
 
     /**
-     * Called by a fragment of the application that returns the parameters to Create a new event and update the map
+     * Called by a fragment of the application that returns the parameters to create a new event and update the map
      *
      * @param pos         The position of the event to create
      * @param description The description of the event to create
@@ -303,7 +306,6 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
         Marker created = mMap.addMarker(new MarkerOptions().position(pos).title(description)); //automatically cuts title if too long
         created.setTag(event);
         moveMap(pos);
-        //currentEvents.put(created, event);
     }
 
     /**
@@ -314,12 +316,12 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     @Override
     public void onInfoWindowLongClick(Marker marker) {
         currentFocusMarker = marker;
-        callRemoveEventDialog(marker);
+        callRemoveEventDialog(currentFocusMarker);
     }
 
     /**
      * Opens a dialog that asks the user if the event has to be deleted
-     * If the user accepts, the dialog will call RemoveMark method of this instance
+     * If the user accepts, the dialog will call {@link #removeMark} method of this instance
      *
      * @param marker The marker that has been selected for confirming deletion
      */
@@ -331,10 +333,10 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     }
 
     /**
-     * Called by the RemoveEventDialog or the bottom sheet if the user confirms to delete the event
+     * Called by the {@link #removeEventDialog} method or the bottom sheet if the user confirms to delete the event
      * Removes the Event mark from the map
-     * Makes forget the previously set currentFocusMarker
-     * Calls all the onEventRemovedListeners
+     * Makes forget the previously set {@link #currentFocusMarker}
+     * Calls all the {@link com.eis.geoCalendar.demo.Behaviour.listener.OnEventRemovedListener}
      *
      * @param marker The marker to be removed
      */
@@ -354,13 +356,13 @@ public class EventMapBehaviour<E extends Event<String>> implements MapBehaviour 
     }
 
     /**
-     * @param abstractMapEventBottomSheetBehaviour An object of a class that extends AbstractMapEventBottomSheetBehaviour
+     * @param bottomSheetBehaviour An object of a class that extends BottomSheetBehaviour
      */
     @Override
-    public void setBottomSheetBehaviour(@NonNull AbstractMapEventBottomSheetBehaviour abstractMapEventBottomSheetBehaviour) {
-        this.bottomSheetBehaviour = abstractMapEventBottomSheetBehaviour;
-        bottomSheetBehaviour.setOnActionViewClickListener(this);
-        bottomSheetBehaviour.setOnRemoveViewClickListener(this);
+    public void setBottomSheetBehaviour(@NonNull BottomSheetBehaviour bottomSheetBehaviour) {
+        this.bottomSheetBehaviour = bottomSheetBehaviour;
+        this.bottomSheetBehaviour.setOnActionViewClickListener(this);
+        this.bottomSheetBehaviour.setOnRemoveViewClickListener(this);
     }
 
     /**

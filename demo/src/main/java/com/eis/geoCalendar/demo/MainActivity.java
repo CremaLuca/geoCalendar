@@ -146,7 +146,6 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
         networkEventMapBehaviour.allowMapRemovalNetworkEvents(false);
 
         //My job here is done
-
         View mapView = findViewById(R.id.mapView);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -204,6 +203,12 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
                 new GPSPosition(42, -124), "D", users.get(3)));
         events.add(new GenericNetworkEvent<String, NetworkEventUser>(
                 new GPSPosition(41, -124), "E", users.get(4)));
+        events.add(new GenericNetworkEvent<String, NetworkEventUser>(
+                new GPSPosition(38, -121.68), "A", users.get(0)));
+        events.add(new GenericNetworkEvent<String, NetworkEventUser>(
+                new GPSPosition(37, -121.68), "A", users.get(0)));
+        events.add(new GenericNetworkEvent<String, NetworkEventUser>(
+                new GPSPosition(36, -121.68), "A", users.get(0)));
 
         networkEventMapBehaviour.addEventsToMap(users, events);
     }
@@ -214,28 +219,12 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
 
     @Override
     public void onEventCreated(Event newEvent) {
-        if (i == 0)
-            addEvents();
-        else if (i == 1) {
-            List<NetworkEvent> userEvents = new ArrayList<>();
-            userEvents.add(new GenericNetworkEvent<String, NetworkEventUser>(
-                    new GPSPosition(38, -121.68), "A", users.get(0)));
-            userEvents.add(new GenericNetworkEvent<String, NetworkEventUser>(
-                    new GPSPosition(37, -121.68), "A", users.get(0)));
-            userEvents.add(new GenericNetworkEvent<String, NetworkEventUser>(
-                    new GPSPosition(36, -121.68), "A", users.get(0)));
-
-            networkEventMapBehaviour.addEventsToMap(users.get(0), userEvents);
-
-        }
-        i++;
-
 
     }
 
     @Override
     public void onEventRemoved(Event removedEvent) {
-
+        i++;
     }
 
     @Override
@@ -262,6 +251,7 @@ public class MainActivity extends AppCompatActivity implements OnEventCreatedLis
     public void onMapInitialized() {
         int toolbarHeight = findViewById(R.id.toolbar).getHeight();
         networkEventMapBehaviour.setMapPadding(0, toolbarHeight, 0, 0);
+        addEvents();
     }
 
     /**
